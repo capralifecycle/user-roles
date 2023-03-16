@@ -31,7 +31,7 @@
     <liflig-http4k-utils.version>1.20230210.194859</liflig-http4k-utils.version>
     <liflig.properties.version>2.20230214.071539</liflig.properties.version>
     <liflig-document-store.version>1.20230304.084157</liflig-document-store.version>
-    <liflig-logging-http4k.version>1.20230227.224948</liflig-logging-http4k.version>
+    <liflig-logging-http4k.version>1.20230315.225355</liflig-logging-http4k.version>
     <liflig-snapshot-test.version>1.20230303.131107</liflig-snapshot-test.version>
     <slf4j-api.version>2.0.6</slf4j-api.version>
     <kotlinx-coroutines-slf4j.version>1.6.4</kotlinx-coroutines-slf4j.version>
