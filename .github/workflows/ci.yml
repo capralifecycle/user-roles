@@ -57,7 +57,7 @@ jobs:
         with:
           args: 'bash -c "set -euo pipefail; export MAVEN_OPTS=\"-Duser.home=$HOME\"; mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME""'
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GITHUB_PACKAGES_READ_ACCESS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GIT_COMMIT_ID: ${{ env.GITHUB_SHA }}
           BRANCH_NAME: ${{ env.GITHUB_REF_NAME }}
