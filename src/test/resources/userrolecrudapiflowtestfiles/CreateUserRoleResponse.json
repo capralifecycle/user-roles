@@ -1,0 +1,22 @@
+{
+  "id":"e78d56aa-6904-4163-8dda-54aebd577b8e",
+  "userId":"user123",
+  "userRoles":[
+    {
+      "orgId":"orgId1",
+      "roleName":"orgOwner"
+    },
+    {
+      "orgId":"orgId2",
+      "roleName":"orgAdmin"
+    },
+    {
+      "orgId":"orgId3",
+      "roleName":"orgMember",
+      "roleValue":"{\"boards\": [1,2,3]}"
+    },
+    {
+      "roleName":"admin"
+    }
+  ]
+}

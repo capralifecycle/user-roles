@@ -1,0 +1,10 @@
+{
+  "id": "59d697a8-cbcb-414f-88aa-1ee788e28020",
+  "userId": "user123",
+  "userRoles": [
+    {
+      "orgId": "orgId1",
+      "roleName": "orgAdmin"
+    }
+  ]
+}

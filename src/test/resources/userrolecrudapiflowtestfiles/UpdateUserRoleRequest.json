@@ -1,0 +1,8 @@
+{
+  "roles":[
+    {
+      "orgId":"orgId1",
+      "roleName":"orgAdmin"
+    }
+  ]
+}

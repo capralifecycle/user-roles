@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  userrolesdb:
+    image: postgres:15.2
+    container_name: userrolesdb
+    ports:
+      - "127.0.0.1:10101:5432"
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=userrolesdb
