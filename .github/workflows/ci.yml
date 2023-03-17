@@ -7,6 +7,10 @@ defaults:
   run:
     shell: bash --noprofile --norc -euo pipefail {0}
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   get-runner-user:
     runs-on: ubuntu-20.04
@@ -23,7 +27,7 @@ jobs:
       options: --user ${{ needs.get-runner-user.outputs.uid_gid }}
     permissions:
       contents: read
-      packages: read
+      packages: write
       id-token: write
     steps:
       - uses: actions/checkout@v3
@@ -61,3 +65,32 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GIT_COMMIT_ID: ${{ env.GITHUB_SHA }}
           BRANCH_NAME: ${{ env.GITHUB_REF_NAME }}
+      - name: Generate custom tag for release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: get-custom-tag
+        run: |
+          export MAVEN_OPTS="-Duser.home=$HOME" # Home directory not automatically picked up for some reason
+          major_version="$(sed -n "s/^.*<major-version>\([0-9]\{1,\}\)<\/major-version>.*$/\1/p" pom.xml)"
+          date="$(date -u "+%Y%m%d.%H%M%S")"
+          tag="$major_version.$date"
+          printf "Tag to use for potential release: %s\n" "$tag"
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+        if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          context: .
+          push: true
+          tags:  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.get-custom-tag.outputs.tag }}
