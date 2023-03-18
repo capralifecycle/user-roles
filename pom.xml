@@ -41,7 +41,7 @@
     <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
     <testcontainers.postgresql.version>1.17.6</testcontainers.postgresql.version>
     <hikariCP.version>5.0.1</hikariCP.version>
-    <flyway-core.version>9.15.2</flyway-core.version>
+    <flyway-core.version>9.16.0</flyway-core.version>
     <postgresql.version>42.5.4</postgresql.version>
     <jdbi3-core.version>3.37.1</jdbi3-core.version>
 
