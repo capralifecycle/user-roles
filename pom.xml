@@ -42,7 +42,7 @@
     <testcontainers.postgresql.version>1.17.6</testcontainers.postgresql.version>
     <hikariCP.version>5.0.1</hikariCP.version>
     <flyway-core.version>9.16.0</flyway-core.version>
-    <postgresql.version>42.5.4</postgresql.version>
+    <postgresql.version>42.6.0</postgresql.version>
     <jdbi3-core.version>3.37.1</jdbi3-core.version>
 
     <!--testing-->
