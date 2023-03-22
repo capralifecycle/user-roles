@@ -76,6 +76,7 @@ enum class EnvironmentName {
   LOCAL,
   STAGING,
   DEV,
+  PROD,
 }
 
 data class DbConfig(
