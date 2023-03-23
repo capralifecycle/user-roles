@@ -78,11 +78,7 @@ enum class EnvironmentName {
   LOCAL,
   STAGING,
   DEV,
-<<<<<<< HEAD
   PROD,
-=======
-  PROD
->>>>>>> e48c772 (Use spotless)
 }
 
 data class DbConfig(
