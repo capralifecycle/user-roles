@@ -9,9 +9,12 @@ import no.liflig.userroles.common.config.http4k.UserPrincipal
 import org.http4k.core.Request
 
 object DummyAuthService : AuthService<UserPrincipal>, KLogging() {
-  override suspend fun getPrincipal(request: Request): Either<GetPrincipalDeviation, UserPrincipal?> {
+  override suspend fun getPrincipal(
+      request: Request
+  ): Either<GetPrincipalDeviation, UserPrincipal?> {
     return UserPrincipal(
-      userId = "dummy",
-    ).right()
+            userId = "dummy",
+        )
+        .right()
   }
 }

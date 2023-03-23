@@ -15,12 +15,10 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
 
-/**
- * Contains the endpoint for getting a single user role
- * */
+/** Contains the endpoint for getting a single user role */
 class GetUserRole(
-  private val path: String,
-  private val userRoleRepository: UserRoleRepository,
+    private val path: String,
+    private val userRoleRepository: UserRoleRepository,
 ) {
 
   private fun meta(): RouteMetaDsl.() -> Unit = {
@@ -30,18 +28,20 @@ class GetUserRole(
   }
 
   fun route(): ContractRoute {
-    return path / userIdPathLens meta meta() bindContract Method.GET to { id ->
-      { _: Request ->
-
-        runBlocking {
-          val userRole = userRoleRepository.getByUserId(id)
-          if (userRole == null) {
-            Response(Status.NOT_FOUND)
-          } else {
-            Response(Status.OK).with(UserRoleDto.bodyLens of userRole.toDto())
+    return path / userIdPathLens meta
+        meta() bindContract
+        Method.GET to
+        { id ->
+          { _: Request ->
+            runBlocking {
+              val userRole = userRoleRepository.getByUserId(id)
+              if (userRole == null) {
+                Response(Status.NOT_FOUND)
+              } else {
+                Response(Status.OK).with(UserRoleDto.bodyLens of userRole.toDto())
+              }
+            }
           }
         }
-      }
-    }
   }
 }

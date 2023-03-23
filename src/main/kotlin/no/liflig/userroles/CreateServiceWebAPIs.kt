@@ -22,34 +22,39 @@ import org.http4k.filter.CorsPolicy
 import org.http4k.routing.RoutingHttpHandler
 
 fun createServiceRouter(
-  logHandler: (RequestResponseLog<UserPrincipalLog>) -> Unit,
-  healthService: HealthService,
-  userRoleRepository: UserRoleRepository,
-  corsConfig: CorsPolicy,
-  basicAuth: BasicAuth,
+    logHandler: (RequestResponseLog<UserPrincipalLog>) -> Unit,
+    healthService: HealthService,
+    userRoleRepository: UserRoleRepository,
+    corsConfig: CorsPolicy,
+    basicAuth: BasicAuth,
 ): RoutingHttpHandler {
   return ServiceRouter(
-    logHandler = logHandler,
-    UserPrincipal::toLog,
-    corsConfig,
-    DummyAuthService,
-    healthService,
-  ) {
-    logger.error(it) { "Error while retrieving principal" }
-    Response(Status.UNAUTHORIZED)
-  }.routingHandler {
-    routes += "api" bind contract {
-      renderer = OpenApi3(
-        ApiInfo("User Roles API", "v1.0"),
-      )
-      descriptionPath = "/docs/swagger.json"
-      routes += UserRoleApi("userroles", userRoleRepository).routes
-    }
+          logHandler = logHandler,
+          UserPrincipal::toLog,
+          corsConfig,
+          DummyAuthService,
+          healthService,
+      ) {
+        logger.error(it) { "Error while retrieving principal" }
+        Response(Status.UNAUTHORIZED)
+      }
+      .routingHandler {
+        routes +=
+            "api" bind
+                contract {
+                  renderer =
+                      OpenApi3(
+                          ApiInfo("User Roles API", "v1.0"),
+                      )
+                  descriptionPath = "/docs/swagger.json"
+                  routes += UserRoleApi("userroles", userRoleRepository).routes
+                }
 
-    routes += swaggerUi(
-      Uri.of("api/docs/swagger.json"),
-    )
+        routes +=
+            swaggerUi(
+                Uri.of("api/docs/swagger.json"),
+            )
 
-    additionalFilters += createAuthFilter(basicAuth)
-  }
+        additionalFilters += createAuthFilter(basicAuth)
+      }
 }

@@ -19,23 +19,22 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
 
-/**
- * Contains the endpoint for updating a user role
- * */
+/** Contains the endpoint for updating a user role */
 class UpdateUserRole(
-  private val path: String,
-  private val userRoleRepository: UserRoleRepository,
+    private val path: String,
+    private val userRoleRepository: UserRoleRepository,
 ) {
 
   @kotlinx.serialization.Serializable
   data class UpdateRoleRequest(
-    val roles: List<RoleDto>,
+      val roles: List<RoleDto>,
   ) {
     companion object {
       val bodyLens = createBodyLens(serializer())
-      val example = UpdateRoleRequest(
-        roles = listOf(RoleDto.example),
-      )
+      val example =
+          UpdateRoleRequest(
+              roles = listOf(RoleDto.example),
+          )
     }
   }
 
@@ -47,31 +46,34 @@ class UpdateUserRole(
   }
 
   fun route(): ContractRoute {
-    return path / userIdPathLens meta meta() bindContract Method.PUT to { id ->
-      { request: Request ->
+    return path / userIdPathLens meta
+        meta() bindContract
+        Method.PUT to
+        { id ->
+          { request: Request ->
+            val body = UpdateRoleRequest.bodyLens(request)
 
-        val body = UpdateRoleRequest.bodyLens(request)
+            runBlocking {
+              val userRole = userRoleRepository.getByUserId(id)
+              if (userRole == null) {
+                val createdUserRole =
+                    userRoleRepository.create(
+                        UserRole.create(
+                            userId = id,
+                            roles = body.roles.map { it.toDomain() },
+                        ),
+                    )
+                Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
+              } else {
+                var updatedUserRole = userRole
 
-        runBlocking {
-          val userRole = userRoleRepository.getByUserId(id)
-          if (userRole == null) {
-            val createdUserRole = userRoleRepository.create(
-              UserRole.create(
-                userId = id,
-                roles = body.roles.map { it.toDomain() },
-              ),
-            )
-            Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
-          } else {
-            var updatedUserRole = userRole
+                updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
+                val f = userRoleRepository.update(updatedUserRole)
 
-            updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
-            val f = userRoleRepository.update(updatedUserRole)
-
-            Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
+                Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
+              }
+            }
           }
         }
-      }
-    }
   }
 }

@@ -21,45 +21,46 @@ class UserRoleRepositoryTest {
 
   val jdbi = createJdbiForTests()
 
-  val userRoleRepository = UserRoleRepositoryJdbi(
-    crudDao = CrudDaoJdbi(
-      jdbi = jdbi,
-      serializationAdapter = userRolesSerializationAdapter,
-      sqlTableName = "userroles",
-    ),
-    searchRepo = UserRoleSearchRepositoryJdbi(
-      jdbi = jdbi,
-      sqlTableName = "userroles",
-    ),
-  )
+  val userRoleRepository =
+      UserRoleRepositoryJdbi(
+          crudDao =
+              CrudDaoJdbi(
+                  jdbi = jdbi,
+                  serializationAdapter = userRolesSerializationAdapter,
+                  sqlTableName = "userroles",
+              ),
+          searchRepo =
+              UserRoleSearchRepositoryJdbi(
+                  jdbi = jdbi,
+                  sqlTableName = "userroles",
+              ),
+      )
 
   @BeforeEach
   fun clear() {
-    runBlocking {
-      userRoleRepository.listAll().forEach {
-        userRoleRepository.delete(it)
-      }
-    }
+    runBlocking { userRoleRepository.listAll().forEach { userRoleRepository.delete(it) } }
   }
 
   @Test
   fun `Role creation with valid role name succeeds`() {
     val userId = "testUser"
 
-    val userRole = UserRole.create(
-      userId = userId,
-      roles = listOf(
-        Role(
-          roleName = RoleName.ADMIN,
-          orgId = "org123",
-        ),
-        Role(
-          orgId = "org1234",
-          roleName = RoleName.ORG_MEMBER,
-          roleValue = """{"boards": [1,2,3]}""",
-        ),
-      ),
-    )
+    val userRole =
+        UserRole.create(
+            userId = userId,
+            roles =
+                listOf(
+                    Role(
+                        roleName = RoleName.ADMIN,
+                        orgId = "org123",
+                    ),
+                    Role(
+                        orgId = "org1234",
+                        roleName = RoleName.ORG_MEMBER,
+                        roleValue = """{"boards": [1,2,3]}""",
+                    ),
+                ),
+        )
 
     runBlocking {
       userRoleRepository.create(userRole)
@@ -74,25 +75,28 @@ class UserRoleRepositoryTest {
   fun `Creation with duplicate userId fails - unique index works as expected`() {
     val userId = "testUser"
 
-    val userRole = UserRole.create(
-      userId = userId,
-      roles = listOf(
-        Role(
-          roleName = RoleName.ADMIN,
-          orgId = "org123",
-        ),
-        Role(
-          orgId = "org1234",
-          roleName = RoleName.ORG_MEMBER,
-          roleValue = """{"boards": [1,2,3]}""",
-        ),
-      ),
-    )
+    val userRole =
+        UserRole.create(
+            userId = userId,
+            roles =
+                listOf(
+                    Role(
+                        roleName = RoleName.ADMIN,
+                        orgId = "org123",
+                    ),
+                    Role(
+                        orgId = "org1234",
+                        roleName = RoleName.ORG_MEMBER,
+                        roleValue = """{"boards": [1,2,3]}""",
+                    ),
+                ),
+        )
 
-    val userRole2 = UserRole.create(
-      userId = userId,
-      roles = listOf(),
-    )
+    val userRole2 =
+        UserRole.create(
+            userId = userId,
+            roles = listOf(),
+        )
 
     runBlocking {
       userRoleRepository.create(userRole)
@@ -105,20 +109,22 @@ class UserRoleRepositoryTest {
   fun `Deleting a user removes it from DB`() {
     val userId = "testUser"
 
-    val userRole = UserRole.create(
-      userId = userId,
-      roles = listOf(
-        Role(
-          roleName = RoleName.ADMIN,
-          orgId = "org123",
-        ),
-        Role(
-          orgId = "org1234",
-          roleName = RoleName.ORG_MEMBER,
-          roleValue = """{"boards": [1,2,3]}""",
-        ),
-      ),
-    )
+    val userRole =
+        UserRole.create(
+            userId = userId,
+            roles =
+                listOf(
+                    Role(
+                        roleName = RoleName.ADMIN,
+                        orgId = "org123",
+                    ),
+                    Role(
+                        orgId = "org1234",
+                        roleName = RoleName.ORG_MEMBER,
+                        roleValue = """{"boards": [1,2,3]}""",
+                    ),
+                ),
+        )
 
     runBlocking {
       userRoleRepository.create(userRole)
@@ -136,11 +142,10 @@ class UserRoleRepositoryTest {
     runBlocking {
       for (i in 0..2) {
         UserRole.create(
-          userId = userId + i,
-          roles = listOf(),
-        ).apply {
-          userRoleRepository.create(this)
-        }
+                userId = userId + i,
+                roles = listOf(),
+            )
+            .apply { userRoleRepository.create(this) }
       }
 
       val allUsers = userRoleRepository.listAll()

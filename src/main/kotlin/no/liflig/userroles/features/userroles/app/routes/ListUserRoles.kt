@@ -17,12 +17,10 @@ import org.http4k.core.with
 import org.http4k.lens.Query
 import org.http4k.lens.string
 
-/**
- * Contains the endpoint for getting user roles
- * */
+/** Contains the endpoint for getting user roles */
 class ListUserRoles(
-  private val path: String,
-  private val userRoleRepository: UserRoleRepository,
+    private val path: String,
+    private val userRoleRepository: UserRoleRepository,
 ) {
   // private val orgIdQuery = Query.map { PersonId(UUID.fromString(it)) }.optional("orgId")
   private val orgIdQuery = Query.string().optional("orgId")
@@ -37,22 +35,26 @@ class ListUserRoles(
   }
 
   fun route(): ContractRoute {
-    return path meta meta() bindContract Method.GET to
-      { req: Request ->
+    return path meta
+        meta() bindContract
+        Method.GET to
+        { req: Request ->
+          val orgId = orgIdQuery(req)
+          val roleName = roleNameQuery(req)
 
-        val orgId = orgIdQuery(req)
-        val roleName = roleNameQuery(req)
+          runBlocking {
+            val userRoles =
+                userRoleRepository
+                    .search(
+                        UserRoleSearchQuery(
+                            orgId = orgId,
+                            roleName = roleName,
+                        ),
+                    )
+                    .map { it.toDto() }
 
-        runBlocking {
-          val userRoles = userRoleRepository.search(
-            UserRoleSearchQuery(
-              orgId = orgId,
-              roleName = roleName,
-            ),
-          ).map { it.toDto() }
-
-          Response(Status.OK).with(ListUserRoleDto.bodyLens of ListUserRoleDto(items = userRoles))
+            Response(Status.OK).with(ListUserRoleDto.bodyLens of ListUserRoleDto(items = userRoles))
+          }
         }
-      }
   }
 }

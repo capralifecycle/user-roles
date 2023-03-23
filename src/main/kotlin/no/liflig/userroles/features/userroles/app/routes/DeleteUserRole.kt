@@ -12,12 +12,10 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 
-/**
- * Contains the endpoint for deleting a user role
- * */
+/** Contains the endpoint for deleting a user role */
 class DeleteUserRole(
-  private val path: String,
-  private val userRoleRepository: UserRoleRepository,
+    private val path: String,
+    private val userRoleRepository: UserRoleRepository,
 ) {
 
   private fun meta(): RouteMetaDsl.() -> Unit = {
@@ -27,20 +25,22 @@ class DeleteUserRole(
   }
 
   fun route(): ContractRoute {
-    return path / userIdPathLens meta meta() bindContract Method.DELETE to { id ->
-      { _: Request ->
+    return path / userIdPathLens meta
+        meta() bindContract
+        Method.DELETE to
+        { id ->
+          { _: Request ->
+            runBlocking {
+              val userRole = userRoleRepository.getByUserId(id)
 
-        runBlocking {
-          val userRole = userRoleRepository.getByUserId(id)
-
-          if (userRole == null) {
-            Response(Status.NOT_FOUND)
-          } else {
-            userRoleRepository.delete(userRole)
-            Response(Status.OK)
+              if (userRole == null) {
+                Response(Status.NOT_FOUND)
+              } else {
+                userRoleRepository.delete(userRole)
+                Response(Status.OK)
+              }
+            }
           }
         }
-      }
-    }
   }
 }

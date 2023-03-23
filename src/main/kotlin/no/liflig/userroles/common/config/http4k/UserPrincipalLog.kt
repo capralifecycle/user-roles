@@ -5,13 +5,14 @@ import no.liflig.logging.PrincipalLog
 
 @Serializable
 data class UserPrincipalLog(
-  val userId: String,
+    val userId: String,
 ) : PrincipalLog
 
 data class UserPrincipal(
-  val userId: String,
+    val userId: String,
 )
 
-fun UserPrincipal.toLog(): UserPrincipalLog = UserPrincipalLog(
-  userId = userId,
-)
+fun UserPrincipal.toLog(): UserPrincipalLog =
+    UserPrincipalLog(
+        userId = userId,
+    )

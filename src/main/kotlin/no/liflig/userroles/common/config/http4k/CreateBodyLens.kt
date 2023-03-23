@@ -13,11 +13,10 @@ private val json = Json {
 }
 
 fun <T> createBodyLens(serializer: KSerializer<T>): BiDiBodyLens<T> {
-  return Body
-    .string(ContentType.APPLICATION_JSON)
-    .map(
-      { json.decodeFromString(serializer, it) },
-      { json.encodeToString(serializer, it) },
-    )
-    .toLens()
+  return Body.string(ContentType.APPLICATION_JSON)
+      .map(
+          { json.decodeFromString(serializer, it) },
+          { json.encodeToString(serializer, it) },
+      )
+      .toLens()
 }

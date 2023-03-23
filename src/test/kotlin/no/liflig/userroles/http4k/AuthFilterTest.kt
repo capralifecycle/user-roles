@@ -30,7 +30,9 @@ class AuthFilterTest {
   fun testAuthIncorrectHeader() {
     val handler = "/arbitrary-route" bind createAuthFilter(basicAuth).then(static())
 
-    val req = Request(Method.GET, Uri.of("/arbitrary-route")).header(HttpHeader.AUTHORIZATION.name, "Basic 45438583458")
+    val req =
+        Request(Method.GET, Uri.of("/arbitrary-route"))
+            .header(HttpHeader.AUTHORIZATION.name, "Basic 45438583458")
     assertEquals(HttpStatus.UNAUTHORIZED_401, handler(req).status.code)
   }
 
@@ -38,7 +40,9 @@ class AuthFilterTest {
   fun correctHeader() {
     val handler = "/arbitrary-route" bind createAuthFilter(basicAuth).then(static())
 
-    val req = Request(Method.GET, Uri.of("/arbitrary-route")).header(HttpHeader.AUTHORIZATION.name, basicAuth.header())
+    val req =
+        Request(Method.GET, Uri.of("/arbitrary-route"))
+            .header(HttpHeader.AUTHORIZATION.name, basicAuth.header())
     assertNotEquals(HttpStatus.UNAUTHORIZED_401, handler(req).status.code)
   }
 }

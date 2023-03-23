@@ -9,14 +9,13 @@ import kotlinx.serialization.encoding.Encoder
 import no.liflig.documentstore.entity.Version
 
 abstract class LongSerializer(
-  val factory: (Long) -> Version,
+    val factory: (Long) -> Version,
 ) : KSerializer<Version> {
   override val descriptor: SerialDescriptor =
-    PrimitiveSerialDescriptor("CustomLongSerializer", PrimitiveKind.STRING)
+      PrimitiveSerialDescriptor("CustomLongSerializer", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: Version) =
-    encoder.encodeString(value.value.toString())
+      encoder.encodeString(value.value.toString())
 
-  override fun deserialize(decoder: Decoder): Version =
-    factory(decoder.decodeString().toLong())
+  override fun deserialize(decoder: Decoder): Version = factory(decoder.decodeString().toLong())
 }
