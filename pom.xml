@@ -31,7 +31,7 @@
     <aws-sdk-v2.version>2.17.102</aws-sdk-v2.version>
     <liflig-http4k-utils.version>1.20230210.194859</liflig-http4k-utils.version>
     <liflig.properties.version>2.20230322.132101</liflig.properties.version>
-    <liflig-document-store.version>1.20230324.183010</liflig-document-store.version>
+    <liflig-document-store.version>1.20230325.051900</liflig-document-store.version>
     <liflig-logging-http4k.version>1.20230322.234315</liflig-logging-http4k.version>
     <liflig-snapshot-test.version>1.20230322.163429</liflig-snapshot-test.version>
     <slf4j-api.version>2.0.7</slf4j-api.version>
