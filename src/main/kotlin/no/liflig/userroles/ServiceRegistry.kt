@@ -16,26 +16,29 @@ import org.jdbi.v3.core.Jdbi
  * This class should be used close to main method and not passed around
  */
 class ServiceRegistry(
-  config: Config,
-  jdbi: Jdbi = createDefaultJdbi(config),
+    config: Config,
+    jdbi: Jdbi = createDefaultJdbi(config),
 ) {
-  val userRolesRepository = UserRoleRepositoryJdbi(
-    crudDao = CrudDaoJdbi(jdbi, "userroles", userRolesSerializationAdapter),
-    searchRepo = UserRoleSearchRepositoryJdbi(jdbi, "userroles"),
-  )
+  val userRolesRepository =
+      UserRoleRepositoryJdbi(
+          crudDao = CrudDaoJdbi(jdbi, "userroles", userRolesSerializationAdapter),
+          searchRepo = UserRoleSearchRepositoryJdbi(jdbi, "userroles"),
+      )
 
   val webserverPort = config.port
 
-  val webserver = createServiceRouter(
-    logHandler = LoggingFilter.createLogHandler(
-      printStacktraceToConsole = true,
-      principalLogSerializer = UserPrincipalLog.serializer(),
-    ),
-    healthService = createHealthService(config.applicationName, config.buildInfo),
-    corsConfig = config.corsPolicy,
-    basicAuth = config.basicAuth,
-    userRoleRepository = userRolesRepository,
-  )
+  val webserver =
+      createServiceRouter(
+          logHandler =
+              LoggingFilter.createLogHandler(
+                  printStacktraceToConsole = true,
+                  principalLogSerializer = UserPrincipalLog.serializer(),
+              ),
+          healthService = createHealthService(config.applicationName, config.buildInfo),
+          corsConfig = config.corsPolicy,
+          basicAuth = config.basicAuth,
+          userRoleRepository = userRolesRepository,
+      )
 
   companion object {
     fun default() = ServiceRegistry(Config())
@@ -43,11 +46,11 @@ class ServiceRegistry(
 }
 
 private fun createDefaultJdbi(config: Config): Jdbi =
-  DatabaseConfigurator.createJdbiInstanceAndMigrate(
-    DatabaseConfigurator.createDataSource(
-      config.databaseConfig.jdbcUrl,
-      config.databaseConfig.username,
-      config.databaseConfig.password,
-    ),
-    config.databaseClean,
-  )
+    DatabaseConfigurator.createJdbiInstanceAndMigrate(
+        DatabaseConfigurator.createDataSource(
+            config.databaseConfig.jdbcUrl,
+            config.databaseConfig.username,
+            config.databaseConfig.password,
+        ),
+        config.databaseClean,
+    )

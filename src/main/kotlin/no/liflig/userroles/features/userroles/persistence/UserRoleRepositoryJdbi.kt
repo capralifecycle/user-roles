@@ -8,11 +8,11 @@ import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleId
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 
-private val log = KotlinLogging.logger { }
+private val log = KotlinLogging.logger {}
 
 class UserRoleRepositoryJdbi(
-  private val crudDao: CrudDao<UserRoleId, UserRole>,
-  private val searchRepo: UserRoleSearchRepositoryJdbi,
+    private val crudDao: CrudDao<UserRoleId, UserRole>,
+    private val searchRepo: UserRoleSearchRepositoryJdbi,
 ) : UserRoleRepository {
   override suspend fun create(item: UserRole): UserRole {
     val o = crudDao.create(item)
@@ -21,9 +21,7 @@ class UserRoleRepositoryJdbi(
 
   override suspend fun get(id: UserRoleId): UserRole? {
     val o = crudDao.get(id)
-    return o?.let {
-      o.item.version(it.version)
-    }
+    return o?.let { o.item.version(it.version) }
   }
 
   override suspend fun update(item: UserRole): UserRole {
@@ -40,8 +38,7 @@ class UserRoleRepositoryJdbi(
   }
 
   override suspend fun search(query: UserRoleSearchQuery): List<UserRole> {
-    return searchRepo.search(query)
-      .map { it.item.version(it.version) }
+    return searchRepo.search(query).map { it.item.version(it.version) }
   }
 
   override suspend fun getByUserId(userId: String): UserRole? {
@@ -51,11 +48,11 @@ class UserRoleRepositoryJdbi(
       null
     } else if (results.size > 1) {
       log.warn {
-        "Multiple users found for user id: $userId. Picking first: " +
-          "${results.first()}"
+        "Multiple users found for user id: $userId. Picking first: " + "${results.first()}"
       }
       return results.first()
-      // throw IllegalStateException("Should never return more than 1 result.") // TODO enable this when account names are available in frontend
+      // throw IllegalStateException("Should never return more than 1 result.") // TODO enable this
+      // when account names are available in frontend
     } else {
       results.first()
     }

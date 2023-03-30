@@ -37,91 +37,94 @@ class UserRoleCrudApiFlowTest {
   @Test
   fun crudApiFlowTest(services: TestServices) {
     val userId = "user123"
-    val roles = listOf(
-      RoleDto(
-        orgId = "orgId1",
-        roleName = RoleName.ORG_OWNER,
-      ),
-      RoleDto(
-        orgId = "orgId2",
-        roleName = RoleName.ORG_ADMIN,
-      ),
-      RoleDto(
-        orgId = "orgId3",
-        roleName = RoleName.ORG_MEMBER,
-        roleValue = """{"boards": [1,2,3]}""",
-      ),
-      RoleDto(
-        roleName = RoleName.ADMIN,
-      ),
-    )
+    val roles =
+        listOf(
+            RoleDto(
+                orgId = "orgId1",
+                roleName = RoleName.ORG_OWNER,
+            ),
+            RoleDto(
+                orgId = "orgId2",
+                roleName = RoleName.ORG_ADMIN,
+            ),
+            RoleDto(
+                orgId = "orgId3",
+                roleName = RoleName.ORG_MEMBER,
+                roleValue = """{"boards": [1,2,3]}""",
+            ),
+            RoleDto(
+                roleName = RoleName.ADMIN,
+            ),
+        )
 
     client(
-      Request(Method.PUT, "http://localhost:${services.serverPort}/api/userroles/$userId")
-        .with(
-          UpdateUserRole.UpdateRoleRequest.bodyLens of
-            UpdateUserRole.UpdateRoleRequest(
-              roles = roles,
-            ),
-        ).withBasicAuth(Credentials("testbruker", "testpassord")),
-    ).apply {
-      assertEquals(Status.OK, this.status)
-    }
-      .useSerializer(UserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "userrolecrudapiflowtestfiles/CreateUserRoleResponse.json",
-          Json.encodeToString(this),
-          ignoredPaths = listOf("id"),
+            Request(Method.PUT, "http://localhost:${services.serverPort}/api/userroles/$userId")
+                .with(
+                    UpdateUserRole.UpdateRoleRequest.bodyLens of
+                        UpdateUserRole.UpdateRoleRequest(
+                            roles = roles,
+                        ),
+                )
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { assertEquals(Status.OK, this.status) }
+        .useSerializer(UserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "userrolecrudapiflowtestfiles/CreateUserRoleResponse.json",
+              Json.encodeToString(this),
+              ignoredPaths = listOf("id"),
+          )
+        }
 
     readResourcesFileAsText("userrolecrudapiflowtestfiles/UpdateUserRoleRequest.json")
-      .deserializeAsUpdateRoleRequest()
-      .let {
-        client(
-          Request(Method.PUT, "http://localhost:${services.serverPort}/api/userroles/$userId")
-            .with(
-              UpdateUserRole.UpdateRoleRequest.bodyLens of
-                it,
-            ).withBasicAuth(Credentials("testbruker", "testpassord")),
-        )
-      }
-      .apply { assertEquals(Status.OK, this.status) }
-      .useSerializer(UserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "userrolecrudapiflowtestfiles/CreateUserRoleResponse-1.json",
-          Json.encodeToString(this),
-          ignoredPaths = listOf("id"),
-        )
-      }
+        .deserializeAsUpdateRoleRequest()
+        .let {
+          client(
+              Request(Method.PUT, "http://localhost:${services.serverPort}/api/userroles/$userId")
+                  .with(
+                      UpdateUserRole.UpdateRoleRequest.bodyLens of it,
+                  )
+                  .withBasicAuth(Credentials("testbruker", "testpassord")),
+          )
+        }
+        .apply { assertEquals(Status.OK, this.status) }
+        .useSerializer(UserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "userrolecrudapiflowtestfiles/CreateUserRoleResponse-1.json",
+              Json.encodeToString(this),
+              ignoredPaths = listOf("id"),
+          )
+        }
 
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles/$userId")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    )
-      .apply { assertEquals(Status.OK, this.status) }
-      .useSerializer(UserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "userrolecrudapiflowtestfiles/GetUserRoleResponse-1.json",
-          Json.encodeToString(this),
-          ignoredPaths = listOf("id"),
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles/$userId")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { assertEquals(Status.OK, this.status) }
+        .useSerializer(UserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "userrolecrudapiflowtestfiles/GetUserRoleResponse-1.json",
+              Json.encodeToString(this),
+              ignoredPaths = listOf("id"),
+          )
+        }
 
     client(
-      Request(Method.DELETE, "http://localhost:${services.serverPort}/api/userroles/$userId")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    ).apply { assertEquals(Status.OK, this.status) }
+            Request(Method.DELETE, "http://localhost:${services.serverPort}/api/userroles/$userId")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
+        )
+        .apply { assertEquals(Status.OK, this.status) }
 
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles/$userId")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    ).apply { assertEquals(Status.NOT_FOUND, this.status) }
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles/$userId")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
+        )
+        .apply { assertEquals(Status.NOT_FOUND, this.status) }
   }
 }
 
 private fun String.deserializeAsUpdateRoleRequest(): UpdateUserRole.UpdateRoleRequest =
-  Json.decodeFromString(UpdateUserRole.UpdateRoleRequest.serializer(), this)
+    Json.decodeFromString(UpdateUserRole.UpdateRoleRequest.serializer(), this)

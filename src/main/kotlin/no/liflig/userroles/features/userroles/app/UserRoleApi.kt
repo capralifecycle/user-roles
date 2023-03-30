@@ -7,10 +7,11 @@ import no.liflig.userroles.features.userroles.app.routes.UpdateUserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 
 class UserRoleApi(basePath: String, userRolesRepository: UserRoleRepository) {
-  val routes = listOf(
-    GetUserRole(basePath, userRolesRepository).route(),
-    DeleteUserRole(basePath, userRolesRepository).route(),
-    UpdateUserRole(basePath, userRolesRepository).route(),
-    ListUserRoles(basePath, userRolesRepository).route(),
-  )
+  val routes =
+      listOf(
+          GetUserRole(basePath, userRolesRepository).route(),
+          DeleteUserRole(basePath, userRolesRepository).route(),
+          UpdateUserRole(basePath, userRolesRepository).route(),
+          ListUserRoles(basePath, userRolesRepository).route(),
+      )
 }

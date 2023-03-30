@@ -38,100 +38,94 @@ class SearchUserRolesTest {
   @Test
   fun `Test 1 - search for admins using roleName`(services: TestServices) {
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
-        .query("roleName", "admin")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    )
-      .apply { Assertions.assertEquals(Status.OK, this.status) }
-      .useSerializer(ListUserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "searchuserrolestest/responses/test-1.json",
-          Json.encodeToString(this),
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
+                .query("roleName", "admin")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { Assertions.assertEquals(Status.OK, this.status) }
+        .useSerializer(ListUserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "searchuserrolestest/responses/test-1.json",
+              Json.encodeToString(this),
+          )
+        }
   }
 
   @Test
   fun `Test 2 - search for admins in specific organization`(services: TestServices) {
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
-        .query("roleName", "orgAdmin")
-        .query("orgId", "orgId1")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    )
-      .apply { Assertions.assertEquals(Status.OK, this.status) }
-      .useSerializer(ListUserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "searchuserrolestest/responses/test-2.json",
-          Json.encodeToString(this),
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
+                .query("roleName", "orgAdmin")
+                .query("orgId", "orgId1")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { Assertions.assertEquals(Status.OK, this.status) }
+        .useSerializer(ListUserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "searchuserrolestest/responses/test-2.json",
+              Json.encodeToString(this),
+          )
+        }
   }
 
   @Test
   fun `Test 3 - search for specific organization`(services: TestServices) {
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
-        .query("orgId", "orgId1")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    )
-      .apply { Assertions.assertEquals(Status.OK, this.status) }
-      .useSerializer(ListUserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "searchuserrolestest/responses/test-3.json",
-          Json.encodeToString(this),
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
+                .query("orgId", "orgId1")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { Assertions.assertEquals(Status.OK, this.status) }
+        .useSerializer(ListUserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "searchuserrolestest/responses/test-3.json",
+              Json.encodeToString(this),
+          )
+        }
   }
 
   @Test
   fun `Test 4 - open search (no queries)`(services: TestServices) {
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    )
-      .apply { Assertions.assertEquals(Status.OK, this.status) }
-      .useSerializer(ListUserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "searchuserrolestest/InitialUserRoles.json",
-          Json.encodeToString(this),
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { Assertions.assertEquals(Status.OK, this.status) }
+        .useSerializer(ListUserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "searchuserrolestest/InitialUserRoles.json",
+              Json.encodeToString(this),
+          )
+        }
   }
 
   @Test
   fun `Test 5 - non-existing organization returns empty`(services: TestServices) {
     client(
-      Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
-        .query("orgId", "orgId6")
-        .withBasicAuth(Credentials("testbruker", "testpassord")),
-    )
-      .apply { Assertions.assertEquals(Status.OK, this.status) }
-      .useSerializer(ListUserRoleDto.serializer())
-      .apply {
-        verifyJsonSnapshot(
-          "searchuserrolestest/responses/test-5.json",
-          Json.encodeToString(this),
+            Request(Method.GET, "http://localhost:${services.serverPort}/api/userroles")
+                .query("orgId", "orgId6")
+                .withBasicAuth(Credentials("testbruker", "testpassord")),
         )
-      }
+        .apply { Assertions.assertEquals(Status.OK, this.status) }
+        .useSerializer(ListUserRoleDto.serializer())
+        .apply {
+          verifyJsonSnapshot(
+              "searchuserrolestest/responses/test-5.json",
+              Json.encodeToString(this),
+          )
+        }
   }
 
   private fun initialiseRepository(userRoleRepository: UserRoleRepository) {
     readResourcesFileAsText("searchuserrolestest/InitialUserRoles.json")
-      .deserializeAsListUserRolesDto()
-      .apply {
-        runBlocking {
-          this@apply.forEach {
-            userRoleRepository.create(it)
-          }
-        }
-      }
+        .deserializeAsListUserRolesDto()
+        .apply { runBlocking { this@apply.forEach { userRoleRepository.create(it) } } }
   }
 }
 
 private fun String.deserializeAsListUserRolesDto(): List<UserRole> =
-  Json.decodeFromString(ListUserRoleDto.serializer(), this).items.map { it.toDomain() }
+    Json.decodeFromString(ListUserRoleDto.serializer(), this).items.map { it.toDomain() }

@@ -18,7 +18,8 @@ enum class RoleName(val value: String) {
   ;
 
   internal object Serializer : KSerializer<RoleName> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("RoleName", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("RoleName", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): RoleName {
       return from(decoder.decodeString())

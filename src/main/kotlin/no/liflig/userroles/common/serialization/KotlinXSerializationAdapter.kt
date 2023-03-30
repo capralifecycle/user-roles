@@ -5,7 +5,8 @@ import kotlinx.serialization.json.Json
 import no.liflig.documentstore.dao.SerializationAdapter
 import no.liflig.documentstore.entity.EntityRoot
 
-class KotlinXSerializationAdapter<E : EntityRoot<*>>(val serializer: KSerializer<E>) : SerializationAdapter<E> {
+class KotlinXSerializationAdapter<E : EntityRoot<*>>(val serializer: KSerializer<E>) :
+    SerializationAdapter<E> {
 
   val json: Json = Json {
     encodeDefaults = true

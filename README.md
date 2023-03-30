@@ -35,20 +35,14 @@ A generic service featuring RBAC (Role Based Access Control) using AWS Cognito
 
 ### Linting
 
-ktlint is used. Prefer using `mvn verify` to check linting.
-
-Due to using Maven multi-module project, there will be an error if running
-ktlint commands directly. This can be resolved by also compiling the project
-so that it properly resolves the dependency tree.
-
 To only check linting (no tests etc):
 
 ```bash
-mvn compile ktlint:check
+mvn spotless:check
 ```
 
 To format (does not fail on lint errors):
 
 ```bash
-mvn compile ktlint:format
+mvn spotless:apply
 ```

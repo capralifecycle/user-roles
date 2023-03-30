@@ -16,7 +16,7 @@ object App {
   var isRunning = false
 
   suspend fun start(registry: ServiceRegistry) = coroutineScope {
-    launch(MDCContext()) { }
+    launch(MDCContext()) {}
 
     registry.webserver.asServer(registry.webserverPort).start()
     logger.info { "Server started on ${registry.webserverPort}" }

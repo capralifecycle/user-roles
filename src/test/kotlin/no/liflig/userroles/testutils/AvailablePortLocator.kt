@@ -4,9 +4,7 @@ import java.net.InetAddress
 import java.util.Random
 import javax.net.ServerSocketFactory
 
-/**
- * Locates an available port on the local system.
- */
+/** Locates an available port on the local system. */
 object AvailablePortLocator {
   fun findAvailableTcpPort(): Int {
     val minPort = 1024
@@ -17,10 +15,10 @@ object AvailablePortLocator {
     do {
       check(searchCounter <= portRange) {
         String.format(
-          "Could not find an available port in the range [%d, %d] after %d attempts",
-          minPort,
-          maxPort,
-          searchCounter,
+            "Could not find an available port in the range [%d, %d] after %d attempts",
+            minPort,
+            maxPort,
+            searchCounter,
         )
       }
       candidatePort = findRandomPort(minPort, maxPort)
@@ -31,11 +29,13 @@ object AvailablePortLocator {
 
   private fun isPortAvailable(port: Int): Boolean {
     return try {
-      val serverSocket = ServerSocketFactory.getDefault().createServerSocket(
-        port,
-        1,
-        InetAddress.getByName("localhost"),
-      )
+      val serverSocket =
+          ServerSocketFactory.getDefault()
+              .createServerSocket(
+                  port,
+                  1,
+                  InetAddress.getByName("localhost"),
+              )
       serverSocket.close()
       true
     } catch (ex: Exception) {

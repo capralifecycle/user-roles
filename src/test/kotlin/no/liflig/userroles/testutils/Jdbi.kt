@@ -4,7 +4,8 @@ import no.liflig.userroles.common.config.database.DatabaseConfigurator
 import org.jdbi.v3.core.Jdbi
 import org.testcontainers.containers.PostgreSQLContainer
 
-class KPostgreSQLContainer(imageName: String) : PostgreSQLContainer<KPostgreSQLContainer>(imageName)
+class KPostgreSQLContainer(imageName: String) :
+    PostgreSQLContainer<KPostgreSQLContainer>(imageName)
 
 fun createJdbiForTests(): Jdbi {
   val username = "user"
@@ -12,18 +13,14 @@ fun createJdbiForTests(): Jdbi {
   val imageName = "postgres:13.2"
   val pgContainer = KPostgreSQLContainer(imageName)
 
-  pgContainer
-    .withDatabaseName("userrolesdb")
-    .withUsername(username)
-    .withPassword(password)
-    .start()
+  pgContainer.withDatabaseName("userrolesdb").withUsername(username).withPassword(password).start()
 
   // Unsure if we need other db driver in the Hikari config during tests
   return DatabaseConfigurator.createJdbiInstanceAndMigrate(
-    DatabaseConfigurator.createDataSource(
-      pgContainer.jdbcUrl,
-      username,
-      password,
-    ),
+      DatabaseConfigurator.createDataSource(
+          pgContainer.jdbcUrl,
+          username,
+          password,
+      ),
   )
 }

@@ -9,25 +9,26 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 
 data class UserRoleSearchQuery(
-  val userId: String? = null,
-  val orgId: String? = null,
-  val roleName: String? = null,
+    val userId: String? = null,
+    val orgId: String? = null,
+    val roleName: String? = null,
 )
 
 class UserRoleSearchRepositoryJdbi(
-  jdbi: Jdbi,
-  sqlTableName: String,
-) : AbstractSearchRepository<
-  UserRoleId,
-  UserRole,
-  UserRoleSearchQuery,
-  >(jdbi, sqlTableName, userRolesSerializationAdapter) {
+    jdbi: Jdbi,
+    sqlTableName: String,
+) :
+    AbstractSearchRepository<
+        UserRoleId,
+        UserRole,
+        UserRoleSearchQuery,
+    >(jdbi, sqlTableName, userRolesSerializationAdapter) {
   override suspend fun search(
-    query: UserRoleSearchQuery,
-    handle: Handle?,
+      query: UserRoleSearchQuery,
+      handle: Handle?,
   ): List<VersionedEntity<UserRole>> =
-    getByPredicate(
-      """
+      getByPredicate(
+          """
         (:userId IS NULL OR data->>'userId' = :userId)
         AND
         (
@@ -39,14 +40,16 @@ class UserRoleSearchRepositoryJdbi(
           OR
           (:orgId IS NULL AND :roleName IS NULL)
         )
-      """.trimIndent(),
-    ) {
-      bind("userId", query.userId)
-      bind("orgId", query.orgId)
-      bind("roleName", query.roleName)
-    }
+      """
+              .trimIndent(),
+      ) {
+        bind("userId", query.userId)
+        bind("orgId", query.orgId)
+        bind("roleName", query.roleName)
+      }
 
-// (data->'userRoles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
+  // (data->'userRoles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName ||
+  // '"}]')::jsonb)
   suspend fun listAll(): List<VersionedEntity<UserRole>> {
     return getByPredicate().map { it }
   }
