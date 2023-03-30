@@ -1,8 +1,51 @@
-# user-roles
-
 A generic service featuring RBAC (Role Based Access Control) using AWS Cognito
 
-### Running locally
+# Endpoints
+## CRUD endpoints
+
+| Endpoint                   |                 What                 |
+|----------------------------|:------------------------------------:|
+| PUT /userroles/{userId}    | create or update user roles for user |
+| GET /userroles/{userId}    |       get user roles for user        |
+| DELETE /userroles/{userId} |                                      |
+
+**NB!** Currently no support for post, but can be implemented later.
+
+## Data structure for PUT and GET
+
+```
+{
+  "userId": "userId123",
+  "userroles": [
+    {
+      "orgId": "orgId1",
+      "roleName": "orgOwner"
+    },
+    {
+      "orgId": "orgId2",
+      "roleName": "orgAdmin"
+    },
+    {
+      "orgId": "orgId3",
+      "roleName": "orgMember",
+      "roleValue": "{"boards": [1,2,3]}"
+    },
+    {
+      "roleName": "admin"
+    }
+  ]
+}
+```
+
+## Query endpoints
+
+| Endpoint                                          |                      What                      |
+|---------------------------------------------------|:----------------------------------------------:|
+| GET /userroles?orgId={orgId1}                     | List users with access to a given organization |
+| GET /userroles?roleName=admin                     |          List users with a given role          |
+| GET /userroles?roleName={roleName}&orgId={orgId2} |          List users with a given role          |
+
+## Running locally
 
 1. Start the database
 
@@ -14,26 +57,26 @@ A generic service featuring RBAC (Role Based Access Control) using AWS Cognito
 
    All of these will skip tests to be quick.
 
-    1. Option 1: In IDE
+   1. Option 1: In IDE
 
-       Run the `Main` file.
+      Run the `Main` file.
 
-    1. Option 2: Via Maven
+   1. Option 2: Via Maven
 
-       ```bash
-       ./build-and-run.sh
-       ```
+      ```bash
+      ./build-and-run.sh
+      ```
 
-    1. Option 3: Package and run with the actual Docker image
+   1. Option 3: Package and run with the actual Docker image
 
-       ```bash
-       # See the script for details.
-       ./build-and-run-docker.sh
-       ```
+      ```bash
+      # See the script for details.
+      ./build-and-run-docker.sh
+      ```
 
 1. Access the service at http://localhost:8080/health
 
-### Linting
+## Linting
 
 To only check linting (no tests etc):
 
