@@ -33,7 +33,7 @@
     <liflig.properties.version>2.20230331.011955</liflig.properties.version>
     <liflig-document-store.version>1.20230402.190633</liflig-document-store.version>
     <liflig-logging-http4k.version>1.20230403.053931</liflig-logging-http4k.version>
-    <liflig-snapshot-test.version>1.20230331.003303</liflig-snapshot-test.version>
+    <liflig-snapshot-test.version>1.20230402.134111</liflig-snapshot-test.version>
     <slf4j-api.version>2.0.7</slf4j-api.version>
     <kotlinx-coroutines-slf4j.version>1.6.4</kotlinx-coroutines-slf4j.version>
     <kotlin-logging-jvm.version>3.0.4</kotlin-logging-jvm.version>
