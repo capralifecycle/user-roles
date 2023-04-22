@@ -37,7 +37,7 @@
     <slf4j-api.version>2.0.7</slf4j-api.version>
     <kotlinx-coroutines-slf4j.version>1.6.4</kotlinx-coroutines-slf4j.version>
     <kotlin-logging-jvm.version>3.0.4</kotlin-logging-jvm.version>
-    <logback-classic.version>1.4.6</logback-classic.version>
+    <logback-classic.version>1.4.7</logback-classic.version>
     <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
     <testcontainers.postgresql.version>1.18.0</testcontainers.postgresql.version>
     <hikariCP.version>5.0.1</hikariCP.version>
