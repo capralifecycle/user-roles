@@ -10,4 +10,4 @@ CREATE TABLE userroles
 CREATE UNIQUE INDEX user_role_user_id_idx ON userroles ((data->>'userId'));
 
 -- Index for looking up user roles with a certain org id or role name
-CREATE INDEX userroles_gin_index ON userroles USING GIN ((data->'userRoles'));
+CREATE INDEX roles_gin_index ON userroles USING GIN ((data->'roles'));
