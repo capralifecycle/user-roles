@@ -13,7 +13,7 @@ data class UserRole(
     override val id: UserRoleId,
     @Serializable(with = VersionSerializer::class) val version: Version,
     val userId: String,
-    val userRoles: List<Role>,
+    val roles: List<Role>,
 ) : EntityRoot<UserRoleId> {
   companion object {
     fun create(
@@ -25,13 +25,13 @@ data class UserRole(
             id = id,
             version = Version.initial(),
             userId = userId,
-            userRoles = roles,
+            roles = roles,
         )
   }
 
   fun changeRoles(roles: List<Role>) =
       update(
-          userRoles = roles,
+          roles = roles,
       )
 
   fun version(version: Version) =
@@ -40,21 +40,21 @@ data class UserRole(
       )
 
   fun update(
-      userRoles: List<Role> = this.userRoles,
+      roles: List<Role> = this.roles,
       version: Version = this.version,
   ): UserRole =
       UserRole(
           id = id,
           version = version,
           userId = userId,
-          userRoles = userRoles,
+          roles = roles,
       )
 }
 
 @Serializable
 data class Role(
     val orgId: String? = null,
-    val roleName: RoleName,
+    val roleName: String,
     val roleValue: String? = null,
 )
 

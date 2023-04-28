@@ -1,7 +1,7 @@
 {
-  "id": "30ff88be-a7d0-48e3-8c06-483c8c0c4e0c",
+  "id": "d07a2e41-0796-442b-95c0-70db1624d06d",
   "userId": "user123",
-  "userRoles": [
+  "roles": [
     {
       "orgId": "orgId1",
       "roleName": "orgOwner"

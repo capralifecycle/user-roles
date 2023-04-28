@@ -5,7 +5,6 @@ import no.liflig.documentstore.dao.CrudDaoJdbi
 import no.liflig.documentstore.dao.UnknownDaoException
 import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
 import no.liflig.userroles.features.userroles.domain.Role
-import no.liflig.userroles.features.userroles.domain.RoleName
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.persistence.UserRoleRepositoryJdbi
 import no.liflig.userroles.features.userroles.persistence.UserRoleSearchQuery
@@ -51,12 +50,12 @@ class UserRoleRepositoryTest {
             roles =
                 listOf(
                     Role(
-                        roleName = RoleName.ADMIN,
+                        roleName = "admin",
                         orgId = "org123",
                     ),
                     Role(
                         orgId = "org1234",
-                        roleName = RoleName.ORG_MEMBER,
+                        roleName = "orgMember",
                         roleValue = """{"boards": [1,2,3]}""",
                     ),
                 ),
@@ -81,12 +80,12 @@ class UserRoleRepositoryTest {
             roles =
                 listOf(
                     Role(
-                        roleName = RoleName.ADMIN,
+                        roleName = "admin",
                         orgId = "org123",
                     ),
                     Role(
                         orgId = "org1234",
-                        roleName = RoleName.ORG_MEMBER,
+                        roleName = "orgMember",
                         roleValue = """{"boards": [1,2,3]}""",
                     ),
                 ),
@@ -115,12 +114,12 @@ class UserRoleRepositoryTest {
             roles =
                 listOf(
                     Role(
-                        roleName = RoleName.ADMIN,
+                        roleName = "admin",
                         orgId = "org123",
                     ),
                     Role(
                         orgId = "org1234",
-                        roleName = RoleName.ORG_MEMBER,
+                        roleName = "orgMember",
                         roleValue = """{"boards": [1,2,3]}""",
                     ),
                 ),

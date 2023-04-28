@@ -128,4 +128,4 @@ class SearchUserRolesTest {
 }
 
 private fun String.deserializeAsListUserRolesDto(): List<UserRole> =
-    Json.decodeFromString(ListUserRoleDto.serializer(), this).items.map { it.toDomain() }
+    Json.decodeFromString(ListUserRoleDto.serializer(), this).userRoles.map { it.toDomain() }

@@ -1,9 +1,9 @@
 {
-  "items": [
+  "userRoles": [
     {
       "id": "e78d56aa-6904-4163-8dda-54aebd577b8e",
       "userId": "user1231",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId1",
           "roleName": "orgOwner"
@@ -25,7 +25,7 @@
     {
       "id": "e78d56aa-6904-4263-8dda-54aebd577b8e",
       "userId": "user1232",
-      "userRoles": [
+      "roles": [
         {
           "roleName": "admin"
         }
@@ -34,7 +34,7 @@
     {
       "id": "e78d56aa-6904-4963-8dda-54aebd577b8e",
       "userId": "user1239",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId3",
           "roleName": "orgOwner"

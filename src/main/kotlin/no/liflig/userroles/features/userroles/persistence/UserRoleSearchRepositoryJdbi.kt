@@ -32,11 +32,11 @@ class UserRoleSearchRepositoryJdbi(
         (:userId IS NULL OR data->>'userId' = :userId)
         AND
         (
-          (:orgId IS NOT NULL AND :roleName IS NOT NULL AND data->'userRoles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
+          (:orgId IS NOT NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
           OR
-          (:orgId IS NULL AND :roleName IS NOT NULL AND data->'userRoles' @> ('[{"roleName": "' || :roleName || '"}]')::jsonb)
+          (:orgId IS NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"roleName": "' || :roleName || '"}]')::jsonb)
           OR
-          (:orgId IS NOT NULL AND :roleName IS NULL AND data->'userRoles' @> ('[{"orgId": "' || :orgId || '"}]')::jsonb)
+          (:orgId IS NOT NULL AND :roleName IS NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '"}]')::jsonb)
           OR
           (:orgId IS NULL AND :roleName IS NULL)
         )

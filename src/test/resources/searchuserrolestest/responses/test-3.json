@@ -1,9 +1,9 @@
 {
-  "items": [
+  "userRoles": [
     {
       "id": "e78d56aa-6904-4163-8dda-54aebd577b8e",
       "userId": "user1231",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId1",
           "roleName": "orgOwner"
@@ -25,7 +25,7 @@
     {
       "id": "e78d56aa-6904-4363-8dda-54aebd577b8e",
       "userId": "user1233",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId1",
           "roleName": "orgOwner"
@@ -35,7 +35,7 @@
     {
       "id": "e78d56aa-6904-4463-8dda-54aebd577b8e",
       "userId": "user1234",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId1",
           "roleName": "orgOwner"
@@ -45,7 +45,7 @@
     {
       "id": "e78d56aa-6904-4563-8dda-54aebd577b8e",
       "userId": "user1235",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId1",
           "roleName": "orgOwner"
@@ -59,7 +59,7 @@
     {
       "id": "e78d56aa-6904-4663-8dda-54aebd577b8e",
       "userId": "user1236",
-      "userRoles": [
+      "roles": [
         {
           "orgId": "orgId1",
           "roleName": "orgAdmin"

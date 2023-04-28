@@ -6,7 +6,6 @@ import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.features.userroles.app.RoleDto
 import no.liflig.userroles.features.userroles.app.UserRoleDto
 import no.liflig.userroles.features.userroles.app.routes.UpdateUserRole
-import no.liflig.userroles.features.userroles.domain.RoleName
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.readResourcesFileAsText
@@ -41,19 +40,19 @@ class UserRoleCrudApiFlowTest {
         listOf(
             RoleDto(
                 orgId = "orgId1",
-                roleName = RoleName.ORG_OWNER,
+                roleName = "orgOwner",
             ),
             RoleDto(
                 orgId = "orgId2",
-                roleName = RoleName.ORG_ADMIN,
+                roleName = "orgAdmin",
             ),
             RoleDto(
                 orgId = "orgId3",
-                roleName = RoleName.ORG_MEMBER,
+                roleName = "orgMember",
                 roleValue = """{"boards": [1,2,3]}""",
             ),
             RoleDto(
-                roleName = RoleName.ADMIN,
+                roleName = "admin",
             ),
         )
 

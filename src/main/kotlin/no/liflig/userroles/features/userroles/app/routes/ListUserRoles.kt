@@ -53,7 +53,8 @@ class ListUserRoles(
                     )
                     .map { it.toDto() }
 
-            Response(Status.OK).with(ListUserRoleDto.bodyLens of ListUserRoleDto(items = userRoles))
+            Response(Status.OK)
+                .with(ListUserRoleDto.bodyLens of ListUserRoleDto(userRoles = userRoles))
           }
         }
   }

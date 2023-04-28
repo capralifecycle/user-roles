@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 import no.liflig.documentstore.entity.Version
 import no.liflig.userroles.common.config.http4k.createBodyLens
 import no.liflig.userroles.features.userroles.domain.Role
-import no.liflig.userroles.features.userroles.domain.RoleName
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleId
 
@@ -13,7 +12,7 @@ import no.liflig.userroles.features.userroles.domain.UserRoleId
 data class UserRoleDto(
     val id: String,
     val userId: String,
-    val userRoles: List<RoleDto>,
+    val roles: List<RoleDto>,
 ) {
   companion object {
     val bodyLens = createBodyLens(serializer())
@@ -21,7 +20,7 @@ data class UserRoleDto(
         UserRoleDto(
             id = "id",
             userId = "customerName",
-            userRoles = listOf(RoleDto.example),
+            roles = listOf(RoleDto.example),
         )
   }
 }
@@ -30,7 +29,7 @@ fun UserRole.toDto() =
     UserRoleDto(
         id = id.id.toString(),
         userId = userId,
-        userRoles = userRoles.map { it.toDto() },
+        roles = roles.map { it.toDto() },
     )
 
 fun Role.toDto() =
@@ -43,7 +42,7 @@ fun Role.toDto() =
 @Serializable
 data class RoleDto(
     val orgId: String? = null,
-    val roleName: RoleName,
+    val roleName: String,
     val roleValue: String? = null,
 ) {
   companion object {
@@ -51,7 +50,7 @@ data class RoleDto(
     val example =
         RoleDto(
             orgId = "id",
-            roleName = RoleName.ADMIN,
+            roleName = "admin",
             roleValue = """{"boards": [1,2,3]}""",
         )
   }
@@ -62,7 +61,7 @@ fun UserRoleDto.toDomain() =
         id = UserRoleId(UUID.fromString(id)),
         version = Version.initial(),
         userId = userId,
-        userRoles = userRoles.map { it.toDomain() },
+        roles = roles.map { it.toDomain() },
     )
 
 fun RoleDto.toDomain() =
@@ -74,18 +73,18 @@ fun RoleDto.toDomain() =
 
 @kotlinx.serialization.Serializable
 data class ListUserRoleDto(
-    val items: List<UserRoleDto>,
+    val userRoles: List<UserRoleDto>,
 ) {
   companion object {
     val bodyLens = createBodyLens(serializer())
     val example =
         ListUserRoleDto(
-            items =
+            userRoles =
                 listOf(
                     UserRoleDto(
                         id = "id",
                         userId = "customerName",
-                        userRoles = listOf(RoleDto.example),
+                        roles = listOf(RoleDto.example),
                     ),
                 ),
         )
