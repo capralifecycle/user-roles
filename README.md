@@ -4,7 +4,7 @@ A generic service featuring RBAC (Role Based Access Control).
 Can be used in conjunction with e.g. AWS Cognito and a [pretoken generation trigger lambda](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add custom claims to an identity token.
 
 _Note that this repo only contains the User Roles service_
-![img.png](img.png)
+![img.png](architecture.png)
 
 # Endpoints
 ## CRUD endpoints
