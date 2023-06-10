@@ -23,7 +23,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <java.version>11</java.version>
-    <kotlin.version>1.8.21</kotlin.version>
+    <kotlin.version>1.8.22</kotlin.version>
     <junit.version>5.9.3</junit.version>
     <http4k.version>4.41.4.0</http4k.version>
     <arrow.version>1.1.5</arrow.version>
