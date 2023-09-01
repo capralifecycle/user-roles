@@ -23,7 +23,7 @@ async function main(executor: TestExecutor) {
     env: {
       POSTGRES_USER: "username",
       POSTGRES_PASSWORD: "password",
-      POSTGRES_DB: "userroles",
+      POSTGRES_DB: "userrolesdb",
     },
   });
 
