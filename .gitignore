@@ -5,6 +5,7 @@ target
 /node_modules/
 /log.json
 /overrides.properties
+.java-version
 
 # OS generated files
 .DS_Store
