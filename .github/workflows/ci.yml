@@ -13,7 +13,7 @@ env:
 
 jobs:
   get-runner-user:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       uid_gid: ${{ steps.get-user.outputs.uid_gid }}
     steps:
@@ -21,7 +21,7 @@ jobs:
         run: echo "uid_gid=$(id -u):$(id -g)" >> "$GITHUB_OUTPUT"
   build-and-deploy:
     needs: get-runner-user
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container:
       image: "public.ecr.aws/z8l5l4v4/buildtools/tool/node:18"
       options: --user ${{ needs.get-runner-user.outputs.uid_gid }}
@@ -30,7 +30,7 @@ jobs:
       packages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
