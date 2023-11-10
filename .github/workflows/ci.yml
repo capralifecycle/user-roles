@@ -30,7 +30,7 @@ jobs:
       packages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -59,7 +59,7 @@ jobs:
       - name: build and analyze
         uses: "docker://public.ecr.aws/z8l5l4v4/buildtools/tool/maven:3-jdk-11-debian"
         with:
-          args: 'bash -c "set -euo pipefail; export MAVEN_OPTS=\"-Duser.home=$HOME\"; mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME""'
+          args: 'bash -c "set -euo pipefail; export MAVEN_OPTS=\"-Duser.home=$HOME\"; mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"; mvn sonar:sonar;"'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
