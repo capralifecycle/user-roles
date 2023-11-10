@@ -14,10 +14,9 @@ import org.http4k.contract.bind
 import org.http4k.contract.contract
 import org.http4k.contract.openapi.ApiInfo
 import org.http4k.contract.openapi.v3.OpenApi3
-import org.http4k.contract.ui.swaggerUi
+import org.http4k.contract.ui.swaggerUiLite
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.Uri
 import org.http4k.filter.CorsPolicy
 import org.http4k.routing.RoutingHttpHandler
 
@@ -50,11 +49,7 @@ fun createServiceRouter(
                   routes += UserRoleApi("userroles", userRoleRepository).routes
                 }
 
-        routes +=
-            swaggerUi(
-                Uri.of("api/docs/swagger.json"),
-            )
-
+        routes += swaggerUiLite { url = "api/docs/swagger.json" }
         additionalFilters += createAuthFilter(basicAuth)
       }
 }
