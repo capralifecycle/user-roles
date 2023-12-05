@@ -4,6 +4,7 @@
   ],
   "automerge": true,
   "automergeType": "branch",
+  "schedule": ["after 10am every weekday, before 2pm every weekday"],
   "packageRules": [
     {
       "matchPackageNames": [
