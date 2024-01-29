@@ -53,6 +53,7 @@ data class UserRole(
 
 @Serializable
 data class Role(
+    val applicationName: String? = null,
     val orgId: String? = null,
     val roleName: String,
     val roleValue: String? = null,

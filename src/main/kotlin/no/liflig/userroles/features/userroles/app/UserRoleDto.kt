@@ -8,7 +8,7 @@ import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleId
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class UserRoleDto(
     val id: String,
     val userId: String,
@@ -18,8 +18,8 @@ data class UserRoleDto(
     val bodyLens = createBodyLens(serializer())
     val example =
         UserRoleDto(
-            id = "id",
-            userId = "customerName",
+            id = "99480eff-1886-46fe-97b2-883b97e9181b",
+            userId = "ola.nordmann",
             roles = listOf(RoleDto.example),
         )
   }
@@ -41,6 +41,7 @@ fun Role.toDto() =
 
 @Serializable
 data class RoleDto(
+    val applicationName: String? = null,
     val orgId: String? = null,
     val roleName: String,
     val roleValue: String? = null,
@@ -49,9 +50,10 @@ data class RoleDto(
     val bodyLens = createBodyLens(serializer())
     val example =
         RoleDto(
-            orgId = "id",
+            applicationName = "logistics",
+            orgId = null,
             roleName = "admin",
-            roleValue = """{"boards": [1,2,3]}""",
+            roleValue = null,
         )
   }
 }
@@ -71,7 +73,7 @@ fun RoleDto.toDomain() =
         roleValue = roleValue,
     )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class ListUserRoleDto(
     val userRoles: List<UserRoleDto>,
 ) {
