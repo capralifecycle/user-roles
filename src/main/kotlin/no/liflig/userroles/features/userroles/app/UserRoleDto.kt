@@ -20,8 +20,21 @@ data class UserRoleDto(
         UserRoleDto(
             id = "99480eff-1886-46fe-97b2-883b97e9181b",
             userId = "ola.nordmann",
-            roles = listOf(RoleDto.example),
-        )
+            roles =
+                listOf(
+                    RoleDto(
+                        applicationName = "logistics",
+                        orgId = null,
+                        roleName = "admin",
+                        roleValue = null,
+                    ),
+                    RoleDto(
+                        applicationName = "admin",
+                        orgId = null,
+                        roleName = "view",
+                        roleValue = null,
+                    ),
+                ))
   }
 }
 
@@ -50,10 +63,10 @@ data class RoleDto(
     val bodyLens = createBodyLens(serializer())
     val example =
         RoleDto(
-            applicationName = "logistics",
+            applicationName = null,
             orgId = null,
             roleName = "admin",
-            roleValue = null,
+            roleValue = """{"boards": [1,2,3]}""",
         )
   }
 }
@@ -68,6 +81,7 @@ fun UserRoleDto.toDomain() =
 
 fun RoleDto.toDomain() =
     Role(
+        applicationName = applicationName,
         orgId = orgId,
         roleName = roleName,
         roleValue = roleValue,
