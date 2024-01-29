@@ -57,7 +57,7 @@ jobs:
           </settings>
           EOF
       - name: build and analyze
-        uses: "docker://public.ecr.aws/z8l5l4v4/buildtools/tool/maven:3-jdk-11-debian"
+        uses: "docker://public.ecr.aws/z8l5l4v4/buildtools/tool/maven:3-jdk-17-debian"
         with:
           args: 'bash -c "set -euo pipefail; export MAVEN_OPTS=\"-Duser.home=$HOME\"; mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"; mvn sonar:sonar;"'
         env:
