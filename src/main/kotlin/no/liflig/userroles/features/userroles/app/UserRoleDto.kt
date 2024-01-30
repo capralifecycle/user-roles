@@ -47,6 +47,7 @@ fun UserRole.toDto() =
 
 fun Role.toDto() =
     RoleDto(
+        applicationName = applicationName,
         orgId = orgId,
         roleName = roleName,
         roleValue = roleValue,
