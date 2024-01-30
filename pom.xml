@@ -39,7 +39,7 @@
     <kotlin-logging-jvm.version>3.0.4</kotlin-logging-jvm.version>
     <logback-classic.version>1.4.14</logback-classic.version>
     <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
-    <testcontainers.postgresql.version>1.19.3</testcontainers.postgresql.version>
+    <testcontainers.postgresql.version>1.19.4</testcontainers.postgresql.version>
     <hikariCP.version>5.1.0</hikariCP.version>
     <flyway-core.version>9.22.3</flyway-core.version>
     <postgresql.version>42.7.1</postgresql.version>
