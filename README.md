@@ -24,14 +24,17 @@ _Note that this repo only contains the User Roles service_
   "userId": "userId123",
   "userroles": [
     {
+      "applicationName": "application1",
       "orgId": "orgId1",
       "roleName": "orgOwner"
     },
     {
+      "applicationName": "application2",
       "orgId": "orgId2",
       "roleName": "orgAdmin"
     },
     {
+      "applicationName": "application2",
       "orgId": "orgId3",
       "roleName": "orgMember",
       "roleValue": "{"boards": [1,2,3]}"
@@ -47,6 +50,7 @@ _Note that this repo only contains the User Roles service_
 
 | Endpoint                                          |                      What                      |
 |---------------------------------------------------|:----------------------------------------------:|
+| GET /userroles                                    |                 List all users                 |
 | GET /userroles?orgId={orgId1}                     | List users with access to a given organization |
 | GET /userroles?roleName=admin                     |          List users with a given role          |
 | GET /userroles?roleName={roleName}&orgId={orgId2} |          List users with a given role          |
