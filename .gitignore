@@ -18,3 +18,5 @@ Thumbs.db
 
 !/.idea/ktfmt.xml
 !/.idea/externalDependencies.xml
+
+/http-client.private.env.json

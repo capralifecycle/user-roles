@@ -1,0 +1,77 @@
+// README:
+
+
+@api-url = https://localhost:8000/api
+
+
+### Get all user roles
+# @no-log
+GET {{api-url}}/userroles
+Host: {{host-url}}
+Authorization: {{auth}}
+
+
+### Get all user roles of specified role name and/or organization id
+# @no-log
+< {%
+  const searchRequest = {
+    roleName: "SUPER_ADMIN",
+    orgId: null,
+  }
+
+  const params = new URLSearchParams()
+  Object.entries(searchRequest).forEach(([key, value]) => {
+    if (value != null) {
+      params.append(key, value)
+    }
+  })
+
+  request.variables.set("query", params.toString())
+%}
+GET {{api-url}}/userroles?{{query}}
+Host: {{host-url}}
+Authorization: {{auth}}
+
+
+### Get user roles for a specified user
+# @no-log
+< {%
+  request.variables.set("userId", "gst")
+%}
+GET {{api-url}}/userroles/{{userId}}
+Host: {{host-url}}
+Authorization: {{auth}}
+
+
+### Set user roles for a specified user
+# @no-log
+< {%
+  request.variables.set("userId", "gst")
+%}
+PUT {{api-url}}/userroles/{{userId}}
+Host: {{host-url}}
+Authorization: {{auth}}
+Content-Type: application/json
+
+{
+  "roles": [
+    {
+      "applicationName": "ADMIN",
+      "roleName": "ORG_ADMIN"
+    },
+    {
+      "applicationName": "LOGISTICS",
+      "roleName": "ORG_ADMIN"
+    }
+  ]
+}
+
+
+### Delete user roles for a specified user
+# @no-log
+< {%
+  request.variables.set("userId", "gst")
+%}
+DELETE {{api-url}}/userroles/{{userId}}
+Host: {{host-url}}
+Authorization: {{auth}}
