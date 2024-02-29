@@ -1,7 +1,6 @@
 {
   "userRoles": [
     {
-      "id": "e78d56aa-6904-4163-8dda-54aebd577b8e",
       "userId": "user1231",
       "roles": [
         {
@@ -23,7 +22,6 @@
       ]
     },
     {
-      "id": "e78d56aa-6904-4263-8dda-54aebd577b8e",
       "userId": "user1232",
       "roles": [
         {
@@ -32,7 +30,6 @@
       ]
     },
     {
-      "id": "e78d56aa-6904-4963-8dda-54aebd577b8e",
       "userId": "user1239",
       "roles": [
         {

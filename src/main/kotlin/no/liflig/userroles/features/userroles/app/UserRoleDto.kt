@@ -1,16 +1,12 @@
 package no.liflig.userroles.features.userroles.app
 
-import java.util.*
 import kotlinx.serialization.Serializable
-import no.liflig.documentstore.entity.Version
 import no.liflig.userroles.common.config.http4k.createBodyLens
 import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.features.userroles.domain.UserRole
-import no.liflig.userroles.features.userroles.domain.UserRoleId
 
 @Serializable
 data class UserRoleDto(
-    val id: String,
     val userId: String,
     val roles: List<RoleDto>,
 ) {
@@ -18,7 +14,6 @@ data class UserRoleDto(
     val bodyLens = createBodyLens(serializer())
     val example =
         UserRoleDto(
-            id = "99480eff-1886-46fe-97b2-883b97e9181b",
             userId = "ola.nordmann",
             roles =
                 listOf(
@@ -40,7 +35,6 @@ data class UserRoleDto(
 
 fun UserRole.toDto() =
     UserRoleDto(
-        id = id.id.toString(),
         userId = userId,
         roles = roles.map { it.toDto() },
     )
@@ -72,14 +66,6 @@ data class RoleDto(
   }
 }
 
-fun UserRoleDto.toDomain() =
-    UserRole(
-        id = UserRoleId(UUID.fromString(id)),
-        version = Version.initial(),
-        userId = userId,
-        roles = roles.map { it.toDomain() },
-    )
-
 fun RoleDto.toDomain() =
     Role(
         applicationName = applicationName,
@@ -99,7 +85,6 @@ data class ListUserRoleDto(
             userRoles =
                 listOf(
                     UserRoleDto(
-                        id = "id",
                         userId = "customerName",
                         roles = listOf(RoleDto.example),
                     ),

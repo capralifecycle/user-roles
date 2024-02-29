@@ -1,11 +1,11 @@
 package no.liflig.userroles.features.userroles
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.features.userroles.app.ListUserRoleDto
-import no.liflig.userroles.features.userroles.app.toDomain
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 import no.liflig.userroles.testutils.FlowTestExtension
@@ -128,4 +128,9 @@ class SearchUserRolesTest {
 }
 
 private fun String.deserializeAsListUserRolesDto(): List<UserRole> =
-    Json.decodeFromString(ListUserRoleDto.serializer(), this).userRoles.map { it.toDomain() }
+    Json.decodeFromString(TestUserRoles.serializer(), this).userRoles
+
+@Serializable
+data class TestUserRoles(
+    val userRoles: List<UserRole>,
+)
