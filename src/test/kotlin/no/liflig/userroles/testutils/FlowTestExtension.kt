@@ -1,8 +1,6 @@
 package no.liflig.userroles.testutils
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlin.concurrent.thread
 import no.liflig.userroles.App
 import org.awaitility.Awaitility
 import org.awaitility.core.ConditionTimeoutException
@@ -45,8 +43,8 @@ class FlowTestExtension :
 
   private fun setupTestSuite() {
     testServices = TestServices.create()
-    // Run application async, so that it doesn't block test code
-    CoroutineScope(Dispatchers.Default).launch { App.start(testServices.serviceRegistry) }
+    // Run application concurrently, so that it doesn't block test code
+    thread { App.start(testServices.serviceRegistry) }
     // Make sure application is started before proceeding
     try {
       Awaitility.await().until { App.isRunning }

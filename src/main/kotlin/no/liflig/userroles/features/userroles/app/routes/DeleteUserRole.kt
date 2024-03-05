@@ -1,6 +1,5 @@
 package no.liflig.userroles.features.userroles.app.routes
 
-import kotlinx.coroutines.runBlocking
 import no.liflig.userroles.common.config.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 import org.http4k.contract.ContractRoute
@@ -30,15 +29,13 @@ class DeleteUserRole(
         Method.DELETE to
         { id ->
           { _: Request ->
-            runBlocking {
-              val userRole = userRoleRepository.getByUserId(id)
+            val userRole = userRoleRepository.getByUserId(id)
 
-              if (userRole == null) {
-                Response(Status.NOT_FOUND)
-              } else {
-                userRoleRepository.delete(userRole)
-                Response(Status.OK)
-              }
+            if (userRole == null) {
+              Response(Status.NOT_FOUND)
+            } else {
+              userRoleRepository.delete(userRole)
+              Response(Status.OK)
             }
           }
         }

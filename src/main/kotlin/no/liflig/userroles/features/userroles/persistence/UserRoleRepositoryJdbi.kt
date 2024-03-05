@@ -14,17 +14,17 @@ class UserRoleRepositoryJdbi(
     private val crudDao: CrudDao<UserRoleId, UserRole>,
     private val searchRepo: UserRoleSearchRepositoryJdbi,
 ) : UserRoleRepository {
-  override suspend fun create(item: UserRole): UserRole {
+  override fun create(item: UserRole): UserRole {
     val o = crudDao.create(item)
     return o.item.version(o.version)
   }
 
-  override suspend fun get(id: UserRoleId): UserRole? {
+  override fun get(id: UserRoleId): UserRole? {
     val o = crudDao.get(id)
     return o?.let { o.item.version(it.version) }
   }
 
-  override suspend fun update(item: UserRole): UserRole {
+  override fun update(item: UserRole): UserRole {
     try {
       val o = crudDao.update(item, item.version)
       return o.item.version(o.version)
@@ -33,15 +33,15 @@ class UserRoleRepositoryJdbi(
     }
   }
 
-  override suspend fun delete(item: UserRole) {
+  override fun delete(item: UserRole) {
     crudDao.delete(item.id, item.version)
   }
 
-  override suspend fun search(query: UserRoleSearchQuery): List<UserRole> {
+  override fun search(query: UserRoleSearchQuery): List<UserRole> {
     return searchRepo.search(query).map { it.item.version(it.version) }
   }
 
-  override suspend fun getByUserId(userId: String): UserRole? {
+  override fun getByUserId(userId: String): UserRole? {
     val results = search(UserRoleSearchQuery(userId = userId))
 
     return if (results.isEmpty()) {
@@ -58,7 +58,7 @@ class UserRoleRepositoryJdbi(
     }
   }
 
-  override suspend fun listAll(): List<UserRole> {
+  override fun listAll(): List<UserRole> {
     return searchRepo.listAll().map { it.item }
   }
 }

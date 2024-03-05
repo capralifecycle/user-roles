@@ -1,6 +1,5 @@
 package no.liflig.userroles.testutils
 
-import kotlinx.coroutines.runBlocking
 import no.liflig.userroles.Config
 import no.liflig.userroles.ServiceRegistry
 
@@ -11,10 +10,8 @@ private constructor(
     val serverPort: Int,
 ) {
   fun clear() {
-    runBlocking {
-      serviceRegistry.userRolesRepository.listAll().forEach {
-        serviceRegistry.userRolesRepository.delete(it)
-      }
+    serviceRegistry.userRolesRepository.listAll().forEach {
+      serviceRegistry.userRolesRepository.delete(it)
     }
   }
 

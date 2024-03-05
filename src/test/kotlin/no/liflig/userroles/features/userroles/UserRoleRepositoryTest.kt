@@ -1,6 +1,5 @@
 package no.liflig.userroles.features.userroles
 
-import kotlinx.coroutines.runBlocking
 import no.liflig.documentstore.dao.CrudDaoJdbi
 import no.liflig.documentstore.dao.UnknownDaoException
 import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
@@ -37,7 +36,7 @@ class UserRoleRepositoryTest {
 
   @BeforeEach
   fun clear() {
-    runBlocking { userRoleRepository.listAll().forEach { userRoleRepository.delete(it) } }
+    userRoleRepository.listAll().forEach { userRoleRepository.delete(it) }
   }
 
   @Test
@@ -61,13 +60,11 @@ class UserRoleRepositoryTest {
                 ),
         )
 
-    runBlocking {
-      userRoleRepository.create(userRole)
+    userRoleRepository.create(userRole)
 
-      val userRoleResult = userRoleRepository.search(UserRoleSearchQuery(userId = userId))
-      assertEquals(1, userRoleResult.size)
-      assertEquals(userRole, userRoleResult.first())
-    }
+    val userRoleResult = userRoleRepository.search(UserRoleSearchQuery(userId = userId))
+    assertEquals(1, userRoleResult.size)
+    assertEquals(userRole, userRoleResult.first())
   }
 
   @Test
@@ -97,11 +94,9 @@ class UserRoleRepositoryTest {
             roles = listOf(),
         )
 
-    runBlocking {
-      userRoleRepository.create(userRole)
+    userRoleRepository.create(userRole)
 
-      assertThrows<UnknownDaoException> { userRoleRepository.create(userRole2) }
-    }
+    assertThrows<UnknownDaoException> { userRoleRepository.create(userRole2) }
   }
 
   @Test
@@ -125,30 +120,26 @@ class UserRoleRepositoryTest {
                 ),
         )
 
-    runBlocking {
-      userRoleRepository.create(userRole)
-      userRoleRepository.delete(userRole)
+    userRoleRepository.create(userRole)
+    userRoleRepository.delete(userRole)
 
-      val getResult = userRoleRepository.get(userRole.id)
-      assertNull(getResult)
-    }
+    val getResult = userRoleRepository.get(userRole.id)
+    assertNull(getResult)
   }
 
   @Test
   fun `ListAll returns all users`() {
     val userId = "testUser"
 
-    runBlocking {
-      for (i in 0..2) {
-        UserRole.create(
-                userId = userId + i,
-                roles = listOf(),
-            )
-            .apply { userRoleRepository.create(this) }
-      }
-
-      val allUsers = userRoleRepository.listAll()
-      assertEquals(3, allUsers.size)
+    for (i in 0..2) {
+      UserRole.create(
+              userId = userId + i,
+              roles = listOf(),
+          )
+          .apply { userRoleRepository.create(this) }
     }
+
+    val allUsers = userRoleRepository.listAll()
+    assertEquals(3, allUsers.size)
   }
 }

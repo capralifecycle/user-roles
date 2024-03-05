@@ -1,6 +1,5 @@
 package no.liflig.userroles.features.userroles.app.routes
 
-import kotlinx.coroutines.runBlocking
 import no.liflig.userroles.common.config.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.app.UserRoleDto
 import no.liflig.userroles.features.userroles.app.toDto
@@ -33,13 +32,11 @@ class GetUserRole(
         Method.GET to
         { id ->
           { _: Request ->
-            runBlocking {
-              val userRole = userRoleRepository.getByUserId(id)
-              if (userRole == null) {
-                Response(Status.NOT_FOUND)
-              } else {
-                Response(Status.OK).with(UserRoleDto.bodyLens of userRole.toDto())
-              }
+            val userRole = userRoleRepository.getByUserId(id)
+            if (userRole == null) {
+              Response(Status.NOT_FOUND)
+            } else {
+              Response(Status.OK).with(UserRoleDto.bodyLens of userRole.toDto())
             }
           }
         }

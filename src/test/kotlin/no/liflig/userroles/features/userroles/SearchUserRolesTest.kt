@@ -1,6 +1,5 @@
 package no.liflig.userroles.features.userroles
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -123,7 +122,7 @@ class SearchUserRolesTest {
   private fun initialiseRepository(userRoleRepository: UserRoleRepository) {
     readResourcesFileAsText("searchuserrolestest/InitialUserRoles.json")
         .deserializeAsListUserRolesDto()
-        .apply { runBlocking { this@apply.forEach { userRoleRepository.create(it) } } }
+        .forEach { userRoleRepository.create(it) }
   }
 }
 

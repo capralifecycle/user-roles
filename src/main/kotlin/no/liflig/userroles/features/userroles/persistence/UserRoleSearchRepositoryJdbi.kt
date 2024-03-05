@@ -5,7 +5,6 @@ import no.liflig.documentstore.entity.VersionedEntity
 import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleId
-import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 
 data class UserRoleSearchQuery(
@@ -23,10 +22,7 @@ class UserRoleSearchRepositoryJdbi(
         UserRole,
         UserRoleSearchQuery,
     >(jdbi, sqlTableName, userRolesSerializationAdapter) {
-  override suspend fun search(
-      query: UserRoleSearchQuery,
-      handle: Handle?,
-  ): List<VersionedEntity<UserRole>> =
+  override fun search(query: UserRoleSearchQuery): List<VersionedEntity<UserRole>> =
       getByPredicate(
           """
         (:userId IS NULL OR data->>'userId' = :userId)
@@ -50,7 +46,7 @@ class UserRoleSearchRepositoryJdbi(
 
   // (data->'userRoles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName ||
   // '"}]')::jsonb)
-  suspend fun listAll(): List<VersionedEntity<UserRole>> {
+  fun listAll(): List<VersionedEntity<UserRole>> {
     return getByPredicate().map { it }
   }
 }

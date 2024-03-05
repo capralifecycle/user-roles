@@ -1,6 +1,5 @@
 package no.liflig.userroles.features.userroles.app.routes
 
-import kotlinx.coroutines.runBlocking
 import no.liflig.userroles.common.config.http4k.createBodyLens
 import no.liflig.userroles.common.config.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.app.RoleDto
@@ -53,25 +52,23 @@ class UpdateUserRole(
           { request: Request ->
             val body = UpdateRoleRequest.bodyLens(request)
 
-            runBlocking {
-              val userRole = userRoleRepository.getByUserId(id)
-              if (userRole == null) {
-                val createdUserRole =
-                    userRoleRepository.create(
-                        UserRole.create(
-                            userId = id,
-                            roles = body.roles.map { it.toDomain() },
-                        ),
-                    )
-                Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
-              } else {
-                var updatedUserRole = userRole
+            val userRole = userRoleRepository.getByUserId(id)
+            if (userRole == null) {
+              val createdUserRole =
+                  userRoleRepository.create(
+                      UserRole.create(
+                          userId = id,
+                          roles = body.roles.map { it.toDomain() },
+                      ),
+                  )
+              Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
+            } else {
+              var updatedUserRole = userRole
 
-                updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
-                val f = userRoleRepository.update(updatedUserRole)
+              updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
+              val f = userRoleRepository.update(updatedUserRole)
 
-                Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
-              }
+              Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
             }
           }
         }

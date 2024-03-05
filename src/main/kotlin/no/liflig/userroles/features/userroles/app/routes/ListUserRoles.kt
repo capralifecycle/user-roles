@@ -1,13 +1,11 @@
 package no.liflig.userroles.features.userroles.app.routes
 
-import kotlinx.coroutines.runBlocking
 import no.liflig.userroles.features.userroles.app.ListUserRoleDto
 import no.liflig.userroles.features.userroles.app.toDto
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 import no.liflig.userroles.features.userroles.persistence.UserRoleSearchQuery
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.RouteMetaDsl
-import org.http4k.contract.div
 import org.http4k.contract.meta
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -42,20 +40,18 @@ class ListUserRoles(
           val orgId = orgIdQuery(req)
           val roleName = roleNameQuery(req)
 
-          runBlocking {
-            val userRoles =
-                userRoleRepository
-                    .search(
-                        UserRoleSearchQuery(
-                            orgId = orgId,
-                            roleName = roleName,
-                        ),
-                    )
-                    .map { it.toDto() }
+          val userRoles =
+              userRoleRepository
+                  .search(
+                      UserRoleSearchQuery(
+                          orgId = orgId,
+                          roleName = roleName,
+                      ),
+                  )
+                  .map { it.toDto() }
 
-            Response(Status.OK)
-                .with(ListUserRoleDto.bodyLens of ListUserRoleDto(userRoles = userRoles))
-          }
+          Response(Status.OK)
+              .with(ListUserRoleDto.bodyLens of ListUserRoleDto(userRoles = userRoles))
         }
   }
 }
