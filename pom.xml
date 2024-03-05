@@ -26,7 +26,7 @@
     <kotlin.version>1.9.22</kotlin.version>
     <junit.version>5.10.2</junit.version>
     <http4k.version>5.13.8.0</http4k.version>
-    <arrow.version>1.2.2</arrow.version>
+    <arrow.version>1.2.3</arrow.version>
     <awssdk.version>2.17.102</awssdk.version>
     <aws-sdk-v2.version>2.17.102</aws-sdk-v2.version>
     <liflig-http4k-utils.version>1.20230210.194859</liflig-http4k-utils.version>
