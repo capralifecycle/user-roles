@@ -1,13 +1,13 @@
 package no.liflig.userroles
 
-import no.liflig.http4k.ServiceRouter
-import no.liflig.http4k.health.HealthService
 import no.liflig.logging.RequestResponseLog
 import no.liflig.userroles.common.auth.DummyAuthService
+import no.liflig.userroles.common.config.http4k.ServiceRouter
 import no.liflig.userroles.common.config.http4k.UserPrincipal
 import no.liflig.userroles.common.config.http4k.UserPrincipalLog
 import no.liflig.userroles.common.config.http4k.createAuthFilter
 import no.liflig.userroles.common.config.http4k.toLog
+import no.liflig.userroles.features.health.HealthService
 import no.liflig.userroles.features.userroles.app.UserRoleApi
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 import org.http4k.contract.bind

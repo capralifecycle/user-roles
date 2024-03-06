@@ -1,11 +1,11 @@
 package no.liflig.userroles
 
 import no.liflig.documentstore.dao.CrudDaoJdbi
-import no.liflig.http4k.health.createHealthService
 import no.liflig.logging.http4k.LoggingFilter
 import no.liflig.userroles.common.config.database.DatabaseConfigurator
 import no.liflig.userroles.common.config.http4k.UserPrincipalLog
 import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
+import no.liflig.userroles.features.health.createHealthService
 import no.liflig.userroles.features.userroles.persistence.UserRoleRepositoryJdbi
 import no.liflig.userroles.features.userroles.persistence.UserRoleSearchRepositoryJdbi
 import org.jdbi.v3.core.Jdbi

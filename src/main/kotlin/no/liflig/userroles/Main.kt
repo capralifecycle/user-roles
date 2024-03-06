@@ -1,7 +1,7 @@
 package no.liflig.userroles
 
 import mu.KotlinLogging
-import no.liflig.http4k.asServer
+import no.liflig.userroles.common.config.http4k.asServer
 
 val logger = KotlinLogging.logger {}
 

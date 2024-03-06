@@ -1,15 +1,14 @@
 package no.liflig.userroles
 
 import java.time.Instant
-import java.util.Base64
-import java.util.Properties
-import no.liflig.http4k.health.HealthBuildInfo
+import java.util.*
 import no.liflig.properties.boolean
 import no.liflig.properties.intRequired
 import no.liflig.properties.loadProperties
 import no.liflig.properties.stringNotEmpty
 import no.liflig.properties.stringNotNull
 import no.liflig.userroles.common.config.http4k.CorsConfig
+import no.liflig.userroles.features.health.HealthBuildInfo
 
 /**
  * Parsing of properties into configuration.
