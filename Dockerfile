@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-alpine:17-jre-headless@sha256:481e456e85fe8b6fa2d6bd9c3c268abc53f414db5030b61b648184a5670d868e
+FROM azul/zulu-openjdk-alpine:17-jre-headless@sha256:011a4ad251e615c8c32fd2a7dbc42888aa91b17647d5b529a9db8dc0d66f695f
 
 RUN set -eux; \
     adduser -S app
