@@ -31,7 +31,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c # v3.3.3
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/.m2/repository
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -78,19 +78,19 @@ jobs:
           echo "tag=$tag" >> $GITHUB_OUTPUT
         if: ${{ github.ref == 'refs/heads/master' }}
       - name: Log in to the Container registry
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ github.ref == 'refs/heads/master' }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # v2.10.0
+        uses: docker/setup-buildx-action@2b51285047da1547ffb1b2203d8be4c0af6b1f20 # v3.2.0
         if: ${{ github.ref == 'refs/heads/master' }}
       - name: Build and push Docker image
-        uses: docker/build-push-action@0a97817b6ade9f46837855d676c4cca3a2471fc9 # v4.2.1
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 # v5.3.0
         if: ${{ github.ref == 'refs/heads/master' }}
         with:
           context: .
           push: true
-          tags:  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.get-custom-tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.get-custom-tag.outputs.tag }}

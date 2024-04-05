@@ -10,7 +10,7 @@ class KPostgreSQLContainer(imageName: String) :
 fun createJdbiForTests(): Jdbi {
   val username = "user"
   val password = "password"
-  val imageName = "postgres:13.2"
+  val imageName = "postgres:15.5"
   val pgContainer = KPostgreSQLContainer(imageName)
 
   pgContainer.withDatabaseName("userrolesdb").withUsername(username).withPassword(password).start()

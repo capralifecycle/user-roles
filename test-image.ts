@@ -19,7 +19,7 @@ async function main(executor: TestExecutor) {
     executor,
     network,
     alias: "db",
-    imageId: "postgres:13.2",
+    imageId: "postgres:15.5",
     env: {
       POSTGRES_USER: "username",
       POSTGRES_PASSWORD: "password",
