@@ -12,7 +12,7 @@ private val log = KotlinLogging.logger {}
 
 class UserRoleRepositoryJdbi(
     private val crudDao: CrudDao<UserRoleId, UserRole>,
-    private val searchRepo: UserRoleSearchRepositoryJdbi,
+    private val searchDao: UserRoleSearchDao,
 ) : UserRoleRepository {
   override fun create(item: UserRole): UserRole {
     val o = crudDao.create(item)
@@ -38,7 +38,7 @@ class UserRoleRepositoryJdbi(
   }
 
   override fun search(query: UserRoleSearchQuery): List<UserRole> {
-    return searchRepo.search(query).map { it.item.version(it.version) }
+    return searchDao.search(query).map { it.item.version(it.version) }
   }
 
   override fun getByUserId(userId: String): UserRole? {
@@ -59,6 +59,6 @@ class UserRoleRepositoryJdbi(
   }
 
   override fun listAll(): List<UserRole> {
-    return searchRepo.listAll().map { it.item }
+    return searchDao.listAll().map { it.item }
   }
 }

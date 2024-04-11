@@ -6,8 +6,8 @@ import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
 import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.persistence.UserRoleRepositoryJdbi
+import no.liflig.userroles.features.userroles.persistence.UserRoleSearchDao
 import no.liflig.userroles.features.userroles.persistence.UserRoleSearchQuery
-import no.liflig.userroles.features.userroles.persistence.UserRoleSearchRepositoryJdbi
 import no.liflig.userroles.testutils.createJdbiForTests
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -27,8 +27,8 @@ class UserRoleRepositoryTest {
                   serializationAdapter = userRolesSerializationAdapter,
                   sqlTableName = "userroles",
               ),
-          searchRepo =
-              UserRoleSearchRepositoryJdbi(
+          searchDao =
+              UserRoleSearchDao(
                   jdbi = jdbi,
                   sqlTableName = "userroles",
               ),
