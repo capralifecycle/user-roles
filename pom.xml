@@ -35,7 +35,7 @@
     <liflig-snapshot-test.version>1.20240413.095534</liflig-snapshot-test.version>
     <slf4j-api.version>2.0.12</slf4j-api.version>
     <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
-    <logback-classic.version>1.5.4</logback-classic.version>
+    <logback-classic.version>1.5.5</logback-classic.version>
     <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
     <testcontainers.postgresql.version>1.19.7</testcontainers.postgresql.version>
     <hikariCP.version>5.1.0</hikariCP.version>
