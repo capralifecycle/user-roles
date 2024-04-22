@@ -46,7 +46,7 @@ fun createServiceRouter(
                           ApiInfo("User Roles API", "v1.0"),
                       )
                   descriptionPath = "/docs/swagger.json"
-                  routes += UserRoleApi("userroles", userRoleRepository).routes
+                  routes += UserRoleApi(userRoleRepository).getRoutes()
                 }
 
         routes += swaggerUiLite { url = "api/docs/swagger.json" }

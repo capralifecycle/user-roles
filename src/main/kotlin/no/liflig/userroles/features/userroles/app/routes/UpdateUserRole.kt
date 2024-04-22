@@ -1,5 +1,6 @@
 package no.liflig.userroles.features.userroles.app.routes
 
+import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.common.config.http4k.createBodyLens
 import no.liflig.userroles.common.config.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.app.RoleDto
@@ -9,7 +10,6 @@ import no.liflig.userroles.features.userroles.app.toDto
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.domain.UserRoleRepository
 import org.http4k.contract.ContractRoute
-import org.http4k.contract.RouteMetaDsl
 import org.http4k.contract.div
 import org.http4k.contract.meta
 import org.http4k.core.Method
@@ -20,10 +20,8 @@ import org.http4k.core.with
 
 /** Contains the endpoint for updating a user role */
 class UpdateUserRole(
-    private val path: String,
     private val userRoleRepository: UserRoleRepository,
-) {
-
+) : Endpoint {
   @kotlinx.serialization.Serializable
   data class UpdateRoleRequest(
       val roles: List<RoleDto>,
@@ -37,40 +35,40 @@ class UpdateUserRole(
     }
   }
 
-  private fun meta(): RouteMetaDsl.() -> Unit = {
-    summary = "Update user role"
-    description = "Update user role"
-    receiving(body = UpdateRoleRequest.bodyLens to UpdateRoleRequest.example)
-    returning(Status.OK, body = UserRoleDto.bodyLens to UserRoleDto.example)
-  }
-
-  fun route(): ContractRoute {
-    return path / userIdPathLens meta
-        meta() bindContract
-        Method.PUT to
-        { id ->
-          { request: Request ->
-            val body = UpdateRoleRequest.bodyLens(request)
-
-            val userRole = userRoleRepository.getByUserId(id)
-            if (userRole == null) {
-              val createdUserRole =
-                  userRoleRepository.create(
-                      UserRole.create(
-                          userId = id,
-                          roles = body.roles.map { it.toDomain() },
-                      ),
-                  )
-              Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
-            } else {
-              var updatedUserRole = userRole
-
-              updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
-              val f = userRoleRepository.update(updatedUserRole)
-
-              Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
+  override fun route(basePath: String): ContractRoute {
+    val path = basePath / userIdPathLens
+    val spec =
+        path meta
+            {
+              summary = "Update user role"
+              description = "Update user role"
+              receiving(body = UpdateRoleRequest.bodyLens to UpdateRoleRequest.example)
+              returning(Status.OK, body = UserRoleDto.bodyLens to UserRoleDto.example)
             }
-          }
-        }
+    return spec bindContract Method.PUT to ::handler
   }
+
+  private fun handler(userId: String) =
+      fun(request: Request): Response {
+        val body = UpdateRoleRequest.bodyLens(request)
+
+        val userRole = userRoleRepository.getByUserId(userId)
+        if (userRole == null) {
+          val createdUserRole =
+              userRoleRepository.create(
+                  UserRole.create(
+                      userId = userId,
+                      roles = body.roles.map { it.toDomain() },
+                  ),
+              )
+          return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
+        } else {
+          var updatedUserRole = userRole
+
+          updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
+          val f = userRoleRepository.update(updatedUserRole)
+
+          return Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
+        }
+      }
 }
