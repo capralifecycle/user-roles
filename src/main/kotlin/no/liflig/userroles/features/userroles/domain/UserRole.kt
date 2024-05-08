@@ -1,12 +1,15 @@
+@file:UseSerializers(UuidSerializer::class)
+
 package no.liflig.userroles.features.userroles.domain
 
 import java.util.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
 import no.liflig.documentstore.entity.EntityRoot
 import no.liflig.documentstore.entity.UuidEntityId
 import no.liflig.documentstore.entity.Version
 import no.liflig.userroles.common.serialization.LongSerializer
-import no.liflig.userroles.common.serialization.UuidEntityIdSerializer
+import no.liflig.userroles.common.serialization.UuidSerializer
 
 @Serializable
 data class UserRole(
@@ -17,7 +20,7 @@ data class UserRole(
 ) : EntityRoot<UserRoleId> {
   companion object {
     fun create(
-        id: UserRoleId = UserRoleId.create(),
+        id: UserRoleId = UserRoleId(),
         userId: String,
         roles: List<Role> = emptyList(),
     ) =
@@ -59,19 +62,10 @@ data class Role(
     val roleValue: String? = null,
 )
 
-@Serializable(with = UserRoleIdSerializer::class)
-data class UserRoleId(
-    override val id: UUID,
-) : UuidEntityId {
-
-  companion object {
-    fun create(id: UUID = UUID.randomUUID()) =
-        UserRoleId(
-            id = id,
-        )
-  }
+@Serializable
+@JvmInline
+value class UserRoleId(override val value: UUID = UUID.randomUUID()) : UuidEntityId {
+  override fun toString() = value.toString()
 }
-
-object UserRoleIdSerializer : UuidEntityIdSerializer<UserRoleId>(::UserRoleId)
 
 object VersionSerializer : LongSerializer(::Version)
