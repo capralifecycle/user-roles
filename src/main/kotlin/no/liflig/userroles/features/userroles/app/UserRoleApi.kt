@@ -5,7 +5,7 @@ import no.liflig.userroles.features.userroles.app.routes.DeleteUserRole
 import no.liflig.userroles.features.userroles.app.routes.GetUserRole
 import no.liflig.userroles.features.userroles.app.routes.ListUserRoles
 import no.liflig.userroles.features.userroles.app.routes.UpdateUserRole
-import no.liflig.userroles.features.userroles.domain.UserRoleRepository
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 
 class UserRoleApi(userRolesRepository: UserRoleRepository) : Api {
   override val basePath = "/userroles"

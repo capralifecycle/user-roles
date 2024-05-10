@@ -8,7 +8,7 @@ import no.liflig.userroles.features.userroles.app.UserRoleDto
 import no.liflig.userroles.features.userroles.app.toDomain
 import no.liflig.userroles.features.userroles.app.toDto
 import no.liflig.userroles.features.userroles.domain.UserRole
-import no.liflig.userroles.features.userroles.domain.UserRoleRepository
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
@@ -61,14 +61,14 @@ class UpdateUserRole(
                       roles = body.roles.map { it.toDomain() },
                   ),
               )
-          return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.toDto())
+          return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.item.toDto())
         } else {
           var updatedUserRole = userRole
 
           updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
-          val f = userRoleRepository.update(updatedUserRole)
+          val f = userRoleRepository.update(updatedUserRole, updatedUserRole.version)
 
-          return Response(Status.OK).with(UserRoleDto.bodyLens of f.toDto())
+          return Response(Status.OK).with(UserRoleDto.bodyLens of f.item.toDto())
         }
       }
 }

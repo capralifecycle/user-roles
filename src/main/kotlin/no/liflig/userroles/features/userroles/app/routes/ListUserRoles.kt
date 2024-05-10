@@ -3,8 +3,7 @@ package no.liflig.userroles.features.userroles.app.routes
 import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.features.userroles.app.ListUserRoleDto
 import no.liflig.userroles.features.userroles.app.toDto
-import no.liflig.userroles.features.userroles.domain.UserRoleRepository
-import no.liflig.userroles.features.userroles.persistence.UserRoleSearchQuery
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.Method
@@ -43,14 +42,9 @@ class ListUserRoles(
     val roleName = roleNameQuery(request)
 
     val userRoles =
-        userRoleRepository
-            .search(
-                UserRoleSearchQuery(
-                    orgId = orgId,
-                    roleName = roleName,
-                ),
-            )
-            .map { it.toDto() }
+        userRoleRepository.getByOrgIdOrRoleName(orgId = orgId, roleName = roleName).map {
+          it.toDto()
+        }
 
     return Response(Status.OK)
         .with(ListUserRoleDto.bodyLens of ListUserRoleDto(userRoles = userRoles))

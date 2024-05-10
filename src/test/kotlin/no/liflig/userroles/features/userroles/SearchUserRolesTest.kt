@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.features.userroles.app.ListUserRoleDto
 import no.liflig.userroles.features.userroles.domain.UserRole
-import no.liflig.userroles.features.userroles.domain.UserRoleRepository
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.readResourcesFileAsText

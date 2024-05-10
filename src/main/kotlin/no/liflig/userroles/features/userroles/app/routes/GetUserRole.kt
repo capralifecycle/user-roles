@@ -4,7 +4,7 @@ import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.common.config.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.app.UserRoleDto
 import no.liflig.userroles.features.userroles.app.toDto
-import no.liflig.userroles.features.userroles.domain.UserRoleRepository
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta

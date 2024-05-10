@@ -2,7 +2,7 @@ package no.liflig.userroles.features.userroles.app.routes
 
 import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.common.config.http4k.userIdPathLens
-import no.liflig.userroles.features.userroles.domain.UserRoleRepository
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
@@ -30,7 +30,7 @@ class DeleteUserRole(
   private fun handler(userId: String) =
       fun(_: Request): Response {
         val userRole = userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
-        userRoleRepository.delete(userRole)
+        userRoleRepository.delete(userRole.id, userRole.version)
         return Response(Status.OK)
       }
 }

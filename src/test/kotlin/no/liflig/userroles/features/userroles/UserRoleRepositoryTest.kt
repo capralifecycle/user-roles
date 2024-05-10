@@ -5,9 +5,8 @@ import no.liflig.documentstore.dao.UnknownDaoException
 import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
 import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.features.userroles.domain.UserRole
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepositoryJdbi
+import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import no.liflig.userroles.features.userroles.persistence.UserRoleSearchDao
-import no.liflig.userroles.features.userroles.persistence.UserRoleSearchQuery
 import no.liflig.userroles.testutils.createJdbiForTests
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -20,7 +19,7 @@ class UserRoleRepositoryTest {
   val jdbi = createJdbiForTests()
 
   val userRoleRepository =
-      UserRoleRepositoryJdbi(
+      UserRoleRepository(
           crudDao =
               CrudDaoJdbi(
                   jdbi = jdbi,
@@ -36,7 +35,7 @@ class UserRoleRepositoryTest {
 
   @BeforeEach
   fun clear() {
-    userRoleRepository.listAll().forEach { userRoleRepository.delete(it) }
+    userRoleRepository.listAll().forEach { userRoleRepository.delete(it.id, it.version) }
   }
 
   @Test
@@ -62,9 +61,8 @@ class UserRoleRepositoryTest {
 
     userRoleRepository.create(userRole)
 
-    val userRoleResult = userRoleRepository.search(UserRoleSearchQuery(userId = userId))
-    assertEquals(1, userRoleResult.size)
-    assertEquals(userRole, userRoleResult.first())
+    val userRoleResult = userRoleRepository.getByUserId(userId)
+    assertEquals(userRole, userRoleResult)
   }
 
   @Test
@@ -121,7 +119,7 @@ class UserRoleRepositoryTest {
         )
 
     userRoleRepository.create(userRole)
-    userRoleRepository.delete(userRole)
+    userRoleRepository.delete(userRole.id, userRole.version)
 
     val getResult = userRoleRepository.get(userRole.id)
     assertNull(getResult)
