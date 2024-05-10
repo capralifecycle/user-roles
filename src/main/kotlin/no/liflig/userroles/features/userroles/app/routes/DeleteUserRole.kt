@@ -29,8 +29,9 @@ class DeleteUserRole(
 
   private fun handler(userId: String) =
       fun(_: Request): Response {
-        val userRole = userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
-        userRoleRepository.delete(userRole.id, userRole.version)
+        val (userRole, version) =
+            userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
+        userRoleRepository.delete(userRole.id, version)
         return Response(Status.OK)
       }
 }

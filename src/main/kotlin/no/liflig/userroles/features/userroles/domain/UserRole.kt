@@ -7,52 +7,14 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import no.liflig.documentstore.entity.EntityRoot
 import no.liflig.documentstore.entity.UuidEntityId
-import no.liflig.documentstore.entity.Version
-import no.liflig.userroles.common.serialization.LongSerializer
 import no.liflig.userroles.common.serialization.UuidSerializer
 
 @Serializable
 data class UserRole(
-    override val id: UserRoleId,
-    @Serializable(with = VersionSerializer::class) val version: Version,
+    override val id: UserRoleId = UserRoleId(),
     val userId: String,
-    val roles: List<Role>,
-) : EntityRoot<UserRoleId> {
-  companion object {
-    fun create(
-        id: UserRoleId = UserRoleId(),
-        userId: String,
-        roles: List<Role> = emptyList(),
-    ) =
-        UserRole(
-            id = id,
-            version = Version.initial(),
-            userId = userId,
-            roles = roles,
-        )
-  }
-
-  fun changeRoles(roles: List<Role>) =
-      update(
-          roles = roles,
-      )
-
-  fun version(version: Version) =
-      update(
-          version = version,
-      )
-
-  fun update(
-      roles: List<Role> = this.roles,
-      version: Version = this.version,
-  ): UserRole =
-      UserRole(
-          id = id,
-          version = version,
-          userId = userId,
-          roles = roles,
-      )
-}
+    val roles: List<Role> = emptyList(),
+) : EntityRoot<UserRoleId>
 
 @Serializable
 data class Role(
@@ -67,5 +29,3 @@ data class Role(
 value class UserRoleId(override val value: UUID = UUID.randomUUID()) : UuidEntityId {
   override fun toString() = value.toString()
 }
-
-object VersionSerializer : LongSerializer(::Version)

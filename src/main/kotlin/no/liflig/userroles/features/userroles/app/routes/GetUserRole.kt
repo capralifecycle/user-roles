@@ -32,7 +32,8 @@ class GetUserRole(
 
   private fun handler(userId: String) =
       fun(_: Request): Response {
-        val userRole = userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
+        val (userRole, _) =
+            userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
         return Response(Status.OK).with(UserRoleDto.bodyLens of userRole.toDto())
       }
 }

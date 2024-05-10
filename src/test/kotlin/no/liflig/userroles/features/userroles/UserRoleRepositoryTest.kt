@@ -35,7 +35,7 @@ class UserRoleRepositoryTest {
 
   @BeforeEach
   fun clear() {
-    userRoleRepository.listAll().forEach { userRoleRepository.delete(it.id, it.version) }
+    userRoleRepository.listAll().forEach { userRoleRepository.delete(it.item.id, it.version) }
   }
 
   @Test
@@ -43,7 +43,7 @@ class UserRoleRepositoryTest {
     val userId = "testUser"
 
     val userRole =
-        UserRole.create(
+        UserRole(
             userId = userId,
             roles =
                 listOf(
@@ -62,7 +62,7 @@ class UserRoleRepositoryTest {
     userRoleRepository.create(userRole)
 
     val userRoleResult = userRoleRepository.getByUserId(userId)
-    assertEquals(userRole, userRoleResult)
+    assertEquals(userRole, userRoleResult?.item)
   }
 
   @Test
@@ -70,7 +70,7 @@ class UserRoleRepositoryTest {
     val userId = "testUser"
 
     val userRole =
-        UserRole.create(
+        UserRole(
             userId = userId,
             roles =
                 listOf(
@@ -85,12 +85,7 @@ class UserRoleRepositoryTest {
                     ),
                 ),
         )
-
-    val userRole2 =
-        UserRole.create(
-            userId = userId,
-            roles = listOf(),
-        )
+    val userRole2 = UserRole(userId = userId, roles = listOf())
 
     userRoleRepository.create(userRole)
 
@@ -99,27 +94,25 @@ class UserRoleRepositoryTest {
 
   @Test
   fun `Deleting a user removes it from DB`() {
-    val userId = "testUser"
-
-    val userRole =
-        UserRole.create(
-            userId = userId,
-            roles =
-                listOf(
-                    Role(
-                        roleName = "admin",
-                        orgId = "org123",
+    val (userRole, version) =
+        userRoleRepository.create(
+            UserRole(
+                userId = "testUser",
+                roles =
+                    listOf(
+                        Role(
+                            roleName = "admin",
+                            orgId = "org123",
+                        ),
+                        Role(
+                            orgId = "org1234",
+                            roleName = "orgMember",
+                            roleValue = """{"boards": [1,2,3]}""",
+                        ),
                     ),
-                    Role(
-                        orgId = "org1234",
-                        roleName = "orgMember",
-                        roleValue = """{"boards": [1,2,3]}""",
-                    ),
-                ),
-        )
+            ))
 
-    userRoleRepository.create(userRole)
-    userRoleRepository.delete(userRole.id, userRole.version)
+    userRoleRepository.delete(userRole.id, version)
 
     val getResult = userRoleRepository.get(userRole.id)
     assertNull(getResult)
@@ -130,7 +123,7 @@ class UserRoleRepositoryTest {
     val userId = "testUser"
 
     for (i in 0..2) {
-      UserRole.create(
+      UserRole(
               userId = userId + i,
               roles = listOf(),
           )

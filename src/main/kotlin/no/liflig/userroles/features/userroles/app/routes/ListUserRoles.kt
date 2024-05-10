@@ -43,7 +43,7 @@ class ListUserRoles(
 
     val userRoles =
         userRoleRepository.getByOrgIdOrRoleName(orgId = orgId, roleName = roleName).map {
-          it.toDto()
+          it.item.toDto()
         }
 
     return Response(Status.OK)

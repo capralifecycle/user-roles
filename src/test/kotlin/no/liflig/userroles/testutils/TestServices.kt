@@ -11,7 +11,7 @@ private constructor(
 ) {
   fun clear() {
     serviceRegistry.userRolesRepository.listAll().forEach {
-      serviceRegistry.userRolesRepository.delete(it.id, it.version)
+      serviceRegistry.userRolesRepository.delete(it.item.id, it.version)
     }
   }
 

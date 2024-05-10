@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.liflig.snapshot.verifyJsonSnapshot
+import no.liflig.userroles.common.serialization.json
 import no.liflig.userroles.features.userroles.app.ListUserRoleDto
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
@@ -120,14 +121,11 @@ class SearchUserRolesTest {
   }
 
   private fun initialiseRepository(userRoleRepository: UserRoleRepository) {
-    readResourcesFileAsText("searchuserrolestest/InitialUserRoles.json")
-        .deserializeAsListUserRolesDto()
-        .forEach { userRoleRepository.create(it) }
+    val testData = readResourcesFileAsText("searchuserrolestest/InitialUserRoles.json")
+    val userRoles = json.decodeFromString<TestUserRoles>(testData).userRoles
+    userRoles.forEach { userRoleRepository.create(it) }
   }
 }
-
-private fun String.deserializeAsListUserRolesDto(): List<UserRole> =
-    Json.decodeFromString(TestUserRoles.serializer(), this).userRoles
 
 @Serializable
 data class TestUserRoles(

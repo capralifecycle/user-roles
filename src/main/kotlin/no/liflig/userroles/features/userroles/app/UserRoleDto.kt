@@ -8,7 +8,7 @@ import no.liflig.userroles.features.userroles.domain.UserRole
 @Serializable
 data class UserRoleDto(
     val userId: String,
-    val roles: List<RoleDto>,
+    val roles: List<Role>,
 ) {
   companion object {
     val bodyLens = createBodyLens(serializer())
@@ -17,13 +17,13 @@ data class UserRoleDto(
             userId = "ola.nordmann",
             roles =
                 listOf(
-                    RoleDto(
+                    Role(
                         applicationName = "logistics",
                         orgId = null,
                         roleName = "admin",
                         roleValue = null,
                     ),
-                    RoleDto(
+                    Role(
                         applicationName = "admin",
                         orgId = null,
                         roleName = "view",
@@ -33,46 +33,7 @@ data class UserRoleDto(
   }
 }
 
-fun UserRole.toDto() =
-    UserRoleDto(
-        userId = userId,
-        roles = roles.map { it.toDto() },
-    )
-
-fun Role.toDto() =
-    RoleDto(
-        applicationName = applicationName,
-        orgId = orgId,
-        roleName = roleName,
-        roleValue = roleValue,
-    )
-
-@Serializable
-data class RoleDto(
-    val applicationName: String? = null,
-    val orgId: String? = null,
-    val roleName: String,
-    val roleValue: String? = null,
-) {
-  companion object {
-    val bodyLens = createBodyLens(serializer())
-    val example =
-        RoleDto(
-            applicationName = null,
-            orgId = null,
-            roleName = "admin",
-            roleValue = """{"boards": [1,2,3]}""",
-        )
-  }
-}
-
-fun RoleDto.toDomain() =
-    Role(
-        applicationName = applicationName,
-        orgId = orgId,
-        roleName = roleName,
-        roleValue = roleValue,
-    )
+fun UserRole.toDto() = UserRoleDto(userId = userId, roles = roles)
 
 @Serializable
 data class ListUserRoleDto(
@@ -86,9 +47,17 @@ data class ListUserRoleDto(
                 listOf(
                     UserRoleDto(
                         userId = "customerName",
-                        roles = listOf(RoleDto.example),
+                        roles = listOf(exampleRole),
                     ),
                 ),
         )
   }
 }
+
+val exampleRole =
+    Role(
+        applicationName = null,
+        orgId = null,
+        roleName = "admin",
+        roleValue = """{"boards": [1,2,3]}""",
+    )

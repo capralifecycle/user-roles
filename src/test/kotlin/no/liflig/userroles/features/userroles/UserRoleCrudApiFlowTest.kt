@@ -3,9 +3,9 @@ package no.liflig.userroles.features.userroles
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.liflig.snapshot.verifyJsonSnapshot
-import no.liflig.userroles.features.userroles.app.RoleDto
 import no.liflig.userroles.features.userroles.app.UserRoleDto
 import no.liflig.userroles.features.userroles.app.routes.UpdateUserRole
+import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.readResourcesFileAsText
@@ -38,20 +38,20 @@ class UserRoleCrudApiFlowTest {
     val userId = "user123"
     val roles =
         listOf(
-            RoleDto(
+            Role(
                 orgId = "orgId1",
                 roleName = "orgOwner",
             ),
-            RoleDto(
+            Role(
                 orgId = "orgId2",
                 roleName = "orgAdmin",
             ),
-            RoleDto(
+            Role(
                 orgId = "orgId3",
                 roleName = "orgMember",
                 roleValue = """{"boards": [1,2,3]}""",
             ),
-            RoleDto(
+            Role(
                 roleName = "admin",
             ),
         )

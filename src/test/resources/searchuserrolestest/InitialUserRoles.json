@@ -2,7 +2,6 @@
   "userRoles": [
     {
       "id": "e78d56aa-6904-4163-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1231",
       "roles": [
         {
@@ -25,7 +24,6 @@
     },
     {
       "id": "e78d56aa-6904-4263-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1232",
       "roles": [
         {
@@ -35,7 +33,6 @@
     },
     {
       "id": "e78d56aa-6904-4363-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1233",
       "roles": [
         {
@@ -46,7 +43,6 @@
     },
     {
       "id": "e78d56aa-6904-4463-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1234",
       "roles": [
         {
@@ -57,7 +53,6 @@
     },
     {
       "id": "e78d56aa-6904-4563-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1235",
       "roles": [
         {
@@ -72,7 +67,6 @@
     },
     {
       "id": "e78d56aa-6904-4663-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1236",
       "roles": [
         {
@@ -83,7 +77,6 @@
     },
     {
       "id": "e78d56aa-6904-4763-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1237",
       "roles": [
         {
@@ -94,7 +87,6 @@
     },
     {
       "id": "e78d56aa-6904-4863-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1238",
       "roles": [
         {
@@ -105,7 +97,6 @@
     },
     {
       "id": "e78d56aa-6904-4963-8dda-54aebd577b8e",
-      "version": "1",
       "userId": "user1239",
       "roles": [
         {

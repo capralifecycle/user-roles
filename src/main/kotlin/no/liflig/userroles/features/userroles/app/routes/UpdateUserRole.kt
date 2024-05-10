@@ -3,10 +3,10 @@ package no.liflig.userroles.features.userroles.app.routes
 import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.common.config.http4k.createBodyLens
 import no.liflig.userroles.common.config.http4k.userIdPathLens
-import no.liflig.userroles.features.userroles.app.RoleDto
 import no.liflig.userroles.features.userroles.app.UserRoleDto
-import no.liflig.userroles.features.userroles.app.toDomain
+import no.liflig.userroles.features.userroles.app.exampleRole
 import no.liflig.userroles.features.userroles.app.toDto
+import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.features.userroles.domain.UserRole
 import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
 import org.http4k.contract.ContractRoute
@@ -24,14 +24,11 @@ class UpdateUserRole(
 ) : Endpoint {
   @kotlinx.serialization.Serializable
   data class UpdateRoleRequest(
-      val roles: List<RoleDto>,
+      val roles: List<Role>,
   ) {
     companion object {
       val bodyLens = createBodyLens(serializer())
-      val example =
-          UpdateRoleRequest(
-              roles = listOf(RoleDto.example),
-          )
+      val example = UpdateRoleRequest(roles = listOf(exampleRole))
     }
   }
 
@@ -52,21 +49,14 @@ class UpdateUserRole(
       fun(request: Request): Response {
         val body = UpdateRoleRequest.bodyLens(request)
 
-        val userRole = userRoleRepository.getByUserId(userId)
-        if (userRole == null) {
+        val existingUserRole = userRoleRepository.getByUserId(userId)
+        if (existingUserRole == null) {
           val createdUserRole =
-              userRoleRepository.create(
-                  UserRole.create(
-                      userId = userId,
-                      roles = body.roles.map { it.toDomain() },
-                  ),
-              )
+              userRoleRepository.create(UserRole(userId = userId, roles = body.roles))
           return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.item.toDto())
         } else {
-          var updatedUserRole = userRole
-
-          updatedUserRole = updatedUserRole.changeRoles(body.roles.map { it.toDomain() })
-          val f = userRoleRepository.update(updatedUserRole, updatedUserRole.version)
+          val updatedUserRole = existingUserRole.item.copy(roles = body.roles)
+          val f = userRoleRepository.update(updatedUserRole, existingUserRole.version)
 
           return Response(Status.OK).with(UserRoleDto.bodyLens of f.item.toDto())
         }
