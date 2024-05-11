@@ -32,7 +32,7 @@
     <liflig.properties.version>2.20240510.094843</liflig.properties.version>
     <liflig-document-store.version>1.20240510.163536</liflig-document-store.version>
     <liflig-logging-http4k.version>1.20240508.032942</liflig-logging-http4k.version>
-    <liflig-snapshot-test.version>1.20240509.021606</liflig-snapshot-test.version>
+    <liflig-snapshot-test.version>1.20240510.113112</liflig-snapshot-test.version>
     <slf4j-api.version>2.0.13</slf4j-api.version>
     <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
     <logback-classic.version>1.5.6</logback-classic.version>
