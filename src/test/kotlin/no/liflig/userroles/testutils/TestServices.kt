@@ -4,33 +4,17 @@ import no.liflig.userroles.Config
 import no.liflig.userroles.ServiceRegistry
 
 /** Services that need to be exposed for tests */
-class TestServices
-private constructor(
-    val serviceRegistry: ServiceRegistry,
-    val serverPort: Int,
-) {
+class TestServices {
+  val serverPort: Int = AvailablePortLocator.findAvailableTcpPort()
+  val serviceRegistry: ServiceRegistry =
+      ServiceRegistry(
+          config = Config(serverPort = serverPort),
+          jdbi = createJdbiForTests(),
+      )
+
   fun clear() {
     serviceRegistry.userRolesRepository.listAll().forEach {
       serviceRegistry.userRolesRepository.delete(it.item.id, it.version)
-    }
-  }
-
-  companion object {
-    fun create(): TestServices {
-      val serverPort = AvailablePortLocator.findAvailableTcpPort()
-      val config = Config(serverPort = serverPort)
-      val jdbi = createJdbiForTests()
-
-      val serviceRegistry =
-          ServiceRegistry(
-              config,
-              jdbi,
-          )
-
-      return TestServices(
-          serviceRegistry = serviceRegistry,
-          serverPort = serverPort,
-      )
     }
   }
 }

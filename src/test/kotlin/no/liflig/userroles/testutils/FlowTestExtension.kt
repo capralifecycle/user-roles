@@ -42,7 +42,7 @@ class FlowTestExtension :
   }
 
   private fun setupTestSuite() {
-    testServices = TestServices.create()
+    testServices = TestServices()
     // Run application concurrently, so that it doesn't block test code
     thread { App.start(testServices.serviceRegistry) }
     // Make sure application is started before proceeding
