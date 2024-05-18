@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   userrolesdb:
-    image: postgres:16.2
+    image: postgres:16.3
     container_name: userrolesdb
     ports:
       - "127.0.0.1:10101:5432"
