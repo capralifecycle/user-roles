@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
+      <!--
+        %replace( [%marker]){' \[\]', ''} and %replace( [%mdc]){' \[\]', ''} below adds log markers and MDC
+        (thread-local log markers) in square brackets, but hides the square brackets if they're empty.
+      -->
+      <!-- @formatter:off -->
       <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} \(%line\) - %msg%n
+        %d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} \(%line\) - %msg%replace( [%marker]){' \[\]', ''}%replace( [%mdc]){' \[\]', ''}%n
       </Pattern>
+      <!-- @formatter:on -->
     </layout>
   </appender>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>
-
 </configuration>
