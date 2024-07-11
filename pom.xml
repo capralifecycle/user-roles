@@ -45,7 +45,7 @@
 
     <!--testing-->
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <maven-failsafe-plugin.version>3.3.0</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.3.1</maven-failsafe-plugin.version>
 
     <!-- Sonarcloud -->
     <sonar-maven-plugin.version>3.11.0.3922</sonar-maven-plugin.version>
