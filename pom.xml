@@ -41,7 +41,7 @@
     <hikariCP.version>5.1.0</hikariCP.version>
     <flyway.version>10.17.0</flyway.version>
     <postgresql.version>42.7.3</postgresql.version>
-    <jdbi3-core.version>3.45.2</jdbi3-core.version>
+    <jdbi3-core.version>3.45.3</jdbi3-core.version>
 
     <!--testing-->
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
