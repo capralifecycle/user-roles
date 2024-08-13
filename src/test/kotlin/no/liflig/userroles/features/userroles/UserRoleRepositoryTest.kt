@@ -1,7 +1,6 @@
 package no.liflig.userroles.features.userroles
 
 import no.liflig.documentstore.dao.CrudDaoJdbi
-import no.liflig.documentstore.dao.UnknownDaoException
 import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
 import no.liflig.userroles.features.userroles.domain.Role
 import no.liflig.userroles.features.userroles.domain.UserRole
@@ -89,7 +88,8 @@ class UserRoleRepositoryTest {
 
     userRoleRepository.create(userRole)
 
-    assertThrows<UnknownDaoException> { userRoleRepository.create(userRole2) }
+    val exception = assertThrows<Exception> { userRoleRepository.create(userRole2) }
+    assertEquals(true, exception.message?.contains("user_role_user_id_idx"))
   }
 
   @Test
