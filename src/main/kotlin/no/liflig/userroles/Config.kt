@@ -3,6 +3,7 @@ package no.liflig.userroles
 import java.time.Instant
 import java.util.*
 import no.liflig.properties.boolean
+import no.liflig.properties.booleanRequired
 import no.liflig.properties.intRequired
 import no.liflig.properties.loadProperties
 import no.liflig.properties.stringNotEmpty
@@ -33,6 +34,8 @@ class Config(
       no.liflig.userroles.EnvironmentName.valueOf(
           properties.stringNotNull("application.env").uppercase(),
       )
+
+  val logRequestBody = properties.booleanRequired("api.log.requestbody")
 
   val buildInfo = properties.getHealthBuildInfo()
 

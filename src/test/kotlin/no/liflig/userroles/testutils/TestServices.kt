@@ -6,9 +6,10 @@ import no.liflig.userroles.ServiceRegistry
 /** Services that need to be exposed for tests */
 class TestServices {
   val serverPort: Int = AvailablePortLocator.findAvailableTcpPort()
+  val config = Config(serverPort = serverPort)
   val serviceRegistry: ServiceRegistry =
       ServiceRegistry(
-          config = Config(serverPort = serverPort),
+          config = config,
           jdbi = createJdbiForTests(),
       )
 
