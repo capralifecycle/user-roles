@@ -1,14 +1,11 @@
-package no.liflig.userroles.features.userroles.app.routes
+package no.liflig.userroles.features.userroles.api
 
 import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.common.config.http4k.createBodyLens
 import no.liflig.userroles.common.config.http4k.userIdPathLens
-import no.liflig.userroles.features.userroles.app.UserRoleDto
-import no.liflig.userroles.features.userroles.app.exampleRole
-import no.liflig.userroles.features.userroles.app.toDto
-import no.liflig.userroles.features.userroles.domain.Role
-import no.liflig.userroles.features.userroles.domain.UserRole
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
+import no.liflig.userroles.features.userroles.Role
+import no.liflig.userroles.features.userroles.UserRole
+import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
@@ -19,7 +16,7 @@ import org.http4k.core.Status
 import org.http4k.core.with
 
 /** Contains the endpoint for updating a user role */
-class UpdateUserRole(
+class UpdateUserRoleEndpoint(
     private val userRoleRepository: UserRoleRepository,
 ) : Endpoint {
   @kotlinx.serialization.Serializable

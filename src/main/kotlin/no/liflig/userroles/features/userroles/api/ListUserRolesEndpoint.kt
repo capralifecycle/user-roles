@@ -1,9 +1,7 @@
-package no.liflig.userroles.features.userroles.app.routes
+package no.liflig.userroles.features.userroles.api
 
 import no.liflig.userroles.common.Endpoint
-import no.liflig.userroles.features.userroles.app.ListUserRoleDto
-import no.liflig.userroles.features.userroles.app.toDto
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
+import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.Method
@@ -15,7 +13,7 @@ import org.http4k.lens.Query
 import org.http4k.lens.string
 
 /** Contains the endpoint for getting user roles */
-class ListUserRoles(
+class ListUserRolesEndpoint(
     private val userRoleRepository: UserRoleRepository,
 ) : Endpoint {
   // private val orgIdQuery = Query.map { PersonId(UUID.fromString(it)) }.optional("orgId")

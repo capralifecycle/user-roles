@@ -1,11 +1,5 @@
 package no.liflig.userroles.features.userroles
 
-import no.liflig.documentstore.dao.CrudDaoJdbi
-import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
-import no.liflig.userroles.features.userroles.domain.Role
-import no.liflig.userroles.features.userroles.domain.UserRole
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
-import no.liflig.userroles.features.userroles.persistence.UserRoleSearchDao
 import no.liflig.userroles.testutils.createJdbiForTests
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -14,23 +8,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class UserRoleRepositoryTest {
+  private val jdbi = createJdbiForTests()
 
-  val jdbi = createJdbiForTests()
-
-  val userRoleRepository =
-      UserRoleRepository(
-          crudDao =
-              CrudDaoJdbi(
-                  jdbi = jdbi,
-                  serializationAdapter = userRolesSerializationAdapter,
-                  sqlTableName = "userroles",
-              ),
-          searchDao =
-              UserRoleSearchDao(
-                  jdbi = jdbi,
-                  sqlTableName = "userroles",
-              ),
-      )
+  private val userRoleRepository = UserRoleRepository(jdbi)
 
   @BeforeEach
   fun clear() {

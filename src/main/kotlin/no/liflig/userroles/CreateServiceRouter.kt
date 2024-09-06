@@ -8,8 +8,8 @@ import no.liflig.userroles.common.config.http4k.UserPrincipalLog
 import no.liflig.userroles.common.config.http4k.createAuthFilter
 import no.liflig.userroles.common.config.http4k.toLog
 import no.liflig.userroles.features.health.HealthService
-import no.liflig.userroles.features.userroles.app.UserRoleApi
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
+import no.liflig.userroles.features.userroles.UserRoleRepository
+import no.liflig.userroles.features.userroles.api.UserRoleApi
 import org.http4k.contract.bind
 import org.http4k.contract.contract
 import org.http4k.contract.openapi.ApiInfo

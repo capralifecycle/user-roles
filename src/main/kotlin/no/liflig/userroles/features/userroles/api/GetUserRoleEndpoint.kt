@@ -1,10 +1,8 @@
-package no.liflig.userroles.features.userroles.app.routes
+package no.liflig.userroles.features.userroles.api
 
 import no.liflig.userroles.common.Endpoint
 import no.liflig.userroles.common.config.http4k.userIdPathLens
-import no.liflig.userroles.features.userroles.app.UserRoleDto
-import no.liflig.userroles.features.userroles.app.toDto
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
+import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
@@ -15,7 +13,7 @@ import org.http4k.core.Status
 import org.http4k.core.with
 
 /** Contains the endpoint for getting a single user role */
-class GetUserRole(
+class GetUserRoleEndpoint(
     private val userRoleRepository: UserRoleRepository,
 ) : Endpoint {
   override fun route(basePath: String): ContractRoute {

@@ -1,11 +1,11 @@
 @file:UseSerializers(UuidSerializer::class)
 
-package no.liflig.userroles.features.userroles.domain
+package no.liflig.userroles.features.userroles
 
 import java.util.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import no.liflig.documentstore.entity.EntityRoot
+import no.liflig.documentstore.entity.Entity
 import no.liflig.documentstore.entity.UuidEntityId
 import no.liflig.userroles.common.serialization.UuidSerializer
 
@@ -14,7 +14,7 @@ data class UserRole(
     override val id: UserRoleId = UserRoleId(),
     val userId: String,
     val roles: List<Role> = emptyList(),
-) : EntityRoot<UserRoleId>
+) : Entity<UserRoleId>
 
 @Serializable
 data class Role(

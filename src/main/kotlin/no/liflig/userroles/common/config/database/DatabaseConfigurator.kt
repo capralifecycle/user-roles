@@ -4,9 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import javax.sql.DataSource
 import mu.KotlinLogging
-import no.liflig.documentstore.entity.UnmappedEntityIdArgumentFactory
-import no.liflig.documentstore.entity.UuidEntityIdArgumentFactory
-import no.liflig.documentstore.entity.VersionArgumentFactory
+import no.liflig.documentstore.DocumentStorePlugin
 import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
@@ -33,12 +31,7 @@ object DatabaseConfigurator {
       cleanDatabase: Boolean = false,
   ): Jdbi {
     val jdbi: Jdbi =
-        Jdbi.create(dataSource)
-            .installPlugin(KotlinPlugin())
-            .registerArgument(UuidEntityIdArgumentFactory())
-            .registerArgument(UnmappedEntityIdArgumentFactory())
-            .registerArgument(VersionArgumentFactory())
-            .registerArrayType(no.liflig.documentstore.entity.EntityId::class.java, "uuid")
+        Jdbi.create(dataSource).installPlugin(KotlinPlugin()).installPlugin(DocumentStorePlugin())
 
     migrate(dataSource, cleanDatabase)
 

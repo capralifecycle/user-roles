@@ -1,5 +1,5 @@
 package no.liflig.userroles.common.serialization
 
-import no.liflig.userroles.features.userroles.domain.UserRole
+import no.liflig.userroles.features.userroles.UserRole
 
-val userRolesSerializationAdapter = KotlinXSerializationAdapter(UserRole.serializer())
+val userRolesSerializationAdapter = KotlinSerialization(UserRole.serializer())

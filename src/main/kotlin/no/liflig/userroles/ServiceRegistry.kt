@@ -1,13 +1,10 @@
 package no.liflig.userroles
 
-import no.liflig.documentstore.dao.CrudDaoJdbi
 import no.liflig.logging.http4k.LoggingFilter
 import no.liflig.userroles.common.config.database.DatabaseConfigurator
 import no.liflig.userroles.common.config.http4k.UserPrincipalLog
-import no.liflig.userroles.common.serialization.userRolesSerializationAdapter
 import no.liflig.userroles.features.health.createHealthService
-import no.liflig.userroles.features.userroles.persistence.UserRoleRepository
-import no.liflig.userroles.features.userroles.persistence.UserRoleSearchDao
+import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.jdbi.v3.core.Jdbi
 
 /**
@@ -19,11 +16,7 @@ class ServiceRegistry(
     config: Config,
     jdbi: Jdbi = createDefaultJdbi(config),
 ) {
-  val userRolesRepository =
-      UserRoleRepository(
-          crudDao = CrudDaoJdbi(jdbi, "userroles", userRolesSerializationAdapter),
-          searchDao = UserRoleSearchDao(jdbi, "userroles"),
-      )
+  val userRolesRepository = UserRoleRepository(jdbi)
 
   val webserverPort = config.port
 

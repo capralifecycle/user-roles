@@ -3,9 +3,8 @@ package no.liflig.userroles.features.userroles
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.liflig.snapshot.verifyJsonSnapshot
-import no.liflig.userroles.features.userroles.app.UserRoleDto
-import no.liflig.userroles.features.userroles.app.routes.UpdateUserRole
-import no.liflig.userroles.features.userroles.domain.Role
+import no.liflig.userroles.features.userroles.api.UpdateUserRoleEndpoint
+import no.liflig.userroles.features.userroles.api.UserRoleDto
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.readResourcesFileAsText
@@ -59,8 +58,8 @@ class UserRoleCrudApiFlowTest {
     client(
             Request(Method.PUT, "http://localhost:${services.serverPort}/api/userroles/$userId")
                 .with(
-                    UpdateUserRole.UpdateRoleRequest.bodyLens of
-                        UpdateUserRole.UpdateRoleRequest(
+                    UpdateUserRoleEndpoint.UpdateRoleRequest.bodyLens of
+                        UpdateUserRoleEndpoint.UpdateRoleRequest(
                             roles = roles,
                         ),
                 )
@@ -82,7 +81,7 @@ class UserRoleCrudApiFlowTest {
           client(
               Request(Method.PUT, "http://localhost:${services.serverPort}/api/userroles/$userId")
                   .with(
-                      UpdateUserRole.UpdateRoleRequest.bodyLens of it,
+                      UpdateUserRoleEndpoint.UpdateRoleRequest.bodyLens of it,
                   )
                   .withBasicAuth(Credentials("testbruker", "testpassord")),
           )
@@ -125,5 +124,5 @@ class UserRoleCrudApiFlowTest {
   }
 }
 
-private fun String.deserializeAsUpdateRoleRequest(): UpdateUserRole.UpdateRoleRequest =
-    Json.decodeFromString(UpdateUserRole.UpdateRoleRequest.serializer(), this)
+private fun String.deserializeAsUpdateRoleRequest(): UpdateUserRoleEndpoint.UpdateRoleRequest =
+    Json.decodeFromString(UpdateUserRoleEndpoint.UpdateRoleRequest.serializer(), this)
