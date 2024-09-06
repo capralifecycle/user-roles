@@ -10,7 +10,7 @@ class ServiceRegistry(
     config: Config,
     jdbi: Jdbi = createDefaultJdbi(config),
 ) {
-  val userRolesRepository = UserRoleRepository(jdbi)
+  val userRoleRepo = UserRoleRepository(jdbi)
 
   val healthService = createHealthService(config.applicationName, config.buildInfo)
 }

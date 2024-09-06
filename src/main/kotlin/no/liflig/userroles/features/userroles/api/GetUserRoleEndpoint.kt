@@ -14,7 +14,7 @@ import org.http4k.core.with
 
 /** Contains the endpoint for getting a single user role */
 class GetUserRoleEndpoint(
-    private val userRoleRepository: UserRoleRepository,
+    private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
   override fun route(basePath: String): ContractRoute {
     val path = basePath / userIdPathLens
@@ -30,8 +30,7 @@ class GetUserRoleEndpoint(
 
   private fun handler(userId: String) =
       fun(_: Request): Response {
-        val (userRole, _) =
-            userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
+        val (userRole, _) = userRoleRepo.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
         return Response(Status.OK).with(UserRoleDto.bodyLens of userRole.toDto())
       }
 }

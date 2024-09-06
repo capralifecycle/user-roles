@@ -14,7 +14,7 @@ import org.http4k.lens.string
 
 /** Contains the endpoint for getting user roles */
 class ListUserRolesEndpoint(
-    private val userRoleRepository: UserRoleRepository,
+    private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
   // private val orgIdQuery = Query.map { PersonId(UUID.fromString(it)) }.optional("orgId")
   private val orgIdQuery = Query.string().optional("orgId")
@@ -40,7 +40,7 @@ class ListUserRolesEndpoint(
     val roleName = roleNameQuery(request)
 
     val userRoles =
-        userRoleRepository.getByOrgIdOrRoleName(orgId = orgId, roleName = roleName).map {
+        userRoleRepo.getByOrgIdOrRoleName(orgId = orgId, roleName = roleName).map {
           it.item.toDto()
         }
 

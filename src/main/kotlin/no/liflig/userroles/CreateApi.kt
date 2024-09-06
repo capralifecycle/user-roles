@@ -51,7 +51,7 @@ fun createApi(
         )
     descriptionPath = "/docs/openapi-schema.json"
 
-    routes += UserRoleApi(registry).getRoutes()
+    routes += UserRoleApi(registry.userRoleRepo).getRoutes()
 
     // PreFlightExtraction uses our endpoint contract metadata to validate the request, including
     // the body, _before_ hitting our handler. However, we want to return customized error messages

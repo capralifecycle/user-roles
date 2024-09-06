@@ -1,16 +1,16 @@
 package no.liflig.userroles.features.userroles.api
 
-import no.liflig.userroles.ServiceRegistry
 import no.liflig.userroles.common.Api
+import no.liflig.userroles.features.userroles.UserRoleRepository
 
-class UserRoleApi(registry: ServiceRegistry) : Api {
+class UserRoleApi(userRoleRepo: UserRoleRepository) : Api {
   override val basePath = "/userroles"
 
   override val endpoints =
       listOf(
-          GetUserRoleEndpoint(registry.userRolesRepository),
-          DeleteUserRoleEndpoint(registry.userRolesRepository),
-          UpdateUserRoleEndpoint(registry.userRolesRepository),
-          ListUserRolesEndpoint(registry.userRolesRepository),
+          GetUserRoleEndpoint(userRoleRepo),
+          DeleteUserRoleEndpoint(userRoleRepo),
+          UpdateUserRoleEndpoint(userRoleRepo),
+          ListUserRolesEndpoint(userRoleRepo),
       )
 }

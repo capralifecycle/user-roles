@@ -17,7 +17,7 @@ import org.http4k.core.with
 
 /** Contains the endpoint for updating a user role */
 class UpdateUserRoleEndpoint(
-    private val userRoleRepository: UserRoleRepository,
+    private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
   @kotlinx.serialization.Serializable
   data class UpdateRoleRequest(
@@ -46,14 +46,13 @@ class UpdateUserRoleEndpoint(
       fun(request: Request): Response {
         val body = UpdateRoleRequest.bodyLens(request)
 
-        val existingUserRole = userRoleRepository.getByUserId(userId)
+        val existingUserRole = userRoleRepo.getByUserId(userId)
         if (existingUserRole == null) {
-          val createdUserRole =
-              userRoleRepository.create(UserRole(userId = userId, roles = body.roles))
+          val createdUserRole = userRoleRepo.create(UserRole(userId = userId, roles = body.roles))
           return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.item.toDto())
         } else {
           val updatedUserRole = existingUserRole.item.copy(roles = body.roles)
-          val f = userRoleRepository.update(updatedUserRole, existingUserRole.version)
+          val f = userRoleRepo.update(updatedUserRole, existingUserRole.version)
 
           return Response(Status.OK).with(UserRoleDto.bodyLens of f.item.toDto())
         }

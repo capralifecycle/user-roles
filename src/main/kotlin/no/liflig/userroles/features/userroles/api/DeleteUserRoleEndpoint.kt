@@ -13,7 +13,7 @@ import org.http4k.core.Status
 
 /** Contains the endpoint for deleting a user role */
 class DeleteUserRoleEndpoint(
-    private val userRoleRepository: UserRoleRepository,
+    private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
   override fun route(basePath: String): ContractRoute {
     val path = basePath / userIdPathLens
@@ -30,8 +30,8 @@ class DeleteUserRoleEndpoint(
   private fun handler(userId: String) =
       fun(_: Request): Response {
         val (userRole, version) =
-            userRoleRepository.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
-        userRoleRepository.delete(userRole.id, version)
+            userRoleRepo.getByUserId(userId) ?: return Response(Status.NOT_FOUND)
+        userRoleRepo.delete(userRole.id, version)
         return Response(Status.OK)
       }
 }

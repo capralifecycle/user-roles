@@ -30,7 +30,7 @@ class SearchUserRolesTest {
   @BeforeEach
   fun clear(services: TestServices) {
     services.clear()
-    initialiseRepository(services.serviceRegistry.userRolesRepository)
+    initialiseRepository(services.serviceRegistry.userRoleRepo)
   }
 
   @Test

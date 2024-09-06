@@ -14,8 +14,8 @@ class TestServices {
       )
 
   fun clear() {
-    serviceRegistry.userRolesRepository.listAll().forEach {
-      serviceRegistry.userRolesRepository.delete(it.item.id, it.version)
+    serviceRegistry.userRoleRepo.listAll().forEach {
+      serviceRegistry.userRoleRepo.delete(it.item.id, it.version)
     }
   }
 }
