@@ -8,8 +8,13 @@ import no.liflig.properties.intRequired
 import no.liflig.properties.loadProperties
 import no.liflig.properties.stringNotEmpty
 import no.liflig.properties.stringNotNull
-import no.liflig.userroles.common.config.http4k.CorsConfig
-import no.liflig.userroles.features.health.HealthBuildInfo
+import no.liflig.userroles.features.health.BuildInfo
+import org.http4k.core.Credentials
+import org.http4k.core.Method
+import org.http4k.filter.AllowAll
+import org.http4k.filter.AnyOf
+import org.http4k.filter.CorsPolicy
+import org.http4k.filter.OriginPolicy
 
 /**
  * Parsing of properties into configuration.
@@ -23,57 +28,55 @@ class Config(
     properties: Properties = loadProperties(),
     serverPort: Int? = null,
 ) {
-
-  val applicationName = "user-roles"
-
-  val corsPolicy = CorsConfig.from(properties).asPolicy()
-
-  val port = serverPort ?: properties.intRequired("server.port")
-
   val environmentName =
-      no.liflig.userroles.EnvironmentName.valueOf(
-          properties.stringNotNull("application.env").uppercase(),
-      )
+      EnvironmentName.valueOf(properties.stringNotNull("application.env").uppercase())
 
-  val logRequestBody = properties.booleanRequired("api.log.requestbody")
-
-  val buildInfo = properties.getHealthBuildInfo()
-
-  val basicAuth =
-      BasicAuth(
-          properties.stringNotEmpty("basic.auth.username"),
-          properties.stringNotEmpty("basic.auth.password"),
-      )
-
-  private fun Properties.getHealthBuildInfo() =
-      kotlin
-          .runCatching {
-            HealthBuildInfo(
-                timestamp = Instant.parse(stringNotNull("build.timestamp")),
-                commit = stringNotNull("build.commit"),
-                branch = stringNotNull("build.branch"),
-                number = 1,
-            )
-          }
-          .getOrElse {
-            if (environmentName == EnvironmentName.LOCAL) {
-              HealthBuildInfo(
-                  timestamp = Instant.now(),
-                  commit = "local",
-                  branch = "local",
-                  number = 1,
-              )
-            } else {
-              throw it
-            }
-          }
-
-  val databaseConfig: DbConfig = DbConfig.from(properties)
-  val databaseClean: Boolean = properties.boolean("database.clean") ?: false
+  val api = ApiConfig(properties, serverPortOverride = serverPort)
+  val database = DbConfig(properties)
+  val buildInfo = getBuildInfo(properties, environmentName)
 }
 
-class BasicAuth(private val username: String, private val password: String) {
-  fun header() = "Basic " + Base64.getEncoder().encodeToString("$username:$password".toByteArray())
+class ApiConfig(properties: Properties, serverPortOverride: Int?) {
+  val applicationName = properties.stringNotEmpty("service.name")
+  val serverPort = serverPortOverride ?: properties.intRequired("server.port")
+  val corsPolicy = CorsConfig(properties).asPolicy()
+  val credentials =
+      Credentials(
+          user = properties.stringNotEmpty("basic.auth.username"),
+          password = properties.stringNotEmpty("basic.auth.password"),
+      )
+  val logHttpBody = properties.booleanRequired("log.http.body")
+}
+
+class CorsConfig(properties: Properties) {
+  val allowedOrigins = properties.stringNotEmpty("cors.allow.origin").split(",")
+  val allowedHeaders = properties.stringNotEmpty("cors.allow.headers").split(",")
+  val allowedMethods =
+      properties.stringNotEmpty("cors.allow.methods").split(",").map(Method::valueOf)
+
+  fun asPolicy(): CorsPolicy =
+      CorsPolicy(
+          if ("*" in allowedOrigins) OriginPolicy.AllowAll()
+          else OriginPolicy.AnyOf(allowedOrigins),
+          allowedHeaders,
+          allowedMethods,
+      )
+}
+
+class DbConfig(properties: Properties) {
+  val username = properties.stringNotNull("database.username")
+  val password = properties.stringNotNull("database.password")
+
+  private val dbname = properties.stringNotNull("database.dbname")
+  private val port =
+      System.getenv("DB_PORT") // Used in CI
+       ?: properties.intRequired("database.port")
+  private val hostname =
+      System.getenv("DB_HOST") // Used in CI
+       ?: properties.stringNotNull("database.host")
+  val jdbcUrl = "jdbc:postgresql://$hostname:$port/$dbname"
+
+  val cleanOnStartup = properties.boolean("database.clean") ?: false
 }
 
 enum class EnvironmentName {
@@ -83,27 +86,29 @@ enum class EnvironmentName {
   PROD,
 }
 
-data class DbConfig(
-    val jdbcUrl: String,
-    val username: String,
-    val password: String,
-) {
-  companion object {
-    fun from(properties: Properties): DbConfig {
-      val port =
-          System.getenv("DB_PORT") // Used in CI
-           ?: properties.intRequired("database.port")
-
-      val hostname =
-          System.getenv("DB_HOST") // Used in CI
-           ?: properties.stringNotNull("database.host")
-
-      val dbname = properties.stringNotEmpty("database.dbname")
-      val username = properties.stringNotEmpty("database.username")
-      val password = properties.stringNotEmpty("database.password")
-      val jdbcUri = "jdbc:postgresql://$hostname:$port/$dbname"
-
-      return DbConfig(jdbcUri, username, password)
+fun getBuildInfo(properties: Properties, environmentName: EnvironmentName): BuildInfo {
+  try {
+    return BuildInfo(
+        timestamp = Instant.parse(properties.stringNotNull("build.timestamp")),
+        commit = properties.stringNotNull("build.commit"),
+        branch = properties.stringNotNull("build.branch"),
+        number =
+            try {
+              properties.intRequired("build.number")
+            } catch (e: IllegalArgumentException) {
+              0
+            },
+    )
+  } catch (e: Exception) {
+    if (environmentName == EnvironmentName.LOCAL) {
+      return BuildInfo(
+          timestamp = Instant.now(),
+          commit = "local",
+          branch = "local",
+          number = 1,
+      )
+    } else {
+      throw e
     }
   }
 }

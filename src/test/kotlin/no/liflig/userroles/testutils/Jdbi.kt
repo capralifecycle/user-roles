@@ -1,6 +1,6 @@
 package no.liflig.userroles.testutils
 
-import no.liflig.userroles.common.config.database.DatabaseConfigurator
+import no.liflig.userroles.common.database.DatabaseConfigurator
 import org.jdbi.v3.core.Jdbi
 import org.testcontainers.containers.PostgreSQLContainer
 

@@ -1,9 +1,0 @@
-{
-  "userId": "user123",
-  "roles": [
-    {
-      "orgId": "orgId1",
-      "roleName": "orgAdmin"
-    }
-  ]
-}

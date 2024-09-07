@@ -1,7 +1,7 @@
 package no.liflig.userroles.features.userroles.api
 
 import no.liflig.userroles.common.Endpoint
-import no.liflig.userroles.common.config.http4k.userIdPathLens
+import no.liflig.userroles.common.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div

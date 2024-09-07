@@ -1,7 +1,7 @@
 package no.liflig.userroles.testutils
 
 import kotlin.concurrent.thread
-import no.liflig.userroles.App
+import no.liflig.userroles.startApplication
 import org.awaitility.Awaitility
 import org.awaitility.core.ConditionTimeoutException
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -44,10 +44,14 @@ class FlowTestExtension :
   private fun setupTestSuite() {
     testServices = TestServices()
     // Run application concurrently, so that it doesn't block test code
-    thread { App.start(testServices.config, testServices.serviceRegistry) }
+    var appStarted = false
+    thread {
+      startApplication(testServices.config, testServices.registry)
+      appStarted = true
+    }
     // Make sure application is started before proceeding
     try {
-      Awaitility.await().until { App.isRunning }
+      Awaitility.await().until { appStarted }
     } catch (e: ConditionTimeoutException) {
       throw RuntimeException(
           "Server did not start up in time for tests to run. It might not have enough time to start" +

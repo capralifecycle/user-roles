@@ -16,9 +16,10 @@ import org.http4k.lens.string
 class ListUserRolesEndpoint(
     private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
-  // private val orgIdQuery = Query.map { PersonId(UUID.fromString(it)) }.optional("orgId")
-  private val orgIdQuery = Query.string().optional("orgId")
-  private val roleNameQuery = Query.string().optional("roleName")
+  companion object {
+    val orgIdQuery = Query.string().optional("orgId")
+    val roleNameQuery = Query.string().optional("roleName")
+  }
 
   override fun route(basePath: String): ContractRoute {
     val path = basePath

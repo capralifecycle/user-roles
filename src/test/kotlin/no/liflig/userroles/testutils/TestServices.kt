@@ -2,20 +2,23 @@ package no.liflig.userroles.testutils
 
 import no.liflig.userroles.Config
 import no.liflig.userroles.ServiceRegistry
+import org.http4k.client.JavaHttpClient
 
 /** Services that need to be exposed for tests */
 class TestServices {
   val serverPort: Int = AvailablePortLocator.findAvailableTcpPort()
+  val baseUrl = "http://localhost:${serverPort}"
   val config = Config(serverPort = serverPort)
-  val serviceRegistry: ServiceRegistry =
+
+  val registry: ServiceRegistry =
       ServiceRegistry(
-          config = config,
+          config,
           jdbi = createJdbiForTests(),
       )
 
+  val httpClient = JavaHttpClient()
+
   fun clear() {
-    serviceRegistry.userRoleRepo.listAll().forEach {
-      serviceRegistry.userRoleRepo.delete(it.item.id, it.version)
-    }
+    registry.userRoleRepo.listAll().forEach { registry.userRoleRepo.delete(it.item.id, it.version) }
   }
 }

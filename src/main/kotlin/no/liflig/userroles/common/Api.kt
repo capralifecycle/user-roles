@@ -6,7 +6,7 @@ interface Api {
   val basePath: String
   val endpoints: List<Endpoint>
 
-  fun getRoutes(): List<ContractRoute> = endpoints.map { it.route(basePath) }
+  fun routes(): List<ContractRoute> = endpoints.map { it.route(basePath) }
 }
 
 interface Endpoint {

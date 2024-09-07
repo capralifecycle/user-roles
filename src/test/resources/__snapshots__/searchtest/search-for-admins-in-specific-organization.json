@@ -1,0 +1,15 @@
+{
+  "userRoles": [
+    {
+      "userId": "user1236",
+      "roles": [
+        {
+          "applicationName": null,
+          "orgId": "orgId1",
+          "roleName": "orgAdmin",
+          "roleValue": null
+        }
+      ]
+    }
+  ]
+}

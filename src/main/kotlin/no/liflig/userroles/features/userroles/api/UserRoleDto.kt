@@ -1,7 +1,7 @@
 package no.liflig.userroles.features.userroles.api
 
 import kotlinx.serialization.Serializable
-import no.liflig.userroles.common.config.http4k.createBodyLens
+import no.liflig.userroles.common.http4k.createBodyLens
 import no.liflig.userroles.features.userroles.Role
 import no.liflig.userroles.features.userroles.UserRole
 

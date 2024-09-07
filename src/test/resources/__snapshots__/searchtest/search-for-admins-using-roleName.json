@@ -1,0 +1,61 @@
+{
+  "userRoles": [
+    {
+      "userId": "user1231",
+      "roles": [
+        {
+          "applicationName": null,
+          "orgId": "orgId1",
+          "roleName": "orgOwner",
+          "roleValue": null
+        },
+        {
+          "applicationName": null,
+          "orgId": "orgId2",
+          "roleName": "orgAdmin",
+          "roleValue": null
+        },
+        {
+          "applicationName": null,
+          "orgId": "orgId3",
+          "roleName": "orgMember",
+          "roleValue": "{\"boards\": [1,2,3]}"
+        },
+        {
+          "applicationName": null,
+          "orgId": null,
+          "roleName": "admin",
+          "roleValue": null
+        }
+      ]
+    },
+    {
+      "userId": "user1232",
+      "roles": [
+        {
+          "applicationName": null,
+          "orgId": null,
+          "roleName": "admin",
+          "roleValue": null
+        }
+      ]
+    },
+    {
+      "userId": "user1239",
+      "roles": [
+        {
+          "applicationName": null,
+          "orgId": "orgId3",
+          "roleName": "orgOwner",
+          "roleValue": null
+        },
+        {
+          "applicationName": null,
+          "orgId": null,
+          "roleName": "admin",
+          "roleValue": null
+        }
+      ]
+    }
+  ]
+}

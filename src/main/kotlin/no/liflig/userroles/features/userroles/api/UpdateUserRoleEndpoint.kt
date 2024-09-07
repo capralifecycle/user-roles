@@ -1,8 +1,9 @@
 package no.liflig.userroles.features.userroles.api
 
+import kotlinx.serialization.Serializable
 import no.liflig.userroles.common.Endpoint
-import no.liflig.userroles.common.config.http4k.createBodyLens
-import no.liflig.userroles.common.config.http4k.userIdPathLens
+import no.liflig.userroles.common.http4k.createBodyLens
+import no.liflig.userroles.common.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.Role
 import no.liflig.userroles.features.userroles.UserRole
 import no.liflig.userroles.features.userroles.UserRoleRepository
@@ -19,16 +20,6 @@ import org.http4k.core.with
 class UpdateUserRoleEndpoint(
     private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
-  @kotlinx.serialization.Serializable
-  data class UpdateRoleRequest(
-      val roles: List<Role>,
-  ) {
-    companion object {
-      val bodyLens = createBodyLens(serializer())
-      val example = UpdateRoleRequest(roles = listOf(exampleRole))
-    }
-  }
-
   override fun route(basePath: String): ContractRoute {
     val path = basePath / userIdPathLens
     val spec =
@@ -57,4 +48,14 @@ class UpdateUserRoleEndpoint(
           return Response(Status.OK).with(UserRoleDto.bodyLens of f.item.toDto())
         }
       }
+}
+
+@Serializable
+data class UpdateRoleRequest(
+    val roles: List<Role>,
+) {
+  companion object {
+    val bodyLens = createBodyLens(serializer())
+    val example = UpdateRoleRequest(roles = listOf(exampleRole))
+  }
 }
