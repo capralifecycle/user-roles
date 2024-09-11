@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>2.20240723.014517</version>
+    <version>3.20240828.064823</version>
   </parent>
 
   <groupId>no.liflig</groupId>
@@ -23,28 +23,31 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <java.version>11</java.version>
-    <kotlin.version>1.9.25</kotlin.version>
+    <kotlin.version>2.0.20</kotlin.version>
     <junit.version>5.11.0</junit.version>
-    <http4k.version>5.22.0.0</http4k.version>
+    <http4k.version>5.29.0.0</http4k.version>
     <arrow.version>1.2.4</arrow.version>
-    <awssdk.version>2.17.102</awssdk.version>
-    <aws-sdk-v2.version>2.17.102</aws-sdk-v2.version>
-    <slf4j-api.version>2.0.16</slf4j-api.version>
+    <awssdk.version>2.27.16</awssdk.version>
+    <slf4j.version>2.0.16</slf4j.version>
     <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
     <logback-classic.version>1.5.7</logback-classic.version>
-    <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
+    <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     <testcontainers.postgresql.version>1.20.1</testcontainers.postgresql.version>
     <hikariCP.version>5.1.0</hikariCP.version>
     <flyway.version>10.17.3</flyway.version>
     <postgresql.version>42.7.4</postgresql.version>
     <jdbi3-core.version>3.45.4</jdbi3-core.version>
+    <kotlinx-serialization.version>1.7.2</kotlinx-serialization.version>
+    <jackson.version>2.17.2</jackson.version>
+    <commons-codec.version>1.17.1</commons-codec.version>
+    <httpcore.version>4.4.16</httpcore.version>
 
     <!-- Liflig -->
     <liflig.properties.version>2.20240910.021315</liflig.properties.version>
-    <liflig-document-store.version>1.20240910.013246</liflig-document-store.version>
+    <liflig-document-store.version>2.20240911.113632</liflig-document-store.version>
     <liflig-logging-http4k.version>1.20240718.154356</liflig-logging-http4k.version>
     <liflig-snapshot-test.version>1.20240905.231604</liflig-snapshot-test.version>
-    <liflig-http4k.version>1.20240908.052132</liflig-http4k.version>
+    <liflig-http4k.version>1.20240911.123710</liflig-http4k.version>
 
     <!--testing-->
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
@@ -99,7 +102,33 @@
       <dependency>
         <groupId>software.amazon.awssdk</groupId>
         <artifactId>bom</artifactId>
-        <version>2.26.25</version>
+        <version>${awssdk.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>kotlinx-serialization-bom</artifactId>
+        <version>${kotlinx-serialization.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>kotlinx-serialization-json</artifactId>
+        <version>${kotlinx-serialization.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-bom</artifactId>
+        <version>${slf4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -110,6 +139,16 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons-codec.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpcore.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -117,7 +156,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j-api.version}</version>
     </dependency>
     <dependency>
       <groupId>io.github.microutils</groupId>
@@ -127,6 +165,10 @@
     <dependency>
       <groupId>org.http4k</groupId>
       <artifactId>http4k-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-serialization-json</artifactId>
     </dependency>
 
     <!-- For serialization in OpenAPI Swagger docs -->
@@ -209,11 +251,6 @@
     </dependency>
     <dependency>
       <groupId>no.liflig</groupId>
-      <artifactId>liflig-logging-http4k</artifactId>
-      <version>${liflig-logging-http4k.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>no.liflig</groupId>
       <artifactId>snapshot-test</artifactId>
       <version>${liflig-snapshot-test.version}</version>
     </dependency>
@@ -277,6 +314,30 @@
       </resource>
     </resources>
     <plugins>
+      <!-- Plugin for enforcing proper dependency management -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <rules>
+                <banDuplicatePomDependencyVersions/>
+                <dependencyConvergence/>
+                <requireUpperBoundDeps/>
+                <banDynamicVersions>
+                  <allowSnapshots>true</allowSnapshots>
+                </banDynamicVersions>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Used for integration tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

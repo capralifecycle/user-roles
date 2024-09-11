@@ -1,13 +1,13 @@
-@file:UseSerializers(UuidSerializer::class)
+@file:UseSerializers(UUIDSerializer::class)
 
 package no.liflig.userroles.features.userroles
 
-import java.util.*
+import java.util.UUID
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import no.liflig.documentstore.entity.Entity
 import no.liflig.documentstore.entity.UuidEntityId
-import no.liflig.userroles.common.serialization.UuidSerializer
+import no.liflig.userroles.common.serialization.UUIDSerializer
 
 @Serializable
 data class UserRole(
