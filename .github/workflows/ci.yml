@@ -11,60 +11,65 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+# NOTE: Set concurrency for the current workflow to 1
+concurrency: ci-${{ github.ref }}-${{ github.workflow }}
+
 jobs:
-  get-runner-user:
-    runs-on: ubuntu-22.04
-    outputs:
-      uid_gid: ${{ steps.get-user.outputs.uid_gid }}
-    steps:
-      - id: get-user
-        run: echo "uid_gid=$(id -u):$(id -g)" >> "$GITHUB_OUTPUT"
   build-and-deploy:
-    needs: get-runner-user
+    timeout-minutes: 60
     runs-on: ubuntu-22.04
-    container:
-      image: "public.ecr.aws/z8l5l4v4/buildtools/tool/node:18"
-      options: --user ${{ needs.get-runner-user.outputs.uid_gid }}
     permissions:
       contents: read
       packages: write
       id-token: write
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - uses: capralifecycle/actions-lib/check-runtime-dependencies@42cbe330ccc0282f04edbf0a6ee8928b5b2c4df0 # v1.1.0
+
+      - uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4
+        with:
+          distribution: "zulu"
+          java-version: "17.0.10"
+          java-package: jdk
+
       - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: maven-
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
       - name: store branch name in environment
         run: echo "BRANCH_NAME=$(echo ${GITHUB_REF##*/})" >> "$GITHUB_ENV"
-      - name: configure maven
-        run: |
-          mkdir -p "$HOME/.m2"
-          cat <<EOF > "$HOME/.m2/settings.xml"
-          <?xml version="1.0" encoding="UTF-8"?>
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                https://maven.apache.org/xsd/settings-1.0.0.xsd">
-            <servers>
-              <server>
-                <id>github</id>
-                <username>\${env.GITHUB_ACTOR}</username>
-                <password>\${env.GITHUB_TOKEN}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
-      - name: build and analyze
-        uses: "docker://public.ecr.aws/z8l5l4v4/buildtools/tool/maven:3-jdk-17-debian"
-        with:
-          args: 'bash -c "set -euo pipefail; export MAVEN_OPTS=\"-Duser.home=$HOME\"; mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"; mvn sonar:sonar;"'
+
+      - name: build and test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GIT_COMMIT_ID: ${{ env.GITHUB_SHA }}
           BRANCH_NAME: ${{ env.GITHUB_REF_NAME }}
+        run: |
+          mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"
+          mvn sonar:sonar
+      
+      - name: show errors
+        if: ${{ failure() }}
+        env:
+          FAILS_FILE: ${{ runner.temp }}/fails.txt
+        run: |
+          echo '## Build failure  ' >> $GITHUB_STEP_SUMMARY
+          { find . -type f -path '*target/surefire-reports/*.txt' -exec grep -l -E '(Failures: [^0]|Errors: [^0])' {} >> "${FAILS_FILE}" \; || :; }
+          { find . -type f -path '*target/failsafe-reports/*.txt' -exec grep -l -E '(Failures: [^0]|Errors: [^0])' {} >> "${FAILS_FILE}" \; || :; }
+
+          while IFS="" read -r errorFile || [ -n "$errorFile" ]; do
+            echo "**${errorFile}**  " >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            cat "${errorFile}" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo '---' >> $GITHUB_STEP_SUMMARY
+          done < "${FAILS_FILE}"
+
       - name: Generate custom tag for release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
