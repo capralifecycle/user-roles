@@ -32,7 +32,6 @@ jobs:
           distribution: "zulu"
           java-version: "17.0.10"
           java-package: jdk
-          fetch-depth: 0 # Fetch history to show blame in Sonarcloud
 
       - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
@@ -50,7 +49,26 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GIT_COMMIT_ID: ${{ env.GITHUB_SHA }}
           BRANCH_NAME: ${{ env.GITHUB_REF_NAME }}
-        run: 'mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"; mvn sonar:sonar;'
+        run: |
+          mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"
+          mvn sonar:sonar
+      
+      - name: show errors
+        if: ${{ failure() }}
+        env:
+          FAILS_FILE: ${{ runner.temp }}/fails.txt
+        run: |
+          echo '## Build failure  ' >> $GITHUB_STEP_SUMMARY
+          { find . -type f -path '*target/surefire-reports/*.txt' -exec grep -l -E '(Failures: [^0]|Errors: [^0])' {} >> "${FAILS_FILE}" \; || :; }
+          { find . -type f -path '*target/failsafe-reports/*.txt' -exec grep -l -E '(Failures: [^0]|Errors: [^0])' {} >> "${FAILS_FILE}" \; || :; }
+
+          while IFS="" read -r errorFile || [ -n "$errorFile" ]; do
+            echo "**${errorFile}**  " >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            cat "${errorFile}" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo '---' >> $GITHUB_STEP_SUMMARY
+          done < "${FAILS_FILE}"
 
       - name: Generate custom tag for release
         env:
