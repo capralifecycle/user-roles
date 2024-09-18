@@ -43,7 +43,7 @@ object DatabaseConfigurator {
         Flyway.configure()
             .cleanDisabled(!cleanDatabase)
             .dataSource(dataSource)
-            .locations("database/migration")
+            .locations("migrations")
             .load()
 
     if (cleanDatabase) {
