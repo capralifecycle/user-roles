@@ -5,6 +5,7 @@ import no.liflig.http4k.setup.LifligBasicApiSetup
 import no.liflig.http4k.setup.errorhandling.ContractLensErrorResponseRenderer
 import no.liflig.http4k.setup.logging.LoggingFilter
 import no.liflig.userroles.common.Api
+import no.liflig.userroles.common.errorhandling.MapPublicExceptionsToErrorResponseFilter
 import no.liflig.userroles.common.http4k.AuthFilter
 import no.liflig.userroles.common.http4k.CustomJacksonConfig
 import no.liflig.userroles.common.http4k.serverConfig
@@ -66,6 +67,7 @@ class ApiServer(
 
     val httpHandler =
         coreFilters
+            .then(MapPublicExceptionsToErrorResponseFilter())
             .then(AuthFilter(config.api.credentials))
             .then(
                 routes(
