@@ -1,6 +1,6 @@
 package no.liflig.userroles.features.userroles.api
 
-import no.liflig.userroles.common.Endpoint
+import no.liflig.userroles.common.http4k.Endpoint
 import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
@@ -21,19 +21,17 @@ class ListUserRolesEndpoint(
     val roleNameQuery = Query.string().optional("roleName")
   }
 
-  override fun route(basePath: String): ContractRoute {
-    val path = basePath
+  override fun route(): ContractRoute {
+    val path = UserRoleApi.PATH
     val spec =
-        path meta
-            {
-              summary = "Get user roles"
-              description = "Get user roles"
-              queries += orgIdQuery
-              queries += roleNameQuery
-              returning(
-                  status = Status.OK, body = ListUserRoleDto.bodyLens to ListUserRoleDto.example)
-            }
-    return spec bindContract Method.GET to ::handler
+        path.meta {
+          summary = "Get user roles"
+          description = "Get user roles"
+          queries += orgIdQuery
+          queries += roleNameQuery
+          returning(status = Status.OK, body = ListUserRoleDto.bodyLens to ListUserRoleDto.example)
+        }
+    return spec.bindContract(Method.GET) to ::handler
   }
 
   private fun handler(request: Request): Response {

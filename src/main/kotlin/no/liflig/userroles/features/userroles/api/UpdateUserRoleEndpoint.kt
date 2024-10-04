@@ -1,7 +1,7 @@
 package no.liflig.userroles.features.userroles.api
 
 import kotlinx.serialization.Serializable
-import no.liflig.userroles.common.Endpoint
+import no.liflig.userroles.common.http4k.Endpoint
 import no.liflig.userroles.common.http4k.createBodyLens
 import no.liflig.userroles.common.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.Role
@@ -20,17 +20,16 @@ import org.http4k.core.with
 class UpdateUserRoleEndpoint(
     private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
-  override fun route(basePath: String): ContractRoute {
-    val path = basePath / userIdPathLens
+  override fun route(): ContractRoute {
+    val path = UserRoleApi.PATH / userIdPathLens
     val spec =
-        path meta
-            {
-              summary = "Update user role"
-              description = "Update user role"
-              receiving(body = UpdateRoleRequest.bodyLens to UpdateRoleRequest.example)
-              returning(Status.OK, body = UserRoleDto.bodyLens to UserRoleDto.example)
-            }
-    return spec bindContract Method.PUT to ::handler
+        path.meta {
+          summary = "Update user role"
+          description = "Update user role"
+          receiving(body = UpdateRoleRequest.bodyLens to UpdateRoleRequest.example)
+          returning(Status.OK, body = UserRoleDto.bodyLens to UserRoleDto.example)
+        }
+    return spec.bindContract(Method.PUT) to ::handler
   }
 
   private fun handler(userId: String) =

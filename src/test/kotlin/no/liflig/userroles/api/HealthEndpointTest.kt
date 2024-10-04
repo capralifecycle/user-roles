@@ -1,4 +1,4 @@
-package no.liflig.userroles.features.health
+package no.liflig.userroles.api
 
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices

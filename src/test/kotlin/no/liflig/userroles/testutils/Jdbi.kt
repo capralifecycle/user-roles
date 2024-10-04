@@ -17,10 +17,8 @@ fun createJdbiForTests(): Jdbi {
 
   // Unsure if we need other db driver in the Hikari config during tests
   return DatabaseConfigurator.createJdbiInstanceAndMigrate(
-      DatabaseConfigurator.createDataSource(
-          pgContainer.jdbcUrl,
-          username,
-          password,
-      ),
+      url = pgContainer.jdbcUrl,
+      username = username,
+      password = password,
   )
 }

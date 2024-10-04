@@ -1,22 +1,23 @@
 @file:UseSerializers(InstantSerializer::class)
 
-package no.liflig.userroles.features.health
+package no.liflig.userroles.api
 
 import java.lang.management.ManagementFactory
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import no.liflig.userroles.common.http4k.createBodyLens
+import no.liflig.userroles.common.config.BuildInfo
 import no.liflig.userroles.common.serialization.InstantSerializer
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
+import org.http4k.format.KotlinxSerialization
 
 class HealthEndpoint(
-    private val applicationName: String,
+    private val serviceName: String,
     private val buildInfo: BuildInfo,
 ) : HttpHandler {
   private val runningSince = getRunningSince()
@@ -24,12 +25,11 @@ class HealthEndpoint(
   override operator fun invoke(request: Request): Response {
     val status =
         HealthStatus(
-            name = applicationName,
+            name = serviceName,
             timestamp = Instant.now(),
             runningSince = runningSince,
             build = buildInfo,
         )
-
     return Response(Status.OK).with(HealthStatus.bodyLens.of(status))
   }
 
@@ -40,24 +40,13 @@ class HealthEndpoint(
 }
 
 @Serializable
-private data class HealthStatus(
+data class HealthStatus(
     val name: String,
     val timestamp: Instant,
     val runningSince: Instant,
     val build: BuildInfo,
 ) {
   companion object {
-    val bodyLens = createBodyLens(serializer())
+    val bodyLens = KotlinxSerialization.autoBody<HealthStatus>().toLens()
   }
 }
-
-@Serializable
-data class BuildInfo(
-    val timestamp: Instant,
-    /** Git commit sha. */
-    val commit: String,
-    /** Git branch. */
-    val branch: String,
-    /** CI build number. */
-    val number: Int,
-)

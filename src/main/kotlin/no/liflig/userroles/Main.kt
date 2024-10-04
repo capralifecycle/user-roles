@@ -1,11 +1,7 @@
 package no.liflig.userroles
 
-fun main() {
-  val config = Config()
-  val registry = ServiceRegistry(config)
-  startApplication(config, registry)
-}
+import no.liflig.userroles.common.config.Config
 
-fun startApplication(config: Config, registry: ServiceRegistry) {
-  ApiServer(config, registry).start()
+fun main() {
+  App(Config.load()).start()
 }

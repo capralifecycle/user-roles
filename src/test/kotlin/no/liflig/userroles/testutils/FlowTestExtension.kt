@@ -1,7 +1,6 @@
 package no.liflig.userroles.testutils
 
 import kotlin.concurrent.thread
-import no.liflig.userroles.startApplication
 import org.awaitility.Awaitility
 import org.awaitility.core.ConditionTimeoutException
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -46,7 +45,7 @@ class FlowTestExtension :
     // Run application concurrently, so that it doesn't block test code
     var appStarted = false
     thread {
-      startApplication(testServices.config, testServices.registry)
+      testServices.app.start()
       appStarted = true
     }
     // Make sure application is started before proceeding

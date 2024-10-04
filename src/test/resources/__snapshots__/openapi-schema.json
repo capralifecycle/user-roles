@@ -1,0 +1,350 @@
+{
+  "info": {
+    "title": "user-roles",
+    "version": "v1",
+    "description": "REST API for user-roles."
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/api/userroles": {
+      "get": {
+        "summary": "Get user roles",
+        "description": "Get user roles",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "orgId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "roleName",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "userRoles": [
+                    {
+                      "userId": "customerName",
+                      "roles": [
+                        {
+                          "applicationName": null,
+                          "orgId": null,
+                          "roleName": "admin",
+                          "roleValue": "{\"boards\": [1,2,3]}"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ListUserRoleDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "getApiUserroles",
+        "deprecated": false
+      }
+    },
+    "/api/userroles/{userId}": {
+      "delete": {
+        "summary": "Delete user role",
+        "description": "Delete user role",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "userId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
+          }
+        },
+        "security": [],
+        "operationId": "deleteApiUserroles_userId",
+        "deprecated": false
+      },
+      "get": {
+        "summary": "Get userRole",
+        "description": "Get userRole",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "userId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "userId": "ola.nordmann",
+                  "roles": [
+                    {
+                      "applicationName": "logistics",
+                      "orgId": null,
+                      "roleName": "admin",
+                      "roleValue": null
+                    },
+                    {
+                      "applicationName": "admin",
+                      "orgId": null,
+                      "roleName": "view",
+                      "roleValue": null
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UserRoleDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "getApiUserroles_userId",
+        "deprecated": false
+      },
+      "put": {
+        "summary": "Update user role",
+        "description": "Update user role",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "userId",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "roles": [
+                  {
+                    "applicationName": null,
+                    "orgId": null,
+                    "roleName": "admin",
+                    "roleValue": "{\"boards\": [1,2,3]}"
+                  }
+                ]
+              },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "userId": "ola.nordmann",
+                  "roles": [
+                    {
+                      "applicationName": "logistics",
+                      "orgId": null,
+                      "roleName": "admin",
+                      "roleValue": null
+                    },
+                    {
+                      "applicationName": "admin",
+                      "orgId": null,
+                      "roleName": "view",
+                      "roleValue": null
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UserRoleDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "putApiUserroles_userId",
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRoleDto": {
+        "properties": {
+          "userId": {
+            "example": "customerName",
+            "type": "string",
+            "nullable": false
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            },
+            "example": [
+              {
+                "roleName": "admin",
+                "roleValue": "{\"boards\": [1,2,3]}"
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "userId": "customerName",
+          "roles": [
+            {
+              "roleName": "admin",
+              "roleValue": "{\"boards\": [1,2,3]}"
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "roles",
+          "userId"
+        ]
+      },
+      "Role": {
+        "properties": {
+          "roleName": {
+            "example": "admin",
+            "type": "string",
+            "nullable": false
+          },
+          "roleValue": {
+            "example": "{\"boards\": [1,2,3]}",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "example": {
+          "roleName": "admin",
+          "roleValue": "{\"boards\": [1,2,3]}"
+        },
+        "type": "object",
+        "required": [
+          "roleName"
+        ]
+      },
+      "UpdateRoleRequest": {
+        "properties": {
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            },
+            "example": [
+              {
+                "roleName": "admin",
+                "roleValue": "{\"boards\": [1,2,3]}"
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "roles": [
+            {
+              "roleName": "admin",
+              "roleValue": "{\"boards\": [1,2,3]}"
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "roles"
+        ]
+      },
+      "ListUserRoleDto": {
+        "properties": {
+          "userRoles": {
+            "items": {
+              "$ref": "#/components/schemas/UserRoleDto"
+            },
+            "example": [
+              {
+                "userId": "customerName",
+                "roles": [
+                  {
+                    "roleName": "admin",
+                    "roleValue": "{\"boards\": [1,2,3]}"
+                  }
+                ]
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "userRoles": [
+            {
+              "userId": "customerName",
+              "roles": [
+                {
+                  "roleName": "admin",
+                  "roleValue": "{\"boards\": [1,2,3]}"
+                }
+              ]
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "userRoles"
+        ]
+      }
+    },
+    "securitySchemes": {}
+  },
+  "openapi": "3.0.0"
+}

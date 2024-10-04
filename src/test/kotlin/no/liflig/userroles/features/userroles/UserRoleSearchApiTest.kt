@@ -29,7 +29,7 @@ class SearchUserRolesTest {
       services.clear()
 
       val testData = readJsonResource<TestUserRoles>("searchtest/initial-user-roles.json")
-      testData.userRoles.forEach { services.registry.userRoleRepo.create(it) }
+      testData.userRoles.forEach { services.app.userRoleRepo.create(it) }
     }
 
     data class TestCase(

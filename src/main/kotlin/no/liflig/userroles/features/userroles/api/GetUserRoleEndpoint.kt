@@ -1,6 +1,6 @@
 package no.liflig.userroles.features.userroles.api
 
-import no.liflig.userroles.common.Endpoint
+import no.liflig.userroles.common.http4k.Endpoint
 import no.liflig.userroles.common.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.UserRoleRepository
 import org.http4k.contract.ContractRoute
@@ -16,16 +16,15 @@ import org.http4k.core.with
 class GetUserRoleEndpoint(
     private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
-  override fun route(basePath: String): ContractRoute {
-    val path = basePath / userIdPathLens
+  override fun route(): ContractRoute {
+    val path = UserRoleApi.PATH / userIdPathLens
     val spec =
-        path meta
-            {
-              summary = "Get userRole"
-              description = "Get userRole"
-              returning(status = Status.OK, body = UserRoleDto.bodyLens to UserRoleDto.example)
-            }
-    return spec bindContract Method.GET to ::handler
+        path.meta {
+          summary = "Get userRole"
+          description = "Get userRole"
+          returning(status = Status.OK, body = UserRoleDto.bodyLens to UserRoleDto.example)
+        }
+    return spec.bindContract(Method.GET) to ::handler
   }
 
   private fun handler(userId: String) =
