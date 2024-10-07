@@ -133,6 +133,7 @@ object DatabaseConfigurator {
   private fun migrate(dataSource: DataSource, cleanDatabase: Boolean) {
     val flyway =
         Flyway.configure()
+            .cleanDisabled(!cleanDatabase)
             .baselineOnMigrate(true)
             .dataSource(dataSource)
             .locations("migrations")
