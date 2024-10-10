@@ -8,7 +8,7 @@ import no.liflig.http4k.setup.errorhandling.ContractLensErrorResponseRenderer
 import no.liflig.http4k.setup.logging.LoggingFilter
 import no.liflig.userroles.App
 import no.liflig.userroles.common.config.Config
-import no.liflig.userroles.common.errorhandling.MapPublicExceptionsToErrorResponseFilter
+import no.liflig.userroles.common.errorhandling.PublicExceptionFilter
 import no.liflig.userroles.common.http4k.AuthFilter
 import no.liflig.userroles.common.http4k.CustomJacksonConfig
 import no.liflig.userroles.common.http4k.EndpointGroup
@@ -80,7 +80,7 @@ class ApiServer(
     }
 
     return coreFilters
-        .then(MapPublicExceptionsToErrorResponseFilter())
+        .then(PublicExceptionFilter())
         .then(AuthFilter(config.api.credentials))
         .then(
             routes(

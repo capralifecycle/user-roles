@@ -10,19 +10,17 @@ import org.http4k.core.then
 import org.http4k.filter.ServerFilters
 import org.junit.jupiter.api.Test
 
-class MapPublicExceptionsToErrorResponseFilterTest {
+class PublicExceptionFilterTest {
   @Test
-  fun `MapPublicExceptionsToErrorResponseFilter catches and maps PublicException`() {
+  fun `filter catches and maps PublicException`() {
     val handler =
-        ServerFilters.InitialiseRequestContext(contexts)
-            .then(MapPublicExceptionsToErrorResponseFilter())
-            .then {
-              throw PublicException(
-                  publicMessage = "Test message",
-                  publicDetails = "Test details",
-                  type = ErrorType.BAD_REQUEST,
-              )
-            }
+        ServerFilters.InitialiseRequestContext(contexts).then(PublicExceptionFilter()).then {
+          throw PublicException(
+              "Test message",
+              ErrorType.BAD_REQUEST,
+              publicDetails = "Test details",
+          )
+        }
 
     val response = handler(Request(Method.GET, "/api/test"))
     assertThat(response.status).isEqualTo(Status.BAD_REQUEST)

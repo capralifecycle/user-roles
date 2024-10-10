@@ -1,8 +1,8 @@
 package no.liflig.userroles.features.userroles.api
 
 import kotlinx.serialization.Serializable
+import no.liflig.userroles.common.errorhandling.createJsonBodyLensWithErrorMessage
 import no.liflig.userroles.common.http4k.Endpoint
-import no.liflig.userroles.common.http4k.createBodyLens
 import no.liflig.userroles.common.http4k.userIdPathLens
 import no.liflig.userroles.features.userroles.Role
 import no.liflig.userroles.features.userroles.UserRole
@@ -54,7 +54,8 @@ data class UpdateRoleRequest(
     val roles: List<Role>,
 ) {
   companion object {
-    val bodyLens = createBodyLens(serializer())
+    val bodyLens =
+        createJsonBodyLensWithErrorMessage(serializer(), "Failed to parse user role update request")
     val example = UpdateRoleRequest(roles = listOf(exampleRole))
   }
 }

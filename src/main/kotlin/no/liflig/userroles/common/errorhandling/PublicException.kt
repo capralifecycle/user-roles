@@ -9,51 +9,48 @@ import org.http4k.core.Status
 /**
  * Exception with a message that is safe to expose publically to clients.
  *
- * If using this in an http4k server, remember to add the [MapPublicExceptionsToErrorResponseFilter]
- * to the API. Once that is done, the filter will catch any thrown [PublicException]s and map them
- * to appropriate HTTP responses (see [toErrorResponse]), and also log the exception as part of the
- * request log.
+ * If using this in an http4k server, remember to:
+ * - Add [PublicExceptionFilter] to the filter stack
+ * - Use [CustomErrorResponseRenderer] as the `errorResponseBodyRenderer` in
+ *   [LifligBasicApiSetup][no.liflig.http4k.setup.LifligBasicApiSetup]
+ *
+ * Once that is done, any [PublicException]s thrown in API endpoints will be mapped to appropriate
+ * HTTP responses (see [toErrorResponse]), and also be logged as part of the request log.
  *
  * If mapping a different exception to a [PublicException], remember to set [cause] so that the
  * details of the original exception are included in the logs!
+ *
+ * @param publicMessage The safe-to-expose public message. When mapped to an HTTP response, it will
+ *   be in the "title" field of the Problem Details body.
+ *
+ *   Also included in the logged exception message.
+ *
+ * @param publicDetails An optional extra message with more details to show to the client. When
+ *   mapped to an HTTP response, it will be in the "detail" field of the Problem Details body.
+ *
+ *   Also included in the logged exception message.
+ *
+ * @param type Generic error type, so that service/repository layers do not have to import
+ *   HTTP-specific things when defining a [PublicException].
+ *
+ *   Maps to a corresponding HTTP status code if the exception is transformed to an HTTP response.
+ *
+ * @param internalDetails Additional details to attach to the exception message for internal
+ *   logging. Will be appended in square brackets after [publicMessage].
+ * @param cause If mapping a different exception to a [PublicException], set or override this
+ *   parameter so that the details of the original exception are included in the logs.
  */
 open class PublicException(
-    /**
-     * The safe-to-expose public message. When mapped to an HTTP response, it will be in the "title"
-     * field of the Problem Details body.
-     *
-     * Also included in the logged exception message.
-     */
     val publicMessage: String,
-    /**
-     * An optional extra message with more details to show to the client. When mapped to an HTTP
-     * response, it will be in the "detail" field of the Problem Details body.
-     *
-     * Also included in the logged exception message.
-     */
+    val type: ErrorType,
     val publicDetails: String? = null,
-    /**
-     * Generic error type, so that service/repository layers do not have to import HTTP-specific
-     * things when defining a [PublicException].
-     *
-     * Maps to a corresponding HTTP status code if the exception is transformed to an HTTP response.
-     */
-    val type: ErrorType = ErrorType.INTERNAL_ERROR,
-    /**
-     * Additional details to attach to the exception message for internal logging. Will be appended
-     * in square brackets after [publicMessage].
-     */
     val internalDetails: String? = null,
-    /**
-     * If mapping a different exception to a [PublicException], set or override this parameter so
-     * that the details of the original exception are included in the logs.
-     */
     override val cause: Exception? = null,
 ) : RuntimeException() {
   /**
    * This message should _not_ be exposed to clients, since it may include [internalDetails]. Use
    * [publicMessage] and [publicDetails] instead, or let the exception get caught by
-   * [MapPublicExceptionsToErrorResponseFilter] to map it to an appropriate HTTP response.
+   * [PublicExceptionFilter] to map it to an appropriate HTTP response.
    */
   override val message: String =
       buildExceptionMessage(publicMessage, publicDetails, internalDetails)
@@ -160,9 +157,8 @@ open class PublicException(
  * Generic error type, so that service/repository layers do not have to import HTTP-specific things
  * when defining a [PublicException].
  *
- * When a [PublicException] is thrown in the context of an HTTP request, the
- * [MapPublicExceptionsToErrorResponseFilter] will catch it and map it to an appropriate HTTP
- * response, with the [httpStatus] here.
+ * When a [PublicException] is thrown in the context of an HTTP request, the [PublicExceptionFilter]
+ * will catch it and map it to an appropriate HTTP response, with the [httpStatus] here.
  */
 @Suppress("unused")
 enum class ErrorType(val httpStatus: Status) {

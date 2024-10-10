@@ -1,7 +1,7 @@
 package no.liflig.userroles.features.userroles.api
 
 import kotlinx.serialization.Serializable
-import no.liflig.userroles.common.http4k.createBodyLens
+import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.features.userroles.Role
 import no.liflig.userroles.features.userroles.UserRole
 
@@ -11,7 +11,7 @@ data class UserRoleDto(
     val roles: List<Role>,
 ) {
   companion object {
-    val bodyLens = createBodyLens(serializer())
+    val bodyLens = createJsonBodyLens(serializer())
     val example =
         UserRoleDto(
             userId = "ola.nordmann",
@@ -40,7 +40,7 @@ data class ListUserRoleDto(
     val userRoles: List<UserRoleDto>,
 ) {
   companion object {
-    val bodyLens = createBodyLens(serializer())
+    val bodyLens = createJsonBodyLens(serializer())
     val example =
         ListUserRoleDto(
             userRoles =

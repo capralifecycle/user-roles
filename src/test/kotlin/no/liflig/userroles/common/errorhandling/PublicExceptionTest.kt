@@ -16,8 +16,8 @@ class PublicExceptionTest {
     val exception =
         PublicException(
             "Something went wrong",
+            ErrorType.INTERNAL_ERROR,
             publicDetails = "Terribly wrong",
-            type = ErrorType.INTERNAL_ERROR,
             internalDetails = "Caused by failure",
             cause = cause,
         )
