@@ -29,7 +29,7 @@
     <awssdk.version>2.27.16</awssdk.version>
     <slf4j.version>2.0.16</slf4j.version>
     <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
-    <logback-classic.version>1.5.8</logback-classic.version>
+    <logback-classic.version>1.5.11</logback-classic.version>
     <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     <testcontainers.postgresql.version>1.20.2</testcontainers.postgresql.version>
     <hikariCP.version>5.1.0</hikariCP.version>
