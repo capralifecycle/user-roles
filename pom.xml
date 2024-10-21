@@ -35,7 +35,7 @@
     <hikariCP.version>5.1.0</hikariCP.version>
     <flyway.version>10.19.0</flyway.version>
     <postgresql.version>42.7.4</postgresql.version>
-    <jdbi3.version>3.45.4</jdbi3.version>
+    <jdbi3.version>3.46.0</jdbi3.version>
     <kotlinx-serialization.version>1.7.3</kotlinx-serialization.version>
     <jackson.version>2.18.0</jackson.version>
     <commons-codec.version>1.17.1</commons-codec.version>
