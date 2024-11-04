@@ -50,7 +50,7 @@
 
     <!--testing-->
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <maven-failsafe-plugin.version>3.5.1</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
     <assertj-core.version>3.26.3</assertj-core.version>
 
     <!-- Sonarcloud -->
