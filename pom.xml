@@ -14,6 +14,8 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
+    <major-version>0</major-version>
+
     <!-- Overwritten in ci-build profile -->
     <build.commit>LOCAL</build.commit>
     <build.branch>LOCAL</build.branch>
