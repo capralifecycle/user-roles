@@ -3,7 +3,6 @@
 package no.liflig.userroles.common.config
 
 import java.time.Instant
-import java.time.format.DateTimeParseException
 import java.util.Properties
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -14,8 +13,7 @@ import no.liflig.userroles.common.serialization.InstantSerializer
 
 @Serializable
 data class BuildInfo(
-    /** During local development, this will be null. */
-    val timestamp: Instant?,
+    val timestamp: Instant,
     /** Git commit sha. */
     val commit: String,
     /** Git branch. */
@@ -29,12 +27,7 @@ data class BuildInfo(
     /** Create [BuildInfo] based on keys in `application.properties`. */
     fun from(properties: Properties) =
         BuildInfo(
-            timestamp =
-                try {
-                  Instant.parse(properties.stringNotNull("build.timestamp"))
-                } catch (ex: DateTimeParseException) {
-                  Instant.ofEpochMilli(0L)
-                },
+            timestamp = Instant.parse(properties.stringNotNull("build.timestamp")),
             commit = properties.stringNotNull("build.commit"),
             branch = properties.stringNotNull("build.branch"),
             number =
