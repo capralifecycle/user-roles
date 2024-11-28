@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: capralifecycle/actions-lib/check-runtime-dependencies@7887a32ad872a79a8e00817659a30876f0a8f1be # v1.5.5
+      - uses: capralifecycle/actions-lib/check-runtime-dependencies@a6d9e4b11cdae620cc8e7fcc121de8466f6cfde9 # v1.6.0
 
       - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
         with:
