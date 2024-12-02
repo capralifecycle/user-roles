@@ -53,7 +53,7 @@
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.7.3</kotlinx-serialization.version>
-    <jackson.version>2.18.1</jackson.version>
+    <jackson.version>2.18.2</jackson.version>
 
     <!-- Logging -->
     <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
