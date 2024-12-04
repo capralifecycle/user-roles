@@ -40,7 +40,7 @@
     <liflig-http4k.version>1.20241130.081321</liflig-http4k.version>
 
     <!-- API -->
-    <http4k.version>5.35.5.0</http4k.version>
+    <http4k.version>5.37.1.1</http4k.version>
 
     <!-- Database -->
     <hikariCP.version>5.1.0</hikariCP.version>
