@@ -69,7 +69,7 @@
     <httpcore.version>4.4.16</httpcore.version>
 
     <!-- Testing -->
-    <junit.version>5.11.3</junit.version>
+    <junit.version>5.11.4</junit.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
     <assertj-core.version>3.26.3</assertj-core.version>
