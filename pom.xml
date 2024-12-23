@@ -72,7 +72,7 @@
     <junit.version>5.11.4</junit.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
-    <assertj-core.version>3.26.3</assertj-core.version>
+    <assertj-core.version>3.27.0</assertj-core.version>
     <testcontainers.postgresql.version>1.20.4</testcontainers.postgresql.version>
 
     <!-- Sonarcloud -->
