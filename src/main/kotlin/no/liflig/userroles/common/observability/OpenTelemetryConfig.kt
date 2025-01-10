@@ -7,8 +7,7 @@ import io.opentelemetry.api.trace.SpanBuilder
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.api.trace.Tracer
 import java.util.logging.Level
-import java.util.logging.Logger
-import mu.KotlinLogging
+import no.liflig.logging.getLogger
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 /**
@@ -19,7 +18,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
  * for usage of the SDK.
  */
 class OpenTelemetryConfig {
-  private val log = KotlinLogging.logger {}
+  private val log = getLogger {}
 
   companion object {
     private const val INSTRUMENTATION_NAME =
@@ -48,7 +47,7 @@ class OpenTelemetryConfig {
         log.info { "Configuring OpenTelemetry" }
 
         // OTel uses JUL at debug level
-        Logger.getLogger("io.opentelemetry").level = Level.WARNING
+        java.util.logging.Logger.getLogger("io.opentelemetry").level = Level.WARNING
         SLF4JBridgeHandler.removeHandlersForRootLogger()
         SLF4JBridgeHandler.install()
 

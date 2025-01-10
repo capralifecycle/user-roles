@@ -27,19 +27,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <kotlin.version>2.0.21</kotlin.version>
+    <kotlin.version>2.1.0</kotlin.version>
     <java.version>17</java.version>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig.properties.version>2.20241201.044037</liflig.properties.version>
-    <liflig-document-store.version>2.20241213.063533</liflig-document-store.version>
+    <liflig-properties.version>2.20250110.084847</liflig-properties.version>
+    <liflig-http4k-setup.version>1.20250110.084704</liflig-http4k-setup.version>
+    <liflig-document-store.version>2.20250109.202147</liflig-document-store.version>
+    <liflig-logging.version>2.20250110.050020</liflig-logging.version>
     <liflig-snapshot-test.version>1.20240905.231604</liflig-snapshot-test.version>
-    <liflig-http4k.version>1.20241226.120007</liflig-http4k.version>
 
     <!-- API -->
-    <http4k.version>5.41.0.0</http4k.version>
+    <http4k.version>5.43.0.0</http4k.version>
 
     <!-- Database -->
     <hikariCP.version>5.1.0</hikariCP.version>
@@ -48,21 +49,20 @@
     <jdbi.version>3.47.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.29.23</awssdk.version>
+    <awssdk.version>2.29.43</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.7.3</kotlinx-serialization.version>
     <jackson.version>2.18.2</jackson.version>
 
     <!-- Logging -->
-    <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
-    <logback-classic.version>1.5.12</logback-classic.version>
+    <logback-classic.version>1.5.16</logback-classic.version>
     <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.16</slf4j.version>
     <opentelemetry.version>1.45.0</opentelemetry.version>
 
     <!-- Other -->
-    <arrow.version>1.2.4</arrow.version>
+    <arrow.version>2.0.0</arrow.version>
 
     <!-- Transitive dependencies -->
     <commons-codec.version>1.17.1</commons-codec.version>
@@ -85,6 +85,14 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-bom</artifactId>
+        <version>${kotlin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <!-- API -->
       <dependency>
         <groupId>org.http4k</groupId>
@@ -183,7 +191,7 @@
     <dependency>
       <groupId>no.liflig</groupId>
       <artifactId>properties</artifactId>
-      <version>${liflig.properties.version}</version>
+      <version>${liflig-properties.version}</version>
     </dependency>
     <dependency>
       <groupId>no.liflig</groupId>
@@ -192,13 +200,18 @@
     </dependency>
     <dependency>
       <groupId>no.liflig</groupId>
-      <artifactId>snapshot-test</artifactId>
-      <version>${liflig-snapshot-test.version}</version>
+      <artifactId>liflig-http4k-setup</artifactId>
+      <version>${liflig-http4k-setup.version}</version>
     </dependency>
     <dependency>
       <groupId>no.liflig</groupId>
-      <artifactId>liflig-http4k-setup</artifactId>
-      <version>${liflig-http4k.version}</version>
+      <artifactId>liflig-logging</artifactId>
+      <version>${liflig-logging.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>no.liflig</groupId>
+      <artifactId>snapshot-test</artifactId>
+      <version>${liflig-snapshot-test.version}</version>
     </dependency>
 
     <!-- API -->
@@ -253,20 +266,6 @@
 
     <!-- Logging -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jul-to-slf4j</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.microutils</groupId>
-      <artifactId>kotlin-logging-jvm</artifactId>
-      <version>${kotlin-logging-jvm.version}</version>
-    </dependency>
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback-classic.version}</version>
@@ -275,6 +274,16 @@
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
       <version>${logstash-logback-encoder.version}</version>
+    </dependency>
+    <!-- Used to route OpenTelemetry logs from java.util.logging to SLF4J -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
+    <!-- Needed by liflig-properties when loading parameters from AWS -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
 
     <!-- Other -->

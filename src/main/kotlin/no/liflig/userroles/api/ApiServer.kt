@@ -1,11 +1,11 @@
 package no.liflig.userroles.api
 
 import com.fasterxml.jackson.databind.JsonNode
-import mu.KotlinLogging
 import no.liflig.http4k.setup.LifligBasicApiSetup
 import no.liflig.http4k.setup.LifligBasicApiSetupConfig
 import no.liflig.http4k.setup.errorhandling.ContractLensErrorResponseRenderer
 import no.liflig.http4k.setup.logging.LoggingFilter
+import no.liflig.logging.getLogger
 import no.liflig.userroles.App
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.errorhandling.PublicExceptionFilter
@@ -50,7 +50,7 @@ class ApiServer(
           UserRoleApi(app.userRoleRepo),
       )
 
-  private val log = KotlinLogging.logger {}
+  private val log = getLogger {}
 
   fun start(): Http4kServer {
     val router = createRouter()

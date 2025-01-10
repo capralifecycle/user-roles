@@ -3,7 +3,11 @@
   <property resource="application.properties"/>
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <!-- Writes object values from logging context as actual JSON (not escaped) -->
+      <mdcEntryWriter class="no.liflig.logging.LoggingContextJsonFieldWriter"/>
+    </encoder>
+
     <file>log.jsonl</file> <!-- jsonl extension since it's newline-delimited JSON (https://jsonlines.org/) -->
     <append>false</append>
   </appender>

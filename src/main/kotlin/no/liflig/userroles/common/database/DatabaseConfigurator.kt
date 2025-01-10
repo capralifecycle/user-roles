@@ -8,8 +8,8 @@ import java.sql.SQLException
 import java.util.concurrent.TimeUnit
 import javax.sql.DataSource
 import kotlin.concurrent.thread
-import mu.KotlinLogging
 import no.liflig.documentstore.DocumentStorePlugin
+import no.liflig.logging.getLogger
 import no.liflig.userroles.common.database.DatabaseConfigurator.createJdbiInstanceAndMigrate
 import no.liflig.userroles.common.observability.OpenTelemetryConfig
 import no.liflig.userroles.common.observability.use
@@ -24,7 +24,7 @@ import org.jdbi.v3.core.transaction.SerializableTransactionRunner
  * [createJdbiInstanceAndMigrate].
  */
 object DatabaseConfigurator {
-  private val log = KotlinLogging.logger {}
+  private val log = getLogger {}
 
   /**
    * Defined by `cpuCount * 2 + 2`.
@@ -146,16 +146,16 @@ object DatabaseConfigurator {
 
     if (cleanDatabase) {
       if (dataSource.isProd()) {
-        log.warn(
-            "You are trying to clean the PROD database. Please contact admin if you like to proceed with this process.",
-        )
+        log.warn {
+          "You are trying to clean the PROD database. Please contact admin if you like to proceed with this process."
+        }
       } else {
-        log.warn("Cleaning database before running migrations..")
+        log.warn { "Cleaning database before running migrations.." }
         flyway.clean()
       }
     }
 
-    log.debug("Running database migrations...")
+    log.debug { "Running database migrations..." }
     OpenTelemetryConfig.tracer.spanBuilder("database migrate").use { flyway.migrate() }
   }
 
