@@ -66,7 +66,7 @@
     <arrow.version>2.0.0</arrow.version>
 
     <!-- Transitive dependencies -->
-    <commons-codec.version>1.17.1</commons-codec.version>
+    <commons-codec.version>1.17.2</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
 
     <!-- Testing -->
