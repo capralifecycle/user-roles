@@ -9,6 +9,7 @@
     <version>3.20250111.044645</version>
   </parent>
 
+  <!--suppress MavenRedundantGroupId -->
   <groupId>no.liflig</groupId>
   <artifactId>user-roles</artifactId>
   <version>0.0.1-SNAPSHOT</version>
@@ -33,10 +34,10 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>2.20250110.084847</liflig-properties.version>
-    <liflig-http4k-setup.version>1.20250110.084704</liflig-http4k-setup.version>
+    <liflig-properties.version>2.20250113.112144</liflig-properties.version>
+    <liflig-http4k-setup.version>1.20250113.112022</liflig-http4k-setup.version>
     <liflig-document-store.version>2.20250111.125333</liflig-document-store.version>
-    <liflig-logging.version>2.20250110.050020</liflig-logging.version>
+    <liflig-logging.version>2.20250113.105021</liflig-logging.version>
     <liflig-snapshot-test.version>1.20240905.231604</liflig-snapshot-test.version>
 
     <!-- API -->
