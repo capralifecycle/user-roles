@@ -18,7 +18,7 @@ class PublicExceptionFilterTest {
           throw PublicException(
               "Test message",
               ErrorType.BAD_REQUEST,
-              publicDetails = "Test details",
+              publicDetail = "Test detail",
           )
         }
 
@@ -27,7 +27,7 @@ class PublicExceptionFilterTest {
 
     val responseBody = ErrorResponseBody.bodyLens(response)
     assertThat(responseBody.title).isEqualTo("Test message")
-    assertThat(responseBody.detail).isEqualTo("Test details")
+    assertThat(responseBody.detail).isEqualTo("Test detail")
     assertThat(responseBody.status).isEqualTo(400)
     assertThat(responseBody.instance).isEqualTo("/api/test")
   }

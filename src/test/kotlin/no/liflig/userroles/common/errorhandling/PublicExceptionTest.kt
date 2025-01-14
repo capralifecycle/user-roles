@@ -2,6 +2,7 @@ package no.liflig.userroles.common.errorhandling
 
 import java.io.InputStream
 import java.nio.ByteBuffer
+import no.liflig.logging.field
 import org.assertj.core.api.Assertions.assertThat
 import org.http4k.core.Body
 import org.http4k.core.Response
@@ -17,8 +18,8 @@ class PublicExceptionTest {
         PublicException(
             "Something went wrong",
             ErrorType.INTERNAL_ERROR,
-            publicDetails = "Terribly wrong",
-            internalDetails = "Caused by failure",
+            publicDetail = "Terribly wrong",
+            internalDetail = "Caused by failure",
             cause = cause,
         )
 
@@ -33,16 +34,16 @@ class PublicExceptionTest {
         Response(Status.BAD_REQUEST)
             .body(
                 """
-                {"title":"test-title","detail":"test-details","status":400,"instance":"/api/test"}
+                {"title":"test-title","detail":"test-detail","status":400,"instance":"/api/test"}
                 """
                     .trimIndent(),
             )
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
     assertThat(exception.publicMessage).isEqualTo("test-title")
-    assertThat(exception.publicDetails).isEqualTo("test-details")
+    assertThat(exception.publicDetail).isEqualTo("test-detail")
     assertThat(exception.type).isEqualTo(ErrorType.BAD_REQUEST)
-    assertThat(exception.internalDetails)
+    assertThat(exception.internalDetail)
         .isEqualTo("400 Bad Request response from Test Service - /api/test")
   }
 
@@ -52,10 +53,11 @@ class PublicExceptionTest {
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
     assertThat(exception.publicMessage).isEqualTo("Internal server error")
-    assertThat(exception.publicDetails).isEqualTo(null)
+    assertThat(exception.publicDetail).isEqualTo(null)
     assertThat(exception.type).isEqualTo(ErrorType.INTERNAL_ERROR)
-    assertThat(exception.internalDetails)
-        .isEqualTo("400 Bad Request response from Test Service, with body: Something went wrong")
+    assertThat(exception.internalDetail).isEqualTo("400 Bad Request response from Test Service")
+    assertThat(exception.logFields)
+        .isEqualTo(listOf(field("errorResponseBody", "Something went wrong")))
   }
 
   @Test
@@ -63,8 +65,8 @@ class PublicExceptionTest {
     val response = Response(Status.FORBIDDEN)
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
-    assertThat(exception.internalDetails)
-        .isEqualTo("403 Forbidden response from Test Service, with empty body")
+    assertThat(exception.internalDetail).isEqualTo("403 Forbidden response from Test Service")
+    assertThat(exception.logFields).isEqualTo(listOf(field("errorResponseBody", "")))
   }
 
   @Test
@@ -82,9 +84,8 @@ class PublicExceptionTest {
     val response = Response(Status.INTERNAL_SERVER_ERROR).body(AlwaysFailingBody())
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
-    assertThat(exception.internalDetails)
-        .isEqualTo(
-            "500 Internal Server Error response from Test Service, and failed to read body: Body failed",
-        )
+    assertThat(exception.internalDetail)
+        .isEqualTo("500 Internal Server Error response from Test Service")
+    assertThat(exception.logFields).isEqualTo(listOf(field("errorResponseBody", "null")))
   }
 }
