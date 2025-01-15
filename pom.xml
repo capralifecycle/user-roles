@@ -53,7 +53,7 @@
     <awssdk.version>2.29.43</awssdk.version>
 
     <!-- Serialization -->
-    <kotlinx-serialization.version>1.7.3</kotlinx-serialization.version>
+    <kotlinx-serialization.version>1.8.0</kotlinx-serialization.version>
     <jackson.version>2.18.2</jackson.version>
 
     <!-- Logging -->
