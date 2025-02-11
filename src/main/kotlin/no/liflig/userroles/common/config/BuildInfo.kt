@@ -33,7 +33,7 @@ data class BuildInfo(
             number =
                 try {
                   properties.intRequired("build.number")
-                } catch (ex: IllegalArgumentException) {
+                } catch (_: IllegalArgumentException) {
                   0
                 },
         )
