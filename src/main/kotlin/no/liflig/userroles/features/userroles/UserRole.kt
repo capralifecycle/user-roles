@@ -1,13 +1,10 @@
-@file:UseSerializers(UUIDSerializer::class)
-
 package no.liflig.userroles.features.userroles
 
 import java.util.UUID
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import no.liflig.documentstore.entity.Entity
 import no.liflig.documentstore.entity.UuidEntityId
-import no.liflig.userroles.common.serialization.UUIDSerializer
+import no.liflig.userroles.common.serialization.SerializableUUID
 
 @Serializable
 data class UserRole(
@@ -26,6 +23,6 @@ data class Role(
 
 @Serializable
 @JvmInline
-value class UserRoleId(override val value: UUID = UUID.randomUUID()) : UuidEntityId {
+value class UserRoleId(override val value: SerializableUUID = UUID.randomUUID()) : UuidEntityId {
   override fun toString() = value.toString()
 }

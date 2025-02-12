@@ -1,19 +1,16 @@
-@file:UseSerializers(InstantSerializer::class)
-
 package no.liflig.userroles.common.config
 
 import java.time.Instant
 import java.util.Properties
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.json.Json
 import no.liflig.properties.intRequired
 import no.liflig.properties.stringNotNull
-import no.liflig.userroles.common.serialization.InstantSerializer
+import no.liflig.userroles.common.serialization.SerializableInstant
 
 @Serializable
 data class BuildInfo(
-    val timestamp: Instant,
+    val timestamp: SerializableInstant,
     /** Git commit sha. */
     val commit: String,
     /** Git branch. */

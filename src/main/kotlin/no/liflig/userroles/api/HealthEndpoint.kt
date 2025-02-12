@@ -1,14 +1,11 @@
-@file:UseSerializers(InstantSerializer::class)
-
 package no.liflig.userroles.api
 
 import java.lang.management.ManagementFactory
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import no.liflig.userroles.common.config.BuildInfo
-import no.liflig.userroles.common.serialization.InstantSerializer
+import no.liflig.userroles.common.serialization.SerializableInstant
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -42,8 +39,8 @@ class HealthEndpoint(
 @Serializable
 data class HealthStatus(
     val name: String,
-    val timestamp: Instant,
-    val runningSince: Instant,
+    val timestamp: SerializableInstant,
+    val runningSince: SerializableInstant,
     val build: BuildInfo,
 ) {
   companion object {
