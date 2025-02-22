@@ -45,7 +45,7 @@
 
     <!-- Database -->
     <hikariCP.version>5.1.0</hikariCP.version>
-    <flyway.version>10.22.0</flyway.version>
+    <flyway.version>11.3.3</flyway.version>
     <postgresql.version>42.7.4</postgresql.version>
     <jdbi.version>3.47.0</jdbi.version>
 
