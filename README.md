@@ -1,5 +1,14 @@
 A generic service featuring RBAC (Role Based Access Control). 
 
+## Documentation
+
+<!-- Optional links to other pages -->
+More information is found here:
+
+<!-- Add links that suits your project. These are just exammples: -->
+
+- [Main confluence page](https://liflig.atlassian.net/wiki/x/AQC3)
+
 # Example architecture
 Can be used in conjunction with e.g. AWS Cognito and a [pretoken generation trigger lambda](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add custom claims to an identity token.
 
