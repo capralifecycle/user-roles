@@ -41,7 +41,7 @@
     <liflig-snapshot-test.version>1.20240905.231604</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>5.43.0.0</http4k.version>
+    <http4k.version>5.47.0.0</http4k.version>
 
     <!-- Database -->
     <hikariCP.version>5.1.0</hikariCP.version>
