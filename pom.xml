@@ -57,7 +57,7 @@
     <jackson.version>2.18.2</jackson.version>
 
     <!-- Logging -->
-    <logback-classic.version>1.5.16</logback-classic.version>
+    <logback-classic.version>1.5.17</logback-classic.version>
     <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.17</slf4j.version>
     <opentelemetry.version>1.47.0</opentelemetry.version>
