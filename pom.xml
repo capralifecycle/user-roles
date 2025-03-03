@@ -28,7 +28,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <kotlin.version>2.1.0</kotlin.version>
+    <kotlin.version>2.1.10</kotlin.version>
     <java.version>17</java.version>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
@@ -36,7 +36,7 @@
     <!-- Liflig -->
     <liflig-properties.version>2.20250113.144339</liflig-properties.version>
     <liflig-http4k-setup.version>1.20250115.140150</liflig-http4k-setup.version>
-    <liflig-document-store.version>2.20250111.125333</liflig-document-store.version>
+    <liflig-document-store.version>2.20250302.203315</liflig-document-store.version>
     <liflig-logging.version>2.20250113.105021</liflig-logging.version>
     <liflig-snapshot-test.version>1.20240905.231604</liflig-snapshot-test.version>
 
@@ -47,7 +47,7 @@
     <hikariCP.version>5.1.0</hikariCP.version>
     <flyway.version>11.3.3</flyway.version>
     <postgresql.version>42.7.4</postgresql.version>
-    <jdbi.version>3.47.0</jdbi.version>
+    <jdbi.version>3.48.0</jdbi.version>
 
     <!-- AWS -->
     <awssdk.version>2.29.43</awssdk.version>
@@ -68,6 +68,7 @@
     <!-- Transitive dependencies -->
     <commons-codec.version>1.17.2</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
+    <annotations.version>26.0.2</annotations.version>
 
     <!-- Testing -->
     <junit.version>5.11.4</junit.version>
@@ -169,6 +170,11 @@
         <artifactId>httpcore</artifactId>
         <version>${httpcore.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.jetbrains</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${annotations.version}</version>
+      </dependency>
 
       <!-- Testing -->
       <dependency>
@@ -185,9 +191,13 @@
     <!-- Kotlin -->
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <artifactId>kotlin-stdlib</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
 
+    </dependency>
     <!-- Liflig -->
     <dependency>
       <groupId>no.liflig</groupId>
