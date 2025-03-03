@@ -38,7 +38,7 @@
     <liflig-http4k-setup.version>1.20250115.140150</liflig-http4k-setup.version>
     <liflig-document-store.version>2.20250302.203315</liflig-document-store.version>
     <liflig-logging.version>2.20250113.105021</liflig-logging.version>
-    <liflig-snapshot-test.version>1.20240905.231604</liflig-snapshot-test.version>
+    <liflig-snapshot-test.version>1.20250302.203338</liflig-snapshot-test.version>
 
     <!-- API -->
     <http4k.version>5.47.0.0</http4k.version>
@@ -69,9 +69,10 @@
     <commons-codec.version>1.17.2</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
     <annotations.version>26.0.2</annotations.version>
+    <diffutils.version>4.15</diffutils.version>
 
     <!-- Testing -->
-    <junit.version>5.11.4</junit.version>
+    <junit.version>5.12.0</junit.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
     <assertj-core.version>3.27.2</assertj-core.version>
@@ -174,6 +175,11 @@
         <groupId>org.jetbrains</groupId>
         <artifactId>annotations</artifactId>
         <version>${annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.java-diff-utils</groupId>
+        <artifactId>java-diff-utils</artifactId>
+        <version>${diffutils.version}</version>
       </dependency>
 
       <!-- Testing -->
