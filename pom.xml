@@ -34,7 +34,7 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>2.20250113.144339</liflig-properties.version>
+    <liflig-properties.version>2.20250303.051635</liflig-properties.version>
     <liflig-http4k-setup.version>3.20250303.005958</liflig-http4k-setup.version>
     <liflig-document-store.version>2.20250302.203315</liflig-document-store.version>
     <liflig-logging.version>2.20250302.203824</liflig-logging.version>
@@ -50,7 +50,7 @@
     <jdbi.version>3.48.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.29.43</awssdk.version>
+    <awssdk.version>2.30.29</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.8.0</kotlinx-serialization.version>
