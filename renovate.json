@@ -10,7 +10,7 @@
       "matchPackageNames": [
         "azul/zulu-openjdk-alpine"
       ],
-      "allowedVersions": "17-jre-headless"
+      "allowedVersions": "21"
     }
   ]
 }
