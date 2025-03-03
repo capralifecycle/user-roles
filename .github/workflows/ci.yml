@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b # v4.6.0
         with:
           distribution: "zulu"
-          java-version: "17.0.10"
+          java-version: "21.0.6"
           java-package: jdk
 
       - uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f # v4.2.1
@@ -52,7 +52,7 @@ jobs:
         run: |
           mvn -B verify -P gh-actions-build -DGIT_COMMIT_ID="$GIT_COMMIT_ID" -DBRANCH_NAME="$BRANCH_NAME"
           mvn sonar:sonar
-      
+
       - name: show errors
         if: ${{ failure() }}
         env:
