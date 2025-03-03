@@ -50,7 +50,7 @@
     <jdbi.version>3.48.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.29.43</awssdk.version>
+    <awssdk.version>2.30.29</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.8.0</kotlinx-serialization.version>
