@@ -15,7 +15,6 @@ import no.liflig.userroles.common.http4k.EndpointGroup
 import no.liflig.userroles.features.userroles.api.UserRoleApi
 import org.eclipse.jetty.server.HttpConnectionFactory
 import org.http4k.contract.PreFlightExtraction
-import org.http4k.contract.bind
 import org.http4k.contract.contract
 import org.http4k.contract.jsonschema.v3.AutoJsonToJsonSchema
 import org.http4k.contract.openapi.ApiInfo
