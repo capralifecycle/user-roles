@@ -9,7 +9,7 @@ import no.liflig.logging.getLogger
 import no.liflig.userroles.App
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.errorhandling.PublicExceptionFilter
-import no.liflig.userroles.common.http4k.AuthFilter
+import no.liflig.userroles.common.http4k.BasicAuthFilter
 import no.liflig.userroles.common.http4k.CustomJacksonConfig
 import no.liflig.userroles.common.http4k.EndpointGroup
 import no.liflig.userroles.features.userroles.api.UserRoleApi
@@ -80,7 +80,7 @@ class ApiServer(
 
     return coreFilters
         .then(PublicExceptionFilter())
-        .then(AuthFilter(config.api.credentials))
+        .then(BasicAuthFilter(config.api.credentials))
         .then(
             routes(
                 "/api" bind contractApi,

@@ -4,6 +4,7 @@ import java.lang.management.ManagementFactory
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlinx.serialization.Serializable
+import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.common.config.BuildInfo
 import no.liflig.userroles.common.serialization.SerializableInstant
 import org.http4k.core.HttpHandler
@@ -11,7 +12,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
-import org.http4k.format.KotlinxSerialization
 
 class HealthEndpoint(
     private val serviceName: String,
@@ -44,6 +44,6 @@ data class HealthStatus(
     val build: BuildInfo,
 ) {
   companion object {
-    val bodyLens = KotlinxSerialization.autoBody<HealthStatus>().toLens()
+    val bodyLens = createJsonBodyLens(serializer())
   }
 }

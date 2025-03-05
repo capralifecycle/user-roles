@@ -109,7 +109,7 @@ open class PublicException(
         val responseBodyLogField =
             try {
               rawJsonField("errorResponseBody", response.bodyString(), validJson = false)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
               field("errorResponseBody", null)
             }
 

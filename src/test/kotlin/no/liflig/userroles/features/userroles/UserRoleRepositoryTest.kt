@@ -1,11 +1,13 @@
 package no.liflig.userroles.features.userroles
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import no.liflig.userroles.testutils.createJdbiForTests
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class UserRoleRepositoryTest {
   private val jdbi = createJdbiForTests()
@@ -41,7 +43,7 @@ class UserRoleRepositoryTest {
     userRoleRepository.create(userRole)
 
     val userRoleResult = userRoleRepository.getByUserId(userId)
-    assertEquals(userRole, userRoleResult?.item)
+    userRole shouldBe userRoleResult?.item
   }
 
   @Test
@@ -68,8 +70,8 @@ class UserRoleRepositoryTest {
 
     userRoleRepository.create(userRole)
 
-    val exception = assertThrows<Exception> { userRoleRepository.create(userRole2) }
-    assertEquals(true, exception.message?.contains("user_role_user_id_idx"))
+    val exception = shouldThrow<Exception> { userRoleRepository.create(userRole2) }
+    exception.message shouldContain "user_role_user_id_idx"
   }
 
   @Test
@@ -95,7 +97,7 @@ class UserRoleRepositoryTest {
     userRoleRepository.delete(userRole.id, version)
 
     val getResult = userRoleRepository.get(userRole.id)
-    assertNull(getResult)
+    getResult.shouldBeNull()
   }
 
   @Test

@@ -1,9 +1,9 @@
 package no.liflig.userroles.api
 
+import io.kotest.matchers.shouldBe
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
-import org.assertj.core.api.Assertions
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -16,7 +16,7 @@ class ApiDocsSnapshotTest {
   @Test
   fun `exposes expected open-api-schema in JSON format`(services: TestServices) {
     val response = services.sendOpenApiSchemaRequest()
-    Assertions.assertThat(response.status).isEqualTo(Status.OK)
+    response.status shouldBe Status.OK
     verifyJsonSnapshot("openapi-schema.json", response.bodyString())
   }
 }

@@ -1,13 +1,13 @@
 package no.liflig.userroles.features.userroles
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.matchers.shouldBe
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
 import no.liflig.userroles.features.userroles.api.UpdateRoleRequest
 import no.liflig.userroles.features.userroles.api.UserRoleDto
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatCode
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -57,9 +57,9 @@ class UserRoleCrudApiTest {
   @Test
   fun `create user role`(services: TestServices) {
     val response = services.putUserRole(userId, UpdateRoleRequest(roles))
-    assertThat(response.status).isEqualTo(Status.OK)
+    response.status shouldBe Status.OK
 
-    assertThatCode { UserRoleDto.bodyLens(response) }.doesNotThrowAnyException()
+    shouldNotThrowAny { UserRoleDto.bodyLens(response) }
 
     verifyJsonSnapshot(
         "crudtest/create-response.json",
@@ -74,9 +74,9 @@ class UserRoleCrudApiTest {
     val requestBody = readJsonResource<UpdateRoleRequest>("crudtest/update-user-role-request.json")
 
     val response = services.putUserRole(userId, requestBody)
-    assertThat(response.status).isEqualTo(Status.OK)
+    response.status shouldBe Status.OK
 
-    assertThatCode { UserRoleDto.bodyLens(response) }.doesNotThrowAnyException()
+    shouldNotThrowAny { UserRoleDto.bodyLens(response) }
 
     verifyJsonSnapshot(
         "crudtest/update-response.json",
@@ -89,9 +89,9 @@ class UserRoleCrudApiTest {
   @Test
   fun `get user role`(services: TestServices) {
     val response = services.getUserRole(userId)
-    assertThat(response.status).isEqualTo(Status.OK)
+    response.status shouldBe Status.OK
 
-    assertThatCode { UserRoleDto.bodyLens(response) }.doesNotThrowAnyException()
+    shouldNotThrowAny { UserRoleDto.bodyLens(response) }
 
     verifyJsonSnapshot(
         "crudtest/get-response.json",
@@ -104,10 +104,10 @@ class UserRoleCrudApiTest {
   @Test
   fun `delete user role`(services: TestServices) {
     val deleteResponse = services.deleteUserRole(userId)
-    assertThat(deleteResponse.status).isEqualTo(Status.OK)
+    deleteResponse.status shouldBe Status.OK
 
     val getResponse = services.getUserRole(userId)
-    assertThat(getResponse.status).isEqualTo(Status.NOT_FOUND)
+    getResponse.status shouldBe Status.NOT_FOUND
   }
 }
 

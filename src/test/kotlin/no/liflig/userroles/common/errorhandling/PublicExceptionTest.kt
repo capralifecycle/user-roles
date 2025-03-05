@@ -1,9 +1,10 @@
 package no.liflig.userroles.common.errorhandling
 
+import io.kotest.assertions.asClue
+import io.kotest.matchers.shouldBe
 import java.io.InputStream
 import java.nio.ByteBuffer
 import no.liflig.logging.field
-import org.assertj.core.api.Assertions.assertThat
 import org.http4k.core.Body
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -23,9 +24,8 @@ class PublicExceptionTest {
             cause = cause,
         )
 
-    assertThat(exception.message)
-        .isEqualTo("Something went wrong (Terribly wrong) [Caused by failure]")
-    assertThat(exception.cause).isEqualTo(cause)
+    exception.message shouldBe "Something went wrong (Terribly wrong) [Caused by failure]"
+    exception.cause shouldBe cause
   }
 
   @Test
@@ -40,11 +40,12 @@ class PublicExceptionTest {
             )
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
-    assertThat(exception.publicMessage).isEqualTo("test-title")
-    assertThat(exception.publicDetail).isEqualTo("test-detail")
-    assertThat(exception.type).isEqualTo(ErrorType.BAD_REQUEST)
-    assertThat(exception.internalDetail)
-        .isEqualTo("400 Bad Request response from Test Service - /api/test")
+    exception.asClue {
+      it.publicMessage shouldBe "test-title"
+      it.publicDetail shouldBe "test-detail"
+      it.type shouldBe ErrorType.BAD_REQUEST
+      it.internalDetail shouldBe "400 Bad Request response from Test Service - /api/test"
+    }
   }
 
   @Test
@@ -52,12 +53,13 @@ class PublicExceptionTest {
     val response = Response(Status.BAD_REQUEST).body("Something went wrong")
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
-    assertThat(exception.publicMessage).isEqualTo("Internal server error")
-    assertThat(exception.publicDetail).isEqualTo(null)
-    assertThat(exception.type).isEqualTo(ErrorType.INTERNAL_ERROR)
-    assertThat(exception.internalDetail).isEqualTo("400 Bad Request response from Test Service")
-    assertThat(exception.logFields)
-        .isEqualTo(listOf(field("errorResponseBody", "Something went wrong")))
+    exception.asClue {
+      it.publicMessage shouldBe "Internal server error"
+      it.publicDetail shouldBe null
+      it.type shouldBe ErrorType.INTERNAL_ERROR
+      it.internalDetail shouldBe "400 Bad Request response from Test Service"
+      it.logFields shouldBe listOf(field("errorResponseBody", "Something went wrong"))
+    }
   }
 
   @Test
@@ -65,8 +67,8 @@ class PublicExceptionTest {
     val response = Response(Status.FORBIDDEN)
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
-    assertThat(exception.internalDetail).isEqualTo("403 Forbidden response from Test Service")
-    assertThat(exception.logFields).isEqualTo(listOf(field("errorResponseBody", "")))
+    exception.internalDetail shouldBe "403 Forbidden response from Test Service"
+    exception.logFields shouldBe listOf(field("errorResponseBody", ""))
   }
 
   @Test
@@ -84,8 +86,7 @@ class PublicExceptionTest {
     val response = Response(Status.INTERNAL_SERVER_ERROR).body(AlwaysFailingBody())
 
     val exception = PublicException.fromErrorResponse(response, source = "Test Service")
-    assertThat(exception.internalDetail)
-        .isEqualTo("500 Internal Server Error response from Test Service")
-    assertThat(exception.logFields).isEqualTo(listOf(field("errorResponseBody", "null")))
+    exception.internalDetail shouldBe "500 Internal Server Error response from Test Service"
+    exception.logFields shouldBe listOf(field("errorResponseBody", "null"))
   }
 }

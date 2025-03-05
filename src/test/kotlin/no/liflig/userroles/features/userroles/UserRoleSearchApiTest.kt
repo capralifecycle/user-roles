@@ -1,5 +1,7 @@
 package no.liflig.userroles.features.userroles
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.Serializable
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
@@ -7,8 +9,6 @@ import no.liflig.userroles.features.userroles.api.ListUserRoleDto
 import no.liflig.userroles.features.userroles.api.ListUserRolesEndpoint
 import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatCode
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -68,9 +68,9 @@ class SearchUserRolesTest {
   @MethodSource("testCases")
   fun search(test: TestCase, services: TestServices) {
     val response = services.listUserRoles(orgId = test.orgId, roleName = test.roleName)
-    assertThat(response.status).isEqualTo(Status.OK)
+    response.status shouldBe Status.OK
 
-    assertThatCode { ListUserRoleDto.bodyLens(response) }.doesNotThrowAnyException()
+    shouldNotThrowAny { ListUserRoleDto.bodyLens(response) }
 
     verifyJsonSnapshot("searchtest/${test.name.replace(' ', '-')}.json", response.bodyString())
   }

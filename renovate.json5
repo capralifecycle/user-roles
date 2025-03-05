@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "github>capraconsulting/renovate-config:default"
+  ],
+  "automerge": true,
+  "automergeType": "branch",
+  "schedule": [
+    "after 10am every weekday, before 2pm every weekday"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "azul/zulu-openjdk-alpine"
+      ],
+      // Updating JDK major version may require manual migration, so we don't want Renovate to
+      // update it automatically. Bump this when you update JDK for this service.
+      "allowedVersions": "21-jre-headless"
+    }
+  ]
+}

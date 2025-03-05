@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20250117.103852</version>
+    <version>3.20250304.125520</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -34,14 +34,14 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>2.20250303.051635</liflig-properties.version>
-    <liflig-http4k-setup.version>3.20250303.005958</liflig-http4k-setup.version>
-    <liflig-document-store.version>2.20250302.203315</liflig-document-store.version>
-    <liflig-logging.version>2.20250302.203824</liflig-logging.version>
+    <liflig-properties.version>2.20250304.090405</liflig-properties.version>
+    <liflig-http4k-setup.version>4.20250304.115933</liflig-http4k-setup.version>
+    <liflig-document-store.version>2.20250304.043226</liflig-document-store.version>
+    <liflig-logging.version>2.20250304.043602</liflig-logging.version>
     <liflig-snapshot-test.version>1.20250302.203338</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.0.1.0</http4k.version>
+    <http4k.version>6.1.0.0</http4k.version>
 
     <!-- Database -->
     <hikariCP.version>6.2.1</hikariCP.version>
@@ -72,10 +72,10 @@
     <diffutils.version>4.15</diffutils.version>
 
     <!-- Testing -->
+    <kotest.version>5.9.1</kotest.version>
     <junit.version>5.12.0</junit.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
-    <assertj-core.version>3.27.3</assertj-core.version>
     <testcontainers.postgresql.version>1.20.5</testcontainers.postgresql.version>
 
     <!-- Sonarcloud -->
@@ -87,6 +87,7 @@
   </properties>
 
   <dependencyManagement>
+    <!-- Kotlin -->
     <dependencies>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
@@ -94,6 +95,13 @@
         <version>${kotlin.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- Liflig -->
+      <dependency>
+        <groupId>no.liflig</groupId>
+        <artifactId>liflig-logging</artifactId>
+        <version>${liflig-logging.version}</version>
       </dependency>
 
       <!-- API -->
@@ -158,11 +166,6 @@
         <version>${opentelemetry.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>no.liflig</groupId>
-        <artifactId>liflig-logging</artifactId>
-        <version>${liflig-logging.version}</version>
       </dependency>
 
       <!-- Transitive dependencies -->
@@ -316,6 +319,12 @@
 
     <!-- Testing -->
     <dependency>
+      <groupId>io.kotest</groupId>
+      <artifactId>kotest-assertions-core-jvm</artifactId>
+      <version>${kotest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
@@ -324,13 +333,6 @@
       <!-- For @Parameterized tests -->
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <!-- For Assertions.assertThat() -->
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>${assertj-core.version}</version>
       <scope>test</scope>
     </dependency>
     <!--needed to be able to use FlowTestExtension in tests for autowiring-->
