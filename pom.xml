@@ -34,7 +34,7 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>2.20250314.004846</liflig-properties.version>
+    <liflig-properties.version>2.20250318.050016</liflig-properties.version>
     <liflig-http4k-setup.version>4.20250318.043736</liflig-http4k-setup.version>
     <liflig-document-store.version>2.20250317.213143</liflig-document-store.version>
     <liflig-logging.version>2.20250317.213444</liflig-logging.version>
