@@ -63,7 +63,7 @@
     <opentelemetry.version>1.49.0</opentelemetry.version>
 
     <!-- Other -->
-    <arrow.version>2.0.1</arrow.version>
+    <arrow.version>2.1.0</arrow.version>
 
     <!-- Transitive dependencies -->
     <commons-codec.version>1.18.0</commons-codec.version>
