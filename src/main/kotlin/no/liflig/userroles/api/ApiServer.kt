@@ -8,7 +8,7 @@ import no.liflig.http4k.setup.logging.LoggingFilter
 import no.liflig.logging.getLogger
 import no.liflig.userroles.App
 import no.liflig.userroles.common.config.Config
-import no.liflig.userroles.common.errorhandling.PublicExceptionFilter
+import no.liflig.userroles.common.errorhandling.http4k.PublicExceptionFilter
 import no.liflig.userroles.common.http4k.BasicAuthFilter
 import no.liflig.userroles.common.http4k.CustomJacksonConfig
 import no.liflig.userroles.common.http4k.EndpointGroup

@@ -1,11 +1,12 @@
-package no.liflig.userroles.common.errorhandling
+package no.liflig.userroles.common.errorhandling.http4k
 
+import no.liflig.userroles.common.errorhandling.PublicException
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 
 /**
- * http4k filter that catches [PublicException]s and maps them to error responses (see
- * [PublicException.toErrorResponse]).
+ * http4k filter that catches [PublicException][PublicException]s and maps them to error responses
+ * (see [toErrorResponse]).
  *
  * ### Usage
  *
@@ -16,7 +17,7 @@ import org.http4k.core.HttpHandler
  *     .then(/* Other filters or routes */)
  * ```
  *
- * This filter should be added after more general exception-catching filters, so that
+ * This filter should be added _after_ more general exception-catching filters, so that
  * PublicExceptions are caught first.
  */
 class PublicExceptionFilter : Filter {

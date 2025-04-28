@@ -35,9 +35,9 @@
 
     <!-- Liflig -->
     <liflig-properties.version>2.20250428.014430</liflig-properties.version>
-    <liflig-http4k-setup.version>4.20250426.091219</liflig-http4k-setup.version>
+    <liflig-http4k-setup.version>4.20250428.095804</liflig-http4k-setup.version>
     <liflig-document-store.version>2.20250422.205440</liflig-document-store.version>
-    <liflig-logging.version>2.20250427.204408</liflig-logging.version>
+    <liflig-logging.version>2.20250428.052159</liflig-logging.version>
     <liflig-snapshot-test.version>1.20250414.213044</liflig-snapshot-test.version>
 
     <!-- API -->
@@ -54,7 +54,7 @@
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.8.1</kotlinx-serialization.version>
-    <jackson.version>2.18.3</jackson.version>
+    <jackson.version>2.19.0</jackson.version>
 
     <!-- Logging -->
     <logback-classic.version>1.5.18</logback-classic.version>
