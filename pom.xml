@@ -37,7 +37,7 @@
     <liflig-properties.version>2.20250514.175755</liflig-properties.version>
     <liflig-http4k-setup.version>4.20250516.213037</liflig-http4k-setup.version>
     <liflig-document-store.version>3.20250520.205544</liflig-document-store.version>
-    <liflig-logging.version>2.20250516.171120</liflig-logging.version>
+    <liflig-logging.version>2.20250520.185640</liflig-logging.version>
     <liflig-snapshot-test.version>1.20250414.213044</liflig-snapshot-test.version>
 
     <!-- API -->
