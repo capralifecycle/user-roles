@@ -49,7 +49,7 @@ class ApiServer(
           UserRoleApi(app.userRoleRepo),
       )
 
-  private val log = getLogger {}
+  private val log = getLogger()
 
   fun start(): Http4kServer {
     val router = createRouter()

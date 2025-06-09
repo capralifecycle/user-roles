@@ -24,7 +24,7 @@ import org.jdbi.v3.core.transaction.SerializableTransactionRunner
  * [createJdbiInstanceAndMigrate].
  */
 object DatabaseConfigurator {
-  private val log = getLogger {}
+  private val log = getLogger()
 
   /**
    * Defined by `cpuCount * 2 + 2`.

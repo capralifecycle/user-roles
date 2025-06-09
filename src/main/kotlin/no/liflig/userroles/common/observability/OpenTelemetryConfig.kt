@@ -18,7 +18,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
  * for usage of the SDK.
  */
 class OpenTelemetryConfig {
-  private val log = getLogger {}
+  private val log = getLogger()
 
   companion object {
     private const val INSTRUMENTATION_NAME =
