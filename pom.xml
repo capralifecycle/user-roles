@@ -38,7 +38,7 @@
     <liflig-http4k-setup.version>4.20250611.205256</liflig-http4k-setup.version>
     <liflig-document-store.version>3.20250611.112822</liflig-document-store.version>
     <liflig-logging.version>2.20250611.101355</liflig-logging.version>
-    <liflig-snapshot-test.version>1.20250602.194947</liflig-snapshot-test.version>
+    <liflig-snapshot-test.version>1.20250610.205841</liflig-snapshot-test.version>
 
     <!-- API -->
     <http4k.version>6.12.0.0</http4k.version>
