@@ -47,7 +47,7 @@
     <hikariCP.version>6.3.0</hikariCP.version>
     <flyway.version>11.9.1</flyway.version>
     <postgresql.version>42.7.7</postgresql.version>
-    <jdbi.version>3.49.4</jdbi.version>
+    <jdbi.version>3.49.5</jdbi.version>
 
     <!-- AWS -->
     <awssdk.version>2.31.63</awssdk.version>
