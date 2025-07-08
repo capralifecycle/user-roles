@@ -73,7 +73,7 @@
 
     <!-- Testing -->
     <kotest.version>5.9.1</kotest.version>
-    <junit.version>5.13.2</junit.version>
+    <junit.version>5.13.3</junit.version>
     <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
     <testcontainers.postgresql.version>1.21.3</testcontainers.postgresql.version>
