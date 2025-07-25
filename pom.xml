@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20250717.094926</version>
+    <version>3.20250725.044001</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
