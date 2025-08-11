@@ -44,7 +44,7 @@
     <http4k.version>6.15.1.0</http4k.version>
 
     <!-- Database -->
-    <hikariCP.version>6.3.2</hikariCP.version>
+    <hikariCP.version>7.0.0</hikariCP.version>
     <flyway.version>11.10.5</flyway.version>
     <postgresql.version>42.7.7</postgresql.version>
     <jdbi.version>3.49.5</jdbi.version>
