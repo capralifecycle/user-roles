@@ -54,7 +54,7 @@
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
-    <jackson.version>2.19.2</jackson.version>
+    <jackson.version>2.20.0</jackson.version>
 
     <!-- Logging -->
     <logback-classic.version>1.5.18</logback-classic.version>
