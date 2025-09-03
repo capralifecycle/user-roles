@@ -1,11 +1,7 @@
 {
   "extends": [
-    "github>capraconsulting/renovate-config:default"
-  ],
-  "automerge": true,
-  "automergeType": "branch",
-  "schedule": [
-    "after 10am every weekday, before 2pm every weekday"
+    "github>capraconsulting/renovate-config:grouped-patch-friday",
+    "github>capraconsulting/renovate-config:with-credentials"
   ],
   "packageRules": [
     {
