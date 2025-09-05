@@ -35,13 +35,13 @@
 
     <!-- Liflig -->
     <liflig-properties.version>2.20250901.165507</liflig-properties.version>
-    <liflig-http4k-setup.version>4.20250805.110320</liflig-http4k-setup.version>
+    <liflig-http4k-setup.version>4.20250901.085937</liflig-http4k-setup.version>
     <liflig-document-store.version>3.20250902.120624</liflig-document-store.version>
-    <liflig-logging.version>2.20250821.134532</liflig-logging.version>
+    <liflig-logging.version>2.20250901.091145</liflig-logging.version>
     <liflig-snapshot-test.version>1.20250902.120604</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.15.1.0</http4k.version>
+    <http4k.version>6.16.0.0</http4k.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
@@ -68,7 +68,7 @@
     <!-- Transitive dependencies -->
     <commons-codec.version>1.19.0</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <annotations.version>26.0.2</annotations.version>
+    <annotations.version>26.0.2-1</annotations.version>
     <diffutils.version>4.16</diffutils.version>
 
     <!-- Testing -->
