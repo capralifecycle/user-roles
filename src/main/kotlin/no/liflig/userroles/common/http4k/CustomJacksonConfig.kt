@@ -31,5 +31,5 @@ object CustomJacksonConfig :
             .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
             .configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
             .configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL),
+            .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL),
     )

@@ -24,6 +24,6 @@ class TestServices {
   val httpClient = JavaHttpClient()
 
   fun clear() {
-    app.userRoleRepo.listAll().forEach { app.userRoleRepo.delete(it.item.id, it.version) }
+    app.userRoleRepo.listAll().forEach { app.userRoleRepo.delete(it.data.id, it.version) }
   }
 }

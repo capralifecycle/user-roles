@@ -16,7 +16,7 @@ class UserRoleRepositoryTest {
 
   @BeforeEach
   fun clear() {
-    userRoleRepository.listAll().forEach { userRoleRepository.delete(it.item.id, it.version) }
+    userRoleRepository.listAll().forEach { userRoleRepository.delete(it.data.id, it.version) }
   }
 
   @Test
@@ -43,7 +43,7 @@ class UserRoleRepositoryTest {
     userRoleRepository.create(userRole)
 
     val userRoleResult = userRoleRepository.getByUserId(userId)
-    userRole shouldBe userRoleResult?.item
+    userRole shouldBe userRoleResult?.data
   }
 
   @Test

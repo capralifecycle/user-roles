@@ -39,12 +39,12 @@ class UpdateUserRoleEndpoint(
         val existingUserRole = userRoleRepo.getByUserId(userId)
         if (existingUserRole == null) {
           val createdUserRole = userRoleRepo.create(UserRole(userId = userId, roles = body.roles))
-          return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.item.toDto())
+          return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.data.toDto())
         } else {
           val updatedUserRole =
               userRoleRepo.update(existingUserRole.map { it.copy(roles = body.roles) })
 
-          return Response(Status.OK).with(UserRoleDto.bodyLens of updatedUserRole.item.toDto())
+          return Response(Status.OK).with(UserRoleDto.bodyLens of updatedUserRole.data.toDto())
         }
       }
 }

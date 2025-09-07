@@ -18,11 +18,7 @@ import org.junit.jupiter.api.extension.ParameterResolver
  * supplying tests with necessary dependencies
  */
 class FlowTestExtension :
-    BeforeAllCallback,
-    AfterEachCallback,
-    BeforeEachCallback,
-    ParameterResolver,
-    ExtensionContext.Store.CloseableResource {
+    BeforeAllCallback, AfterEachCallback, BeforeEachCallback, ParameterResolver, AutoCloseable {
   companion object {
     private var started = false
     private lateinit var testServices: TestServices

@@ -40,7 +40,7 @@ class ListUserRolesEndpoint(
 
     val userRoles =
         userRoleRepo.getByOrgIdOrRoleName(orgId = orgId, roleName = roleName).map {
-          it.item.toDto()
+          it.data.toDto()
         }
 
     return Response(Status.OK)
