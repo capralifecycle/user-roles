@@ -43,6 +43,7 @@
 
     <!-- API -->
     <http4k.version>6.16.0.0</http4k.version>
+    <jetty.version>12.1.0</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
@@ -120,6 +121,13 @@
         <groupId>org.http4k</groupId>
         <artifactId>http4k-bom</artifactId>
         <version>${http4k.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-bom</artifactId>
+        <version>${jetty.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
