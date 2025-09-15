@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20250816.225535</version>
+    <version>3.20250914.100506</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -34,7 +34,7 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>2.20250907.151241</liflig-properties.version>
+    <liflig-properties.version>2.20250912.101119</liflig-properties.version>
     <liflig-http4k-setup.version>4.20250907.152958</liflig-http4k-setup.version>
     <liflig-public-exception.version>1.20250908.072950</liflig-public-exception.version>
     <liflig-document-store.version>3.20250902.120624</liflig-document-store.version>
@@ -42,7 +42,7 @@
     <liflig-snapshot-test.version>1.20250902.120604</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.17.0.0</http4k.version>
+    <http4k.version>6.18.0.1</http4k.version>
     <jetty.version>12.1.1</jetty.version>
 
     <!-- Database -->
@@ -52,7 +52,7 @@
     <jdbi.version>3.49.5</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.33.8</awssdk.version>
+    <awssdk.version>2.33.9</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
