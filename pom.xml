@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20250922.065048</version>
+    <version>3.20250927.175742</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -35,24 +35,24 @@
 
     <!-- Liflig -->
     <liflig-properties.version>2.20250912.101119</liflig-properties.version>
-    <liflig-http4k-setup.version>4.20250916.155334</liflig-http4k-setup.version>
-    <liflig-public-exception.version>1.20250908.072950</liflig-public-exception.version>
+    <liflig-http4k-setup.version>4.20250924.103132</liflig-http4k-setup.version>
+    <liflig-public-exception.version>1.20250924.093011</liflig-public-exception.version>
     <liflig-document-store.version>3.20250902.120624</liflig-document-store.version>
-    <liflig-logging.version>2.20250907.165744</liflig-logging.version>
+    <liflig-logging.version>2.20250929.063859</liflig-logging.version>
     <liflig-snapshot-test.version>1.20250902.120604</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.18.0.1</http4k.version>
+    <http4k.version>6.18.1.0</http4k.version>
     <jetty.version>12.1.1</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>11.13.1</flyway.version>
+    <flyway.version>11.13.2</flyway.version>
     <postgresql.version>42.7.8</postgresql.version>
     <jdbi.version>3.49.5</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.34.1</awssdk.version>
+    <awssdk.version>2.34.6</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
@@ -75,7 +75,7 @@
 
     <!-- Testing -->
     <kotest.version>6.0.3</kotest.version>
-    <junit.version>5.13.4</junit.version>
+    <junit.version>5.14.0</junit.version>
     <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
     <testcontainers.postgresql.version>1.21.3</testcontainers.postgresql.version>
@@ -398,7 +398,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.6.2</version>
         <executions>
           <execution>
             <id>enforce</id>
