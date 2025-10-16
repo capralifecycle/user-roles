@@ -352,13 +352,6 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--needed to be able to use FlowTestExtension in tests for autowiring-->
-    <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility-kotlin</artifactId>
-      <version>4.3.0</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
