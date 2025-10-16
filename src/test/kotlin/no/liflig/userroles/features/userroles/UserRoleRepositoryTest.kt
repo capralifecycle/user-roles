@@ -92,7 +92,8 @@ class UserRoleRepositoryTest {
                             roleValue = """{"boards": [1,2,3]}""",
                         ),
                     ),
-            ))
+            )
+        )
 
     userRoleRepository.delete(userRole.id, version)
 

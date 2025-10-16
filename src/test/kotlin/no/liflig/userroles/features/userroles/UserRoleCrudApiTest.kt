@@ -6,7 +6,6 @@ import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
 import no.liflig.userroles.features.userroles.api.UpdateRoleRequest
 import no.liflig.userroles.features.userroles.api.UserRoleDto
-import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -18,18 +17,18 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestMethodOrder
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(FlowTestExtension::class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserRoleCrudApiTest {
-  companion object {
-    @BeforeAll
-    @JvmStatic
-    fun clear(services: TestServices) {
-      services.clear()
-    }
+  // Not using @RegisterExtension here, since we only want to clear in BeforeAll
+  private val services = TestServices.get()
+
+  @BeforeAll
+  fun clear() {
+    services.clear()
   }
 
   private val userId = "user123"
@@ -55,7 +54,7 @@ class UserRoleCrudApiTest {
 
   @Order(1)
   @Test
-  fun `create user role`(services: TestServices) {
+  fun `create user role`() {
     val response = services.putUserRole(userId, UpdateRoleRequest(roles))
     response.status shouldBe Status.OK
 
@@ -70,7 +69,7 @@ class UserRoleCrudApiTest {
 
   @Order(2)
   @Test
-  fun `update user role`(services: TestServices) {
+  fun `update user role`() {
     val requestBody = readJsonResource<UpdateRoleRequest>("crudtest/update-user-role-request.json")
 
     val response = services.putUserRole(userId, requestBody)
@@ -87,7 +86,7 @@ class UserRoleCrudApiTest {
 
   @Order(3)
   @Test
-  fun `get user role`(services: TestServices) {
+  fun `get user role`() {
     val response = services.getUserRole(userId)
     response.status shouldBe Status.OK
 
@@ -102,7 +101,7 @@ class UserRoleCrudApiTest {
 
   @Order(4)
   @Test
-  fun `delete user role`(services: TestServices) {
+  fun `delete user role`() {
     val deleteResponse = services.deleteUserRole(userId)
     deleteResponse.status shouldBe Status.OK
 

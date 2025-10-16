@@ -14,7 +14,7 @@ data class ApiConfig(
     val serverPort: Int,
     val corsPolicy: CorsPolicy,
     val credentials: Credentials,
-    val logHttpBody: Boolean
+    val logHttpBody: Boolean,
 ) {
   companion object {
     fun from(properties: Properties) =

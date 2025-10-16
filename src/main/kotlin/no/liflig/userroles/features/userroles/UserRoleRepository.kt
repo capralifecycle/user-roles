@@ -17,18 +17,18 @@ class UserRoleRepository(jdbi: Jdbi) :
 
   fun getByOrgIdOrRoleName(
       orgId: String? = null,
-      roleName: String? = null
+      roleName: String? = null,
   ): List<Versioned<UserRole>> {
     return getByPredicate(
         """
-              (:orgId IS NOT NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
-              OR
-              (:orgId IS NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"roleName": "' || :roleName || '"}]')::jsonb)
-              OR
-              (:orgId IS NOT NULL AND :roleName IS NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '"}]')::jsonb)
-              OR
-              (:orgId IS NULL AND :roleName IS NULL)
-            """
+          (:orgId IS NOT NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
+          OR
+          (:orgId IS NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"roleName": "' || :roleName || '"}]')::jsonb)
+          OR
+          (:orgId IS NOT NULL AND :roleName IS NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '"}]')::jsonb)
+          OR
+          (:orgId IS NULL AND :roleName IS NULL)
+        """
             .trimIndent(),
     ) {
       bind("orgId", orgId)

@@ -122,7 +122,8 @@ object DatabaseConfigurator {
           .addShutdownHook(
               thread(start = false, name = "hikari-shutdown") {
                 if (!dataSource.isClosed) dataSource.close()
-              })
+              }
+          )
     } catch (e: Exception) {
       log.error(e) { "Failed to add shutdown hook for hikari." }
     }

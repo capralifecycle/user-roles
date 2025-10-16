@@ -7,7 +7,6 @@ import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
 import no.liflig.userroles.features.userroles.api.ListUserRoleDto
 import no.liflig.userroles.features.userroles.api.ListUserRolesEndpoint
-import no.liflig.userroles.testutils.FlowTestExtension
 import no.liflig.userroles.testutils.TestServices
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -16,57 +15,56 @@ import org.http4k.core.Status
 import org.http4k.core.with
 import org.http4k.filter.ClientFilters.CustomBasicAuth.withBasicAuth
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
-@ExtendWith(FlowTestExtension::class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SearchUserRolesTest {
-  companion object {
-    @BeforeAll
-    @JvmStatic
-    fun clear(services: TestServices) {
-      services.clear()
+  // Not using @RegisterExtension here, since we only want to clear in BeforeAll
+  private val services = TestServices.get()
 
-      val testData = readJsonResource<TestUserRoles>("searchtest/initial-user-roles.json")
-      testData.userRoles.forEach { services.app.userRoleRepo.create(it) }
-    }
+  @BeforeAll
+  fun clear() {
+    services.clear()
 
-    data class TestCase(
-        val name: String,
-        val roleName: String? = null,
-        val orgId: String? = null,
-    )
-
-    @JvmStatic
-    fun testCases() =
-        listOf(
-            TestCase(
-                name = "search for admins using roleName",
-                roleName = "admin",
-            ),
-            TestCase(
-                name = "search for admins in specific organization",
-                roleName = "orgAdmin",
-                orgId = "orgId1",
-            ),
-            TestCase(
-                name = "search for specific organization",
-                orgId = "orgId1",
-            ),
-            TestCase(
-                name = "search without query params",
-            ),
-            TestCase(
-                name = "non-existing organization returns empty",
-                orgId = "orgId6",
-            ),
-        )
+    val testData = readJsonResource<TestUserRoles>("searchtest/initial-user-roles.json")
+    testData.userRoles.forEach { services.app.userRoleRepo.create(it) }
   }
+
+  data class TestCase(
+      val name: String,
+      val roleName: String? = null,
+      val orgId: String? = null,
+  )
+
+  fun testCases() =
+      listOf(
+          TestCase(
+              name = "search for admins using roleName",
+              roleName = "admin",
+          ),
+          TestCase(
+              name = "search for admins in specific organization",
+              roleName = "orgAdmin",
+              orgId = "orgId1",
+          ),
+          TestCase(
+              name = "search for specific organization",
+              orgId = "orgId1",
+          ),
+          TestCase(
+              name = "search without query params",
+          ),
+          TestCase(
+              name = "non-existing organization returns empty",
+              orgId = "orgId6",
+          ),
+      )
 
   @ParameterizedTest
   @MethodSource("testCases")
-  fun search(test: TestCase, services: TestServices) {
+  fun search(test: TestCase) {
     val response = services.listUserRoles(orgId = test.orgId, roleName = test.roleName)
     response.status shouldBe Status.OK
 

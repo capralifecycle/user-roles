@@ -29,7 +29,8 @@ data class UserRoleDto(
                         roleName = "view",
                         roleValue = null,
                     ),
-                ))
+                ),
+        )
   }
 }
 
