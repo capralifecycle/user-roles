@@ -5,10 +5,7 @@
 
   <property resource="application.properties"/>
 
-  <!--
-  Note! This file is used when run in the container and will
-  override the default logback.xml.
-  -->
+  <!-- Note! This file is used when run in the container and will override the default logback.xml. -->
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="net.logstash.logback.encoder.LogstashEncoder">
@@ -17,6 +14,18 @@
 
       <!-- Apply to all logs. The service and version are important for some services like Datadog. -->
       <customFields>{"service":"${service.name}","version":"${service.version}"}</customFields>
+
+      <!-- Default timestamp pattern includes the server's timezone. We always want timestamps in UTC -->
+      <timestampPattern>[ISO_INSTANT]</timestampPattern>
+
+      <fieldNames>
+        <!-- Default timestamp field is "@timestamp". This clashes with CloudWatch, so we change it to "timestamp" -->
+        <timestamp>timestamp</timestamp>
+        <!-- Logstash log format version. We don't need this, so we remove it with [ignore] -->
+        <version>[ignore]</version>
+        <!-- Logback integer level value. We just use "level", so we remove this with [ignore] -->
+        <levelValue>[ignore]</levelValue>
+      </fieldNames>
     </encoder>
   </appender>
 

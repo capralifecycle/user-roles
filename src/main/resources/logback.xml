@@ -2,16 +2,6 @@
 <configuration>
   <property resource="application.properties"/>
 
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      <!-- Writes object values from logging context as actual JSON (not escaped) -->
-      <mdcEntryWriter class="no.liflig.logging.output.logback.JsonContextFieldWriter"/>
-    </encoder>
-
-    <file>log.jsonl</file> <!-- jsonl extension since it's newline-delimited JSON (https://jsonlines.org/) -->
-    <append>false</append>
-  </appender>
-
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <!--
@@ -23,6 +13,29 @@
         %white([%d{HH:mm:ss}]) %highlight(%level) %cyan(%logger{36}){}%white(:) %msg%replace( [%kvp{NONE}]){' \[]', ''}%replace( [%mdc]){' \[]', ''}%n
       </pattern>
       <!-- @formatter:on -->
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <!-- jsonl extension for newline-delimited JSON (https://jsonlines.org/) -->
+    <file>log.jsonl</file>
+    <append>false</append>
+
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <!-- Writes object values from logging context as actual JSON (not escaped) -->
+      <mdcEntryWriter class="no.liflig.logging.output.logback.JsonContextFieldWriter"/>
+
+      <!-- Default timestamp pattern includes the server's timezone. We always want timestamps in UTC -->
+      <timestampPattern>[ISO_INSTANT]</timestampPattern>
+
+      <fieldNames>
+        <!-- Default timestamp field is "@timestamp". This clashes with CloudWatch, so we change it to "timestamp" -->
+        <timestamp>timestamp</timestamp>
+        <!-- Logstash log format version. We don't need this, so we remove it with [ignore] -->
+        <version>[ignore]</version>
+        <!-- Logback integer level value. We just use "level", so we remove this with [ignore] -->
+        <levelValue>[ignore]</levelValue>
+      </fieldNames>
     </encoder>
   </appender>
 
