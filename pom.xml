@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20251027.120534</version>
+    <version>3.20251109.030337</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -34,7 +34,7 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>2.20251027.120833</liflig-properties.version>
+    <liflig-properties.version>2.20251101.070826</liflig-properties.version>
     <liflig-http4k-setup.version>4.20251101.065450</liflig-http4k-setup.version>
     <liflig-public-exception.version>1.20251027.120838</liflig-public-exception.version>
     <liflig-document-store.version>3.20251027.120429</liflig-document-store.version>
@@ -42,27 +42,27 @@
     <liflig-snapshot-test.version>1.20251101.071233</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.20.1.0</http4k.version>
+    <http4k.version>6.20.2.1</http4k.version>
     <jetty.version>12.1.3</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>11.15.0</flyway.version>
+    <flyway.version>11.16.0</flyway.version>
     <postgresql.version>42.7.8</postgresql.version>
-    <jdbi.version>3.49.6</jdbi.version>
+    <jdbi.version>3.50.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.37.4</awssdk.version>
+    <awssdk.version>2.38.3</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
     <jackson.version>2.20.1</jackson.version>
 
     <!-- Logging -->
-    <logback-classic.version>1.5.20</logback-classic.version>
+    <logback-classic.version>1.5.21</logback-classic.version>
     <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
     <slf4j.version>2.0.17</slf4j.version>
-    <opentelemetry.version>1.55.0</opentelemetry.version>
+    <opentelemetry.version>1.56.0</opentelemetry.version>
 
     <!-- Other -->
     <arrow.version>2.2.0</arrow.version>
@@ -81,7 +81,7 @@
     <testcontainers.postgresql.version>1.21.3</testcontainers.postgresql.version>
 
     <!-- Sonarcloud -->
-    <sonar-maven-plugin.version>5.2.0.4988</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>5.3.0.6276</sonar-maven-plugin.version>
     <sonar.projectName>user-roles</sonar.projectName>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>capralifecycle</sonar.organization>
