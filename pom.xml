@@ -56,7 +56,8 @@
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
-    <jackson.version>2.20.1</jackson.version>
+    <jackson3.version>3.0.2</jackson3.version>
+    <jackson2.version>2.20.1</jackson2.version>
 
     <!-- Logging -->
     <logback-classic.version>1.5.21</logback-classic.version>
@@ -159,9 +160,16 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>tools.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson3.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
-        <version>${jackson.version}</version>
+        <version>${jackson2.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
