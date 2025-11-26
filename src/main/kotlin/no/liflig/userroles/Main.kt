@@ -7,6 +7,11 @@ import no.liflig.userroles.common.config.Config
 private val log = getLogger()
 
 fun main() {
+  /** Ensures that all uncaught exceptions are logged. */
+  Thread.setDefaultUncaughtExceptionHandler { _, e: Throwable ->
+    log.error(e) { "Uncaught exception in thread" }
+  }
+
   try {
     App(Config.load()).start()
   } catch (e: Throwable) {
