@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20251118.230634</version>
+    <version>3.20251122.063536</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -42,17 +42,17 @@
     <liflig-snapshot-test.version>1.20251114.110801</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.21.1.0</http4k.version>
+    <http4k.version>6.22.0.0</http4k.version>
     <jetty.version>12.1.4</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>11.17.1</flyway.version>
+    <flyway.version>11.17.2</flyway.version>
     <postgresql.version>42.7.8</postgresql.version>
     <jdbi.version>3.50.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.39.1</awssdk.version>
+    <awssdk.version>2.39.3</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
