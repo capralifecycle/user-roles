@@ -35,4 +35,15 @@ class UserRoleRepository(jdbi: Jdbi) :
       bind("roleName", roleName)
     }
   }
+
+  fun listByUserIds(userIds: List<String>): List<Versioned<UserRole>> {
+    return getByPredicate(
+        """
+        data->>'userId' = ANY(:userIds)
+        """
+            .trimIndent(),
+    ) {
+      bindArray("userIds", String::class.java, userIds)
+    }
+  }
 }

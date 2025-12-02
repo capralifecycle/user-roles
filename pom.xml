@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -31,6 +32,7 @@
     <kotlin.version>2.2.21</kotlin.version>
     <java.version>21</java.version>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
+    <kotlin.compiler.languageVersion>2.2</kotlin.compiler.languageVersion>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
@@ -307,6 +309,12 @@
       <artifactId>jdbi3-kotlin</artifactId>
     </dependency>
 
+    <!-- AWS -->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>cognitoidentityprovider</artifactId>
+    </dependency>
+
     <!-- Serialization -->
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
@@ -488,20 +496,24 @@
                     <exclude>META-INF/NOTICE.txt</exclude>
                     <exclude>META-INF/io.netty.versions.properties</exclude>
                     <exclude>META-INF/kotlinx_coroutines_core.version</exclude>
-                    <exlude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.properties</exlude>
-                    <exclude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.xml</exclude>
+                    <exlude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.properties
+                    </exlude>
+                    <exclude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.xml
+                    </exclude>
                     <exclude>META-INF/kotlinx-serialization-json.kotlin_module</exclude>
                     <exclude>META-INF/DEPENDENCIES</exclude>
                   </excludes>
                 </filter>
               </filters>
               <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
                     <Main-Class>no.liflig.userroles.MainKt</Main-Class>
                   </manifestEntries>
                 </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
               </transformers>
             </configuration>
           </execution>
