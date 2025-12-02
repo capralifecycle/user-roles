@@ -1,4 +1,4 @@
-package no.liflig.userroles.features.userroles
+package no.liflig.userroles.roles
 
 import java.util.UUID
 import kotlinx.serialization.Serializable

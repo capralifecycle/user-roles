@@ -1,11 +1,11 @@
-package no.liflig.userroles.features.userroles
+package no.liflig.userroles.roles
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.matchers.shouldBe
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
-import no.liflig.userroles.features.userroles.api.UpdateRoleRequest
-import no.liflig.userroles.features.userroles.api.UserRoleDto
+import no.liflig.userroles.roles.api.UpdateRoleRequest
+import no.liflig.userroles.roles.api.UserRoleDto
 import no.liflig.userroles.testutils.TestServices
 import org.http4k.core.Method
 import org.http4k.core.Request

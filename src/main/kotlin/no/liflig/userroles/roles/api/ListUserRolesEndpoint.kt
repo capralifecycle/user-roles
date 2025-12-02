@@ -1,7 +1,7 @@
-package no.liflig.userroles.features.userroles.api
+package no.liflig.userroles.roles.api
 
 import no.liflig.userroles.common.http4k.Endpoint
-import no.liflig.userroles.features.userroles.UserRoleRepository
+import no.liflig.userroles.roles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.Method

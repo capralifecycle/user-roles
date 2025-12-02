@@ -1,4 +1,4 @@
-package no.liflig.userroles.features.userroles
+package no.liflig.userroles.roles
 
 import no.liflig.documentstore.entity.Versioned
 import no.liflig.documentstore.repository.RepositoryJdbi
@@ -21,13 +21,13 @@ class UserRoleRepository(jdbi: Jdbi) :
   ): List<Versioned<UserRole>> {
     return getByPredicate(
         """
-          (:orgId IS NOT NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
-          OR
-          (:orgId IS NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"roleName": "' || :roleName || '"}]')::jsonb)
-          OR
-          (:orgId IS NOT NULL AND :roleName IS NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '"}]')::jsonb)
-          OR
-          (:orgId IS NULL AND :roleName IS NULL)
+        (:orgId IS NOT NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '", "roleName": "' || :roleName || '"}]')::jsonb)
+        OR
+        (:orgId IS NULL AND :roleName IS NOT NULL AND data->'roles' @> ('[{"roleName": "' || :roleName || '"}]')::jsonb)
+        OR
+        (:orgId IS NOT NULL AND :roleName IS NULL AND data->'roles' @> ('[{"orgId": "' || :orgId || '"}]')::jsonb)
+        OR
+        (:orgId IS NULL AND :roleName IS NULL)
         """
             .trimIndent(),
     ) {

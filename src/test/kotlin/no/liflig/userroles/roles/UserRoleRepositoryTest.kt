@@ -1,4 +1,4 @@
-package no.liflig.userroles.features.userroles
+package no.liflig.userroles.roles
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.nulls.shouldBeNull

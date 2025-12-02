@@ -1,12 +1,12 @@
-package no.liflig.userroles.features.userroles
+package no.liflig.userroles.roles
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.Serializable
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
-import no.liflig.userroles.features.userroles.api.ListUserRoleDto
-import no.liflig.userroles.features.userroles.api.ListUserRolesEndpoint
+import no.liflig.userroles.roles.api.ListUserRoleDto
+import no.liflig.userroles.roles.api.ListUserRolesEndpoint
 import no.liflig.userroles.testutils.TestServices
 import org.http4k.core.Method
 import org.http4k.core.Request

@@ -1,7 +1,7 @@
-package no.liflig.userroles.features.userroles.api
+package no.liflig.userroles.roles.api
 
 import no.liflig.userroles.common.http4k.EndpointGroup
-import no.liflig.userroles.features.userroles.UserRoleRepository
+import no.liflig.userroles.roles.UserRoleRepository
 
 class UserRoleApi(userRoleRepo: UserRoleRepository) : EndpointGroup {
   override val endpoints =

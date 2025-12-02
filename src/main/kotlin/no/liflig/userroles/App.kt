@@ -4,7 +4,7 @@ import no.liflig.logging.getLogger
 import no.liflig.userroles.api.ApiServer
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.database.DatabaseConfigurator
-import no.liflig.userroles.features.userroles.UserRoleRepository
+import no.liflig.userroles.roles.UserRoleRepository
 import org.jdbi.v3.core.Jdbi
 
 private val log = getLogger()

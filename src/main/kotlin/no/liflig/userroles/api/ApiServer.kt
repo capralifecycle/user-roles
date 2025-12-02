@@ -11,7 +11,7 @@ import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.http4k.BasicAuthFilter
 import no.liflig.userroles.common.http4k.CustomJacksonConfig
 import no.liflig.userroles.common.http4k.EndpointGroup
-import no.liflig.userroles.features.userroles.api.UserRoleApi
+import no.liflig.userroles.roles.api.UserRoleApi
 import org.eclipse.jetty.server.HttpConnectionFactory
 import org.http4k.contract.PreFlightExtraction
 import org.http4k.contract.contract

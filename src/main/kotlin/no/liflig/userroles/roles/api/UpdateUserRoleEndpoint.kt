@@ -1,12 +1,12 @@
-package no.liflig.userroles.features.userroles.api
+package no.liflig.userroles.roles.api
 
 import kotlinx.serialization.Serializable
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.common.http4k.Endpoint
 import no.liflig.userroles.common.http4k.userIdPathLens
-import no.liflig.userroles.features.userroles.Role
-import no.liflig.userroles.features.userroles.UserRole
-import no.liflig.userroles.features.userroles.UserRoleRepository
+import no.liflig.userroles.roles.Role
+import no.liflig.userroles.roles.UserRole
+import no.liflig.userroles.roles.UserRoleRepository
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
 import org.http4k.contract.meta
