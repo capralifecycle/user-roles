@@ -1,11 +1,14 @@
 package no.liflig.userroles
 
 import no.liflig.logging.getLogger
+import no.liflig.userroles.administration.CognitoClientWrapper
+import no.liflig.userroles.administration.UserAdministrationService
 import no.liflig.userroles.api.ApiServer
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.database.DatabaseConfigurator
 import no.liflig.userroles.roles.UserRoleRepository
 import org.jdbi.v3.core.Jdbi
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 
 private val log = getLogger()
 
@@ -13,8 +16,22 @@ private val log = getLogger()
 class App(
     private val config: Config,
     jdbi: Jdbi = createJdbiInstance(config),
+    /** Used for tests. */
+    cognitoClientOverride: CognitoIdentityProviderClient? = null,
 ) {
   val userRoleRepo = UserRoleRepository(jdbi)
+
+  val cognitoClientWrapper =
+      CognitoClientWrapper(
+          userPoolId = config.cognitoUserPoolId,
+          clientOverride = cognitoClientOverride,
+      )
+
+  val userAdministrationService =
+      UserAdministrationService(
+          userRoleRepository = userRoleRepo,
+          cognitoClientWrapper = cognitoClientWrapper,
+      )
 
   fun start() {
     log.info {
