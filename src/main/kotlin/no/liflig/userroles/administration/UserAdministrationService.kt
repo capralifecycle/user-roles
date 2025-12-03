@@ -2,14 +2,12 @@ package no.liflig.userroles.administration
 
 import no.liflig.logging.getLogger
 import no.liflig.userroles.roles.UserRoleRepository
-import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 
 private val log = getLogger()
 
 class UserAdministrationService(
     private val userRoleRepository: UserRoleRepository,
-    private val cognitoClient: CognitoIdentityProviderClient,
-    private val userPoolId: String,
+    private val cognitoClientWrapper: CognitoClientWrapper,
 ) {
   /**
    * @param limit Number of users to return. Minimum 1, max 60.
@@ -20,6 +18,13 @@ class UserAdministrationService(
       filter: UserFilter,
       cursor: UserCursor?,
   ): UsersList {
+    /**
+     * We only require initialization of the Cognito client on-demand here, so that if there's an
+     * error in our Cognito setup, then only the user administration module is affected (not the
+     * regular user roles module used for authentication).
+     */
+    val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
+
     val users = ArrayList<UserDataWithRoles>(limit)
     var fetchedFromCognito: Int
     var cognitoPaginationToken: String? = cursor?.cognitoPaginationToken
@@ -79,7 +84,7 @@ class UserAdministrationService(
          *   things we normally do below:
          *     - We don't want to add to any more to the users list
          *     - We don't want to update the Cognito pagination token (since we need to fetch this
-         *       same page again on the same request)
+         *       same page again on the next request)
          *     - We don't want to reset the page offset
          */
         if (users.size == limit) {
