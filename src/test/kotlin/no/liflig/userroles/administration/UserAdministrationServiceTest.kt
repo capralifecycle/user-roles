@@ -8,11 +8,12 @@ import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.createRole
 import no.liflig.userroles.testutils.createUserRole
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
 
 class UserAdministrationServiceTest {
-  private val services = TestServices.get()
+  @RegisterExtension private val services = TestServices.get()
   private val userAdministrationService = services.app.userAdministrationService
 
   /** Utility function with defaults for tests. */
@@ -103,7 +104,7 @@ class UserAdministrationServiceTest {
 
     val results = ArrayList<UserList>()
     do {
-      results.add(listUsers(cursor = results.lastOrNull()?.nextCursor))
+      results.add(listUsers(limit = limit, cursor = results.lastOrNull()?.nextCursor))
     } while (results.last().nextCursor != null)
 
     cognitoClient.requestCount.shouldBe(3)
