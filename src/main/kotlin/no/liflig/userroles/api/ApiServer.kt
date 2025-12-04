@@ -7,6 +7,7 @@ import no.liflig.http4k.setup.errorhandling.ContractLensErrorResponseRenderer
 import no.liflig.http4k.setup.logging.LoggingFilter
 import no.liflig.logging.getLogger
 import no.liflig.userroles.App
+import no.liflig.userroles.common.config.ApiConfig
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.http4k.BasicAuthFilter
 import no.liflig.userroles.common.http4k.CustomJacksonConfig
@@ -22,7 +23,10 @@ import org.http4k.contract.openapi.cached
 import org.http4k.contract.openapi.v3.ApiServer
 import org.http4k.contract.openapi.v3.OpenApi3
 import org.http4k.contract.ui.swaggerUiLite
+import org.http4k.core.HttpHandler
 import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Response
 import org.http4k.core.Uri
 import org.http4k.core.then
 import org.http4k.routing.RoutingHttpHandler
@@ -34,35 +38,34 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.http4k.server.http
 
-/** Responsible for setting up the http4k server for the service's APIs. */
+private val log = getLogger()
+
+/**
+ * Responsible for setting up the http4k server for the service's APIs.
+ *
+ * Implements [HttpHandler], so you can call the API directly in tests without going through a real
+ * HTTP request.
+ */
 class ApiServer(
     private val config: Config,
     app: App,
-) {
-  /**
-   * When creating a new API resource, make an [EndpointGroup] for it and add it here.
-   * [createRouter] below will then register all the routes for the endpoints.
-   */
-  private val apis: List<EndpointGroup> =
-      listOf(
-          UserRoleApi(app.userRoleRepo),
-      )
+) : HttpHandler {
+  private val router: RoutingHttpHandler
 
-  private val log = getLogger()
+  init {
+    /**
+     * When creating a new API resource, make an [EndpointGroup] for it and add it here. We loop
+     * through this below to register all the routes for our endpoints.
+     */
+    val apis: List<EndpointGroup> =
+        listOf(
+            UserRoleApi(app.userRoleRepo),
+        )
 
-  fun start(): Http4kServer {
-    val router = createRouter()
-    val server = router.asServer(Jetty(config.api.serverPort, jettyConfig()))
-    server.start()
-    log.info { "Server started on port ${config.api.serverPort}" }
-    return server
-  }
-
-  private fun createRouter(): RoutingHttpHandler {
-    val (coreFilters, errorResponseRenderer) = baseApiSetup()
+    val (coreFilters, errorResponseRenderer) = baseApiSetup(config.api)
 
     val contractApi = contract {
-      renderer = openApiRenderer(errorResponseRenderer)
+      renderer = openApiRenderer(config.api, errorResponseRenderer)
       descriptionPath = "/docs/openapi-schema.json"
 
       for (api in apis) {
@@ -77,53 +80,28 @@ class ApiServer(
       preFlightExtraction = PreFlightExtraction.IgnoreBody
     }
 
-    return coreFilters
-        .then(BasicAuthFilter(config.api.credentials))
-        .then(
-            routes(
-                "/api" bind contractApi,
-                "/health" bind
-                    Method.GET to
-                    HealthEndpoint(config.api.serviceName, config.buildInfo),
-                swaggerUiLite { url = "/api/docs/openapi-schema.json" },
-            ),
-        )
+    router =
+        coreFilters
+            .then(BasicAuthFilter(config.api.credentials))
+            .then(
+                routes(
+                    "/api" bind contractApi,
+                    "/health" bind
+                        Method.GET to
+                        HealthEndpoint(config.api.serviceName, config.buildInfo),
+                    swaggerUiLite { url = "/api/docs/openapi-schema.json" },
+                ),
+            )
   }
 
-  private fun baseApiSetup(): LifligBasicApiSetupConfig {
-    return LifligBasicApiSetup(
-            logHandler = LoggingFilter.createLogHandler(suppressSuccessfulHealthChecks = true),
-            logHttpBody = config.api.logHttpBody,
-            corsPolicy = config.api.corsPolicy,
-        )
-        .create(principalLog = { null })
+  fun start(): Http4kServer {
+    val server = router.asServer(Jetty(config.api.serverPort, jettyConfig()))
+    server.start()
+    log.info { "Server started on port ${config.api.serverPort}" }
+    return server
   }
 
-  private fun openApiRenderer(
-      errorResponseRenderer: ContractLensErrorResponseRenderer
-  ): OpenApi3<JsonNode> {
-    val jacksonConfig = CustomJacksonConfig
-    return OpenApi3(
-        apiInfo =
-            ApiInfo(
-                title = config.api.serviceName,
-                version = "v1",
-                description = "REST API for ${config.api.serviceName}.",
-            ),
-        servers =
-            listOf(
-                ApiServer(Uri.of(config.api.serverBaseUrl)),
-            ),
-        json = jacksonConfig,
-        apiRenderer =
-            ApiRenderer.Auto<org.http4k.contract.openapi.v3.Api<JsonNode>, JsonNode>(
-                    jacksonConfig,
-                    schema = AutoJsonToJsonSchema(jacksonConfig),
-                )
-                .cached(),
-        errorResponseRenderer = errorResponseRenderer,
-    )
-  }
+  override fun invoke(request: Request): Response = router(request)
 
   private fun jettyConfig(): ConnectorBuilder = { server ->
     http(config.api.serverPort)(server).apply {
@@ -133,4 +111,40 @@ class ApiServer(
       }
     }
   }
+}
+
+private fun baseApiSetup(config: ApiConfig): LifligBasicApiSetupConfig {
+  return LifligBasicApiSetup(
+          logHandler = LoggingFilter.createLogHandler(suppressSuccessfulHealthChecks = true),
+          logHttpBody = config.logHttpBody,
+          corsPolicy = config.corsPolicy,
+      )
+      .create(principalLog = { null })
+}
+
+private fun openApiRenderer(
+    config: ApiConfig,
+    errorResponseRenderer: ContractLensErrorResponseRenderer,
+): OpenApi3<JsonNode> {
+  val jacksonConfig = CustomJacksonConfig
+  return OpenApi3(
+      apiInfo =
+          ApiInfo(
+              title = config.serviceName,
+              version = "v1",
+              description = "REST API for ${config.serviceName}.",
+          ),
+      servers =
+          listOf(
+              ApiServer(Uri.of(config.serverBaseUrl)),
+          ),
+      json = jacksonConfig,
+      apiRenderer =
+          ApiRenderer.Auto<org.http4k.contract.openapi.v3.Api<JsonNode>, JsonNode>(
+                  jacksonConfig,
+                  schema = AutoJsonToJsonSchema(jacksonConfig),
+              )
+              .cached(),
+      errorResponseRenderer = errorResponseRenderer,
+  )
 }
