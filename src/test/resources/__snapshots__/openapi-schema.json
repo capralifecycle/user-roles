@@ -11,6 +11,124 @@
     }
   ],
   "paths": {
+    "/api/administration/users": {
+      "get": {
+        "summary": "List users",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "cursor",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "searchString",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "searchField",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/UserSearchField"
+            }
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "orgId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "applicationName",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "roleName",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "nextCursor": "example-pagination-token___0",
+                  "users": [
+                    {
+                      "username": "test.testesen",
+                      "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                      "email": {
+                        "value": "test@example.org",
+                        "verified": true
+                      },
+                      "phoneNumber": {
+                        "value": "12345678",
+                        "verified": true
+                      },
+                      "userStatus": "CONFIRMED",
+                      "enabled": true,
+                      "createdAt": "2025-12-03T11:32:59Z",
+                      "attributes": {
+                        "name": "Test Testesen"
+                      },
+                      "roles": [
+                        {
+                          "applicationName": "logistics",
+                          "orgId": null,
+                          "roleName": "admin",
+                          "roleValue": null
+                        },
+                        {
+                          "applicationName": "admin",
+                          "orgId": null,
+                          "roleName": "view",
+                          "roleValue": null
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ListUsersResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "getApiAdministrationUsers",
+        "deprecated": false
+      }
+    },
     "/api/userroles": {
       "get": {
         "summary": "Get user roles",
@@ -255,20 +373,20 @@
       },
       "Role": {
         "properties": {
+          "applicationName": {
+            "example": "logistics",
+            "type": "string",
+            "nullable": true
+          },
           "roleName": {
             "example": "admin",
             "type": "string",
             "nullable": false
-          },
-          "roleValue": {
-            "example": "{\"boards\": [1,2,3]}",
-            "type": "string",
-            "nullable": true
           }
         },
         "example": {
-          "roleName": "admin",
-          "roleValue": "{\"boards\": [1,2,3]}"
+          "applicationName": "logistics",
+          "roleName": "admin"
         },
         "type": "object",
         "required": [
@@ -342,6 +460,256 @@
         "required": [
           "userRoles"
         ]
+      },
+      "ListUsersResponse": {
+        "properties": {
+          "nextCursor": {
+            "example": "example-pagination-token___0",
+            "type": "string",
+            "nullable": true
+          },
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/UserDataWithRoles"
+            },
+            "example": [
+              {
+                "username": "test.testesen",
+                "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                "email": {
+                  "value": "test@example.org",
+                  "verified": true
+                },
+                "phoneNumber": {
+                  "value": "12345678",
+                  "verified": true
+                },
+                "userStatus": "CONFIRMED",
+                "enabled": true,
+                "createdAt": "2025-12-03T11:32:59Z",
+                "attributes": {
+                  "name": "Test Testesen"
+                },
+                "roles": [
+                  {
+                    "applicationName": "logistics",
+                    "roleName": "admin"
+                  },
+                  {
+                    "applicationName": "admin",
+                    "roleName": "view"
+                  }
+                ]
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "nextCursor": "example-pagination-token___0",
+          "users": [
+            {
+              "username": "test.testesen",
+              "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+              "email": {
+                "value": "test@example.org",
+                "verified": true
+              },
+              "phoneNumber": {
+                "value": "12345678",
+                "verified": true
+              },
+              "userStatus": "CONFIRMED",
+              "enabled": true,
+              "createdAt": "2025-12-03T11:32:59Z",
+              "attributes": {
+                "name": "Test Testesen"
+              },
+              "roles": [
+                {
+                  "applicationName": "logistics",
+                  "roleName": "admin"
+                },
+                {
+                  "applicationName": "admin",
+                  "roleName": "view"
+                }
+              ]
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "users"
+        ]
+      },
+      "UserDataWithRoles": {
+        "properties": {
+          "username": {
+            "example": "test.testesen",
+            "type": "string",
+            "nullable": false
+          },
+          "userId": {
+            "example": "03e2d410-6591-4409-be77-6aca0833656d",
+            "type": "string",
+            "nullable": false
+          },
+          "email": {
+            "$ref": "#/components/schemas/UserEmail"
+          },
+          "phoneNumber": {
+            "$ref": "#/components/schemas/UserPhoneNumber"
+          },
+          "userStatus": {
+            "example": "CONFIRMED",
+            "type": "string",
+            "nullable": false
+          },
+          "enabled": {
+            "example": true,
+            "type": "boolean",
+            "nullable": false
+          },
+          "createdAt": {
+            "example": "2025-12-03T11:32:59Z",
+            "format": "date-time",
+            "type": "string",
+            "nullable": false
+          },
+          "attributes": {
+            "additionalProperties": {
+              "properties": {
+                "name": {
+                  "example": "Test Testesen",
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "example": {
+                "name": "Test Testesen"
+              },
+              "type": "object"
+            },
+            "type": "object"
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            },
+            "example": [
+              {
+                "applicationName": "logistics",
+                "roleName": "admin"
+              },
+              {
+                "applicationName": "admin",
+                "roleName": "view"
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "username": "test.testesen",
+          "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+          "email": {
+            "value": "test@example.org",
+            "verified": true
+          },
+          "phoneNumber": {
+            "value": "12345678",
+            "verified": true
+          },
+          "userStatus": "CONFIRMED",
+          "enabled": true,
+          "createdAt": "2025-12-03T11:32:59Z",
+          "attributes": {
+            "name": "Test Testesen"
+          },
+          "roles": [
+            {
+              "applicationName": "logistics",
+              "roleName": "admin"
+            },
+            {
+              "applicationName": "admin",
+              "roleName": "view"
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "attributes",
+          "createdAt",
+          "enabled",
+          "roles",
+          "userId",
+          "userStatus",
+          "username"
+        ]
+      },
+      "UserEmail": {
+        "properties": {
+          "value": {
+            "example": "test@example.org",
+            "type": "string",
+            "nullable": false
+          },
+          "verified": {
+            "example": true,
+            "type": "boolean",
+            "nullable": false
+          }
+        },
+        "example": {
+          "value": "test@example.org",
+          "verified": true
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "verified"
+        ]
+      },
+      "UserPhoneNumber": {
+        "properties": {
+          "value": {
+            "example": "12345678",
+            "type": "string",
+            "nullable": false
+          },
+          "verified": {
+            "example": true,
+            "type": "boolean",
+            "nullable": false
+          }
+        },
+        "example": {
+          "value": "12345678",
+          "verified": true
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "verified"
+        ]
+      },
+      "UserSearchField": {
+        "example": "USERNAME",
+        "enum": [
+          "USERNAME",
+          "EMAIL",
+          "PHONE_NUMBER",
+          "NAME",
+          "GIVEN_NAME",
+          "FAMILY_NAME",
+          "PREFERRED_USERNAME"
+        ],
+        "type": "string",
+        "nullable": false
       }
     },
     "securitySchemes": {}
