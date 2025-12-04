@@ -75,7 +75,7 @@ class SearchUserRolesTest {
 }
 
 private fun TestServices.listUserRoles(orgId: String? = null, roleName: String? = null): Response {
-  return httpClient(
+  return apiClient(
       Request(Method.GET, "${baseUrl}/api/userroles")
           .with(ListUserRolesEndpoint.orgIdQuery.of(orgId))
           .with(ListUserRolesEndpoint.roleNameQuery.of(roleName))

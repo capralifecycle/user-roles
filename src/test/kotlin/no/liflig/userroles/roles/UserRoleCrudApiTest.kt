@@ -111,7 +111,7 @@ class UserRoleCrudApiTest {
 }
 
 fun TestServices.putUserRole(userId: String, requestBody: UpdateRoleRequest): Response {
-  return httpClient(
+  return apiClient(
       Request(Method.PUT, "${baseUrl}/api/userroles/${userId}")
           .with(UpdateRoleRequest.bodyLens.of(requestBody))
           .withBasicAuth(config.api.credentials),
@@ -119,14 +119,14 @@ fun TestServices.putUserRole(userId: String, requestBody: UpdateRoleRequest): Re
 }
 
 fun TestServices.getUserRole(userId: String): Response {
-  return httpClient(
+  return apiClient(
       Request(Method.GET, "${baseUrl}/api/userroles/${userId}")
           .withBasicAuth(config.api.credentials),
   )
 }
 
 fun TestServices.deleteUserRole(userId: String): Response {
-  return httpClient(
+  return apiClient(
       Request(Method.DELETE, "${baseUrl}/api/userroles/${userId}")
           .withBasicAuth(config.api.credentials),
   )

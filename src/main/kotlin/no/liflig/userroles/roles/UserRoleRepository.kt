@@ -8,9 +8,13 @@ import org.jdbi.v3.core.Jdbi
 class UserRoleRepository(jdbi: Jdbi) :
     RepositoryJdbi<UserRoleId, UserRole>(
         jdbi,
-        tableName = "userroles",
+        tableName = TABLE_NAME,
         serializationAdapter = KotlinSerialization(UserRole.serializer()),
     ) {
+  companion object {
+    const val TABLE_NAME = "userroles"
+  }
+
   fun getByUserId(userId: String): Versioned<UserRole>? {
     return getByPredicate("data->>'userId' = :userId") { bind("userId", userId) }.firstOrNull()
   }

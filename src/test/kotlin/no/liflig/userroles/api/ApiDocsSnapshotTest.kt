@@ -22,7 +22,7 @@ class ApiDocsSnapshotTest {
 }
 
 private fun TestServices.sendOpenApiSchemaRequest(): Response {
-  return httpClient(
+  return apiClient(
       Request(Method.GET, "${baseUrl}/api/docs/openapi-schema.json"),
   )
 }

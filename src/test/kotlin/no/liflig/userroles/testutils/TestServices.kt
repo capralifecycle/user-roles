@@ -1,10 +1,14 @@
 package no.liflig.userroles.testutils
 
+import no.liflig.documentstore.repository.useHandle
 import no.liflig.userroles.App
+import no.liflig.userroles.administration.MockCognitoClientWrapper
 import no.liflig.userroles.common.config.Config
-import org.http4k.client.JavaHttpClient
+import no.liflig.userroles.roles.UserRoleRepository
+import org.http4k.core.HttpHandler
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 
 /**
  * Application services for use in integration tests.
@@ -47,19 +51,47 @@ class TestServices private constructor() : BeforeEachCallback {
         )
       }
 
+  val jdbi = createJdbiForTests()
+
+  val cognitoClientWrapper = MockCognitoClientWrapper()
+
   val app =
       App(
           config,
-          jdbi = createJdbiForTests(),
+          jdbi = jdbi,
+          cognitoClientWrapper = cognitoClientWrapper,
       )
 
-  val httpClient = JavaHttpClient()
+  /**
+   * We expose the http4k `RoutingHttpHandler` from our `ApiServer` here, so that we can make
+   * requests to our API without going through an actual HTTP request. This speeds up our tests.
+   *
+   * Our `HealthEndpointTest` tests with a real HTTP request, so that we have at least 1 test that
+   * checks that our HTTP server setup works.
+   */
+  val apiClient: HttpHandler
+    get() = app.apiServer
 
   fun clear() {
-    app.userRoleRepo.listAll().forEach { app.userRoleRepo.delete(it.data.id, it.version) }
+    truncateTable(UserRoleRepository.TABLE_NAME)
+
+    cognitoClientWrapper.reset()
   }
 
   override fun beforeEach(context: ExtensionContext) {
     this.clear()
+  }
+
+  /**
+   * Use [no.liflig.userroles.administration.MockCognitoClient] as a base class for mocking this.
+   */
+  fun mockCognito(client: CognitoIdentityProviderClient) {
+    cognitoClientWrapper.cognitoClient = client
+  }
+
+  private fun truncateTable(tableName: String) {
+    useHandle(jdbi) { handle ->
+      handle.createUpdate("TRUNCATE TABLE \"${tableName}\" CASCADE").execute()
+    }
   }
 }
