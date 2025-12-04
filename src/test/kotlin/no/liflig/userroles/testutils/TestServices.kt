@@ -6,6 +6,8 @@ import no.liflig.userroles.administration.MockCognitoClientWrapper
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.roles.UserRoleRepository
 import org.http4k.core.HttpHandler
+import org.http4k.core.Request
+import org.http4k.filter.ClientFilters.CustomBasicAuth.withBasicAuth
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
@@ -87,6 +89,10 @@ class TestServices private constructor() : BeforeEachCallback {
    */
   fun mockCognito(client: CognitoIdentityProviderClient) {
     cognitoClientWrapper.cognitoClient = client
+  }
+
+  fun Request.withApiCredentials(): Request {
+    return this.withBasicAuth(config.api.credentials)
   }
 
   private fun truncateTable(tableName: String) {

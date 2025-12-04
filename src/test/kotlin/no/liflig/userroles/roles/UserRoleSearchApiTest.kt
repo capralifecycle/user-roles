@@ -13,7 +13,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
-import org.http4k.filter.ClientFilters.CustomBasicAuth.withBasicAuth
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -79,7 +78,7 @@ private fun TestServices.listUserRoles(orgId: String? = null, roleName: String? 
       Request(Method.GET, "${baseUrl}/api/userroles")
           .with(ListUserRolesEndpoint.orgIdQuery.of(orgId))
           .with(ListUserRolesEndpoint.roleNameQuery.of(roleName))
-          .withBasicAuth(config.api.credentials),
+          .withApiCredentials(),
   )
 }
 
