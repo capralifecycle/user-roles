@@ -119,6 +119,7 @@ private fun baseApiSetup(config: ApiConfig): LifligBasicApiSetupConfig {
   return LifligBasicApiSetup(
           logHandler = LoggingFilter.createLogHandler(suppressSuccessfulHealthChecks = true),
           logHttpBody = config.logHttpBody,
+          logHttpBodyOnError = config.logHttpBodyOnError,
           corsPolicy = config.corsPolicy,
       )
       .create(principalLog = { null })

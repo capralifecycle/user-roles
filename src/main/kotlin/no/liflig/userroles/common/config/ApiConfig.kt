@@ -15,6 +15,7 @@ data class ApiConfig(
     val corsPolicy: CorsPolicy,
     val credentials: Credentials,
     val logHttpBody: Boolean,
+    val logHttpBodyOnError: Boolean,
 ) {
   companion object {
     fun from(properties: Properties) =
@@ -29,6 +30,7 @@ data class ApiConfig(
                     password = properties.stringNotEmpty("basic.auth.password"),
                 ),
             logHttpBody = properties.booleanRequired("log.http.body"),
+            logHttpBodyOnError = properties.booleanRequired("log.http.body.onError"),
         )
   }
 }
