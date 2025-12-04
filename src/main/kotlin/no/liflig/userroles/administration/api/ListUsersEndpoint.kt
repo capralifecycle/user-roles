@@ -7,7 +7,9 @@ import no.liflig.http4k.setup.errorResponse
 import no.liflig.userroles.administration.UserAdministrationService
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserDataWithRoles
+import no.liflig.userroles.administration.UserEmail
 import no.liflig.userroles.administration.UserFilter
+import no.liflig.userroles.administration.UserPhoneNumber
 import no.liflig.userroles.administration.UserSearchField
 import no.liflig.userroles.common.http4k.Endpoint
 import no.liflig.userroles.roles.api.UserRoleDto
@@ -110,15 +112,16 @@ data class ListUsersResponse(
                 listOf(
                     UserDataWithRoles(
                         username = "test.testesen",
-                        email = "test@example.org",
-                        phoneNumber = "12345678",
-                        name = "Test Testesen",
-                        givenName = "Test",
-                        familyName = "Testesen",
-                        preferredUsername = "test",
+                        userId = "03e2d410-6591-4409-be77-6aca0833656d",
+                        email = UserEmail("test@example.org", verified = true),
+                        phoneNumber = UserPhoneNumber("12345678", verified = true),
                         userStatus = "CONFIRMED",
                         enabled = true,
                         createdAt = Instant.parse("2025-12-03T11:32:59Z"),
+                        attributes =
+                            mapOf(
+                                "name" to "Test Testesen",
+                            ),
                         roles = UserRoleDto.example.roles,
                     )
                 ),

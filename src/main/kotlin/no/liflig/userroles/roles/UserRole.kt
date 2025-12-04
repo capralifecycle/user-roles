@@ -9,6 +9,7 @@ import no.liflig.userroles.common.serialization.SerializableUUID
 @Serializable
 data class UserRole(
     override val id: UserRoleId = UserRoleId(),
+    // TODO: Rename and migrate to username, for consistency with admin module
     val userId: String,
     val roles: List<Role> = emptyList(),
 ) : Entity<UserRoleId> {
