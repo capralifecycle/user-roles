@@ -25,7 +25,19 @@ class UserAdministrationApiTest {
         object : MockCognitoClient {
           override fun listUsers(req: ListUsersRequest) =
               ListUsersResponse.builder()
-                  .users(createCognitoUser(username))
+                  .users(
+                      createCognitoUser(
+                          username,
+                          attributes =
+                              mapOf(
+                                  "email" to "test@example.org",
+                                  "email_verified" to "true",
+                                  "phone_number" to "12345678",
+                                  "phone_number_verified" to "true",
+                                  "name" to "Test Testesen",
+                              ),
+                      )
+                  )
                   .paginationToken("test-pagination-token")
                   .build()
         }
