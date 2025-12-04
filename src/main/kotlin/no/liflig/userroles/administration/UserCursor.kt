@@ -21,23 +21,35 @@ data class UserCursor(
   override fun toString(): String = "${cognitoPaginationToken}${SEPARATOR}${pageOffset}"
 
   companion object {
-    fun fromString(cursor: String): UserCursor {
-      val split = cursor.split(SEPARATOR, limit = 2)
-      if (split.size != 2) {
-        throw PublicException(
-            ErrorCode.BAD_REQUEST,
-            publicMessage = "Invalid user cursor '${cursor}': Could not split at '${SEPARATOR}'",
+    /** @throws InvalidUserCursor */
+    fun fromString(cursor: String, limit: Int): UserCursor {
+      /**
+       * Use substringBeforeLast/substringAfterLast, since the separator may hypothetically appear
+       * in the Cognito pagination token, but we know it doesn't appear in the page offset.
+       */
+      val cognitoPaginationToken = cursor.substringBeforeLast(SEPARATOR, missingDelimiterValue = "")
+      val pageOffsetString = cursor.substringAfterLast(SEPARATOR, missingDelimiterValue = "")
+      if (cognitoPaginationToken == "" || pageOffsetString == "") {
+        throw InvalidUserCursor(
+            cursor = cursor,
+            publicDetail = "Expected to find separator '${SEPARATOR}' in cursor",
         )
       }
 
-      val (cognitoPaginationToken, pageOffsetString) = split
       val pageOffset =
           pageOffsetString.toIntOrNull()
-              ?: throw PublicException(
-                  ErrorCode.BAD_REQUEST,
-                  publicMessage =
-                      "Invalid user cursor '${cursor}': Could not parse page offset '${pageOffsetString}' as integer",
+              ?: throw InvalidUserCursor(
+                  cursor = cursor,
+                  publicDetail = "Could not parse page offset '${pageOffsetString}' as integer",
               )
+
+      if (pageOffset !in 0..limit) {
+        throw InvalidUserCursor(
+            cursor = cursor,
+            publicDetail =
+                "Page offset in cursor must be in range [0, ${limit}], was ${pageOffset}",
+        )
+      }
 
       return UserCursor(
           cognitoPaginationToken = cognitoPaginationToken,
@@ -52,3 +64,11 @@ data class UserCursor(
     private const val SEPARATOR = "___"
   }
 }
+
+/** Maps to a 400 Bad Request response, with the given detail message in the error response body. */
+class InvalidUserCursor(cursor: String, publicDetail: String) :
+    PublicException(
+        ErrorCode.BAD_REQUEST,
+        publicMessage = "Invalid cursor '${cursor}' in List Users request",
+        publicDetail = publicDetail,
+    )

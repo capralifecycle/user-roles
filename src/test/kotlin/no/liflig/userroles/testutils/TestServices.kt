@@ -86,6 +86,8 @@ class TestServices private constructor() : BeforeEachCallback {
 
   /**
    * Use [no.liflig.userroles.administration.MockCognitoClient] as a base class for mocking this.
+   *
+   * The mock is reset before each test, in [clear].
    */
   fun mockCognito(client: CognitoIdentityProviderClient) {
     cognitoClientWrapper.cognitoClient = client

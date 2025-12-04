@@ -10,6 +10,6 @@ class UserAdministrationApi(userAdministrationService: UserAdministrationService
       )
 
   companion object {
-    const val PATH = "/users"
+    const val PATH = "/administration/users"
   }
 }
