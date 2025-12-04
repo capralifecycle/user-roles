@@ -17,7 +17,7 @@ class UserAdministrationService(
       limit: Int,
       filter: UserFilter,
       cursor: UserCursor?,
-  ): UsersList {
+  ): UserList {
     /**
      * We only require initialization of the Cognito client on-demand here, so that if there's an
      * error in our Cognito setup, then only the user administration module is affected (not the
@@ -118,7 +118,7 @@ class UserAdministrationService(
         cognitoPaginationToken != null && fetchedFromCognito == limit && users.size < limit
     )
 
-    return UsersList(
+    return UserList(
         users = users,
         nextCursor =
             cognitoPaginationToken?.let {
@@ -128,7 +128,7 @@ class UserAdministrationService(
   }
 }
 
-data class UsersList(
+data class UserList(
     val users: List<UserDataWithRoles>,
     /** See [UserCursor]. Null if there are no more users to fetch. */
     val nextCursor: UserCursor?,

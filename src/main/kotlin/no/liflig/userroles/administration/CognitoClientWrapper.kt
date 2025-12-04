@@ -13,23 +13,25 @@ private val log = getLogger()
  * initialization errors, so that only modules that call [CognitoClientWrapper.getOrThrow] should be
  * affected. We do this so that the regular user roles module (used for authentication) can remain
  * up if the user administration module goes down.
+ *
+ * We make this an interface, so we can create a mock implementation for tests.
  */
-class CognitoClientWrapper(
+interface CognitoClientWrapper {
+  fun getOrThrow(): CognitoClientAndUserPoolId
+}
+
+class CognitoClientWrapperImpl(
     private val userPoolId: String?,
-    /** Override for tests. */
-    clientOverride: CognitoIdentityProviderClient?,
-) {
+) : CognitoClientWrapper {
   private val client: CognitoIdentityProviderClient? =
       try {
-        when {
-          clientOverride != null -> clientOverride
-          userPoolId.isNullOrEmpty() -> {
-            log.error {
-              "Cognito user pool ID not configured. User administration module will be disabled, but fetching roles for authentication should still work"
-            }
-            null
+        if (userPoolId.isNullOrEmpty()) {
+          log.error {
+            "Cognito user pool ID not configured. User administration module will be disabled, but fetching roles for authentication should still work"
           }
-          else -> CognitoIdentityProviderClient.create()
+          null
+        } else {
+          CognitoIdentityProviderClient.create()
         }
       } catch (e: Throwable) {
         log.error(e) {
@@ -45,7 +47,7 @@ class CognitoClientWrapper(
    *   missing user pool config or an error during initialization). This maps to an HTTP 500
    *   Internal Server Error in our API setup, with a descriptive message for the client.
    */
-  fun getOrThrow(): CognitoClientAndUserPoolId {
+  override fun getOrThrow(): CognitoClientAndUserPoolId {
     if (client == null || userPoolId.isNullOrEmpty()) {
       throw PublicException(
           ErrorCode.INTERNAL_SERVER_ERROR,

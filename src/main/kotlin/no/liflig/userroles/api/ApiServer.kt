@@ -7,6 +7,7 @@ import no.liflig.http4k.setup.errorhandling.ContractLensErrorResponseRenderer
 import no.liflig.http4k.setup.logging.LoggingFilter
 import no.liflig.logging.getLogger
 import no.liflig.userroles.App
+import no.liflig.userroles.administration.api.UserAdministrationApi
 import no.liflig.userroles.common.config.ApiConfig
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.http4k.BasicAuthFilter
@@ -60,6 +61,7 @@ class ApiServer(
     val apis: List<EndpointGroup> =
         listOf(
             UserRoleApi(app.userRoleRepo),
+            UserAdministrationApi(app.userAdministrationService),
         )
 
     val (coreFilters, errorResponseRenderer) = baseApiSetup(config.api)

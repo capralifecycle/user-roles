@@ -1,0 +1,25 @@
+{
+  "nextCursor": "test-pagination-token___0",
+  "users": [
+    {
+      "username": "test.testesen",
+      "email": null,
+      "phoneNumber": null,
+      "name": null,
+      "givenName": null,
+      "familyName": null,
+      "preferredUsername": null,
+      "userStatus": "CONFIRMED",
+      "enabled": true,
+      "createdAt": "2025-12-04T07:25:11Z",
+      "roles": [
+        {
+          "applicationName": "test-application",
+          "orgId": "liflig",
+          "roleName": "admin",
+          "roleValue": null
+        }
+      ]
+    }
+  ]
+}

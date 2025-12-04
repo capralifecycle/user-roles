@@ -29,7 +29,7 @@ class ListUsersEndpoint(
     /** Minimum 1, max 60 (limitation from Cognito). Suggestion: Default to limit 20. */
     private val limitQuery = Query.int().required("limit")
     /** See [ListUsersResponse] */
-    private val cursorQuery = Query.map { UserCursor.fromString(it) }.optional("cursor")
+    private val cursorQuery = Query.optional("cursor")
 
     private val searchStringQuery = Query.optional("searchString")
     private val searchFieldQuery = Query.enum<UserSearchField>().optional("searchField")
@@ -77,7 +77,7 @@ class ListUsersEndpoint(
             applicationName = applicationNameQuery(request),
             roleName = roleNameQuery(request),
         )
-    val cursor = cursorQuery(request)
+    val cursor = cursorQuery(request)?.let { UserCursor.fromString(it, limit = limit) }
 
     val result =
         userAdministrationService.listUsers(limit = limit, filter = filter, cursor = cursor)

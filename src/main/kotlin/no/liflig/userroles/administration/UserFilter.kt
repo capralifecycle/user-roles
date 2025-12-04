@@ -50,9 +50,10 @@ data class UserFilter(
      * This is the filter syntax used by the Cognito ListUsers API:
      * https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUsers.html#API_ListUsers_RequestParameters
      *
-     * ^= matches from the beginning of the attribute value
+     * ^= is a "starts with" filter (the only other available filter type is =, which is less useful
+     * for search).
      */
-    return "${searchField.cognitoAttribute} ^= ${searchString}"
+    return "${searchField.cognitoAttribute} ^= \"${searchString}\""
   }
 }
 
