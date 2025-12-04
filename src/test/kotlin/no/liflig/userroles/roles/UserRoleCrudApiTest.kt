@@ -12,7 +12,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
-import org.http4k.filter.ClientFilters.CustomBasicAuth.withBasicAuth
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -114,20 +113,18 @@ fun TestServices.putUserRole(userId: String, requestBody: UpdateRoleRequest): Re
   return apiClient(
       Request(Method.PUT, "${baseUrl}/api/userroles/${userId}")
           .with(UpdateRoleRequest.bodyLens.of(requestBody))
-          .withBasicAuth(config.api.credentials),
+          .withApiCredentials(),
   )
 }
 
 fun TestServices.getUserRole(userId: String): Response {
   return apiClient(
-      Request(Method.GET, "${baseUrl}/api/userroles/${userId}")
-          .withBasicAuth(config.api.credentials),
+      Request(Method.GET, "${baseUrl}/api/userroles/${userId}").withApiCredentials(),
   )
 }
 
 fun TestServices.deleteUserRole(userId: String): Response {
   return apiClient(
-      Request(Method.DELETE, "${baseUrl}/api/userroles/${userId}")
-          .withBasicAuth(config.api.credentials),
+      Request(Method.DELETE, "${baseUrl}/api/userroles/${userId}").withApiCredentials(),
   )
 }
