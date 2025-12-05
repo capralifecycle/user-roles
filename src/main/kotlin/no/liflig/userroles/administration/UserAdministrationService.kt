@@ -1,7 +1,10 @@
 package no.liflig.userroles.administration
 
 import no.liflig.documentstore.entity.Versioned
+import no.liflig.logging.field
 import no.liflig.logging.getLogger
+import no.liflig.publicexception.ErrorCode
+import no.liflig.publicexception.PublicException
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.roles.UserRoleRepository
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
@@ -9,12 +12,13 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 private val log = getLogger()
 
 class UserAdministrationService(
-    private val userRoleRepository: UserRoleRepository,
+    private val userRoleRepo: UserRoleRepository,
     private val cognitoClientWrapper: CognitoClientWrapper,
 ) {
   /**
    * @param limit Number of users to return. Minimum 1, max 60.
    * @param cursor Null if this is the first fetch.
+   * @throws PublicException To provide more context to the client about exactly what failed.
    */
   fun listUsers(
       limit: Int,
@@ -50,10 +54,18 @@ class UserAdministrationService(
      */
     fetchLoop@ do {
       val cognitoResponse =
-          cognitoClient.listUsers { request ->
-            request.limit(limit).userPoolId(userPoolId)
-            cognitoPaginationToken?.let { request.paginationToken(it) }
-            cognitoFilterString?.let { request.filter(it) }
+          try {
+            cognitoClient.listUsers { request ->
+              request.limit(limit).userPoolId(userPoolId)
+              cognitoPaginationToken?.let { request.paginationToken(it) }
+              cognitoFilterString?.let { request.filter(it) }
+            }
+          } catch (e: Exception) {
+            throw PublicException(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                publicMessage = "Failed to fetch users from our identity provider (Cognito)",
+                cause = e,
+            )
           }
 
       fetchedFromCognito = cognitoResponse.users().size
@@ -61,8 +73,18 @@ class UserAdministrationService(
         break@fetchLoop
       }
 
+      val usernames: List<String> = cognitoResponse.users().map { it.username() }
       val roles =
-          userRoleRepository.listByUserIds(userIds = cognitoResponse.users().map { it.username() })
+          try {
+            userRoleRepo.listByUserIds(userIds = cognitoResponse.users().map { it.username() })
+          } catch (e: Exception) {
+            throw PublicException(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                publicMessage = "Failed to retrieve roles for users",
+                logFields = listOf(field("usernames", usernames)),
+                cause = e,
+            )
+          }
 
       userLoop@ for ((index, cognitoUser) in
           cognitoResponse.users().asSequence().withIndex().drop(pageOffset)) {
@@ -137,6 +159,48 @@ class UserAdministrationService(
             },
     )
   }
+
+  /** @throws PublicException To provide more context to the client about exactly what failed. */
+  fun deleteUser(username: String) {
+    val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
+
+    try {
+      cognitoClient.adminDeleteUser { it.userPoolId(userPoolId).username(username) }
+    } catch (e: Exception) {
+      throw PublicException(
+          ErrorCode.INTERNAL_SERVER_ERROR,
+          publicMessage = "Failed to delete user data in our identity provider (Cognito)",
+          cause = e,
+      )
+    }
+
+    userRoleRepo.transactional {
+      val userRole = userRoleRepo.getByUserId(username)
+      if (userRole == null) {
+        /**
+         * We expect the user to have an associated user role. If they don't, we log an error, but
+         * the request can still succeed.
+         */
+        log.error {
+          field("username", username)
+          "Successfully deleted user data in Cognito, but failed to find associated user roles for that user"
+        }
+        return
+      }
+
+      try {
+        userRoleRepo.delete(userRole)
+      } catch (e: Exception) {
+        throw PublicException(
+            ErrorCode.INTERNAL_SERVER_ERROR,
+            publicMessage =
+                "Successfully deleted user data in our identity provider, but failed to delete the roles associated with the user",
+            publicDetail = "Manual cleanup by a system administrator may be required",
+            cause = e,
+        )
+      }
+    }
+  }
 }
 
 private fun findRolesForUser(
@@ -146,8 +210,8 @@ private fun findRolesForUser(
   return userRoles.find { it.data.userId == cognitoUser.username() }?.data
       ?: run {
         log.error {
-          field("cognitoUsername", cognitoUser.username())
-          "Found Cognito user without corresponding user role"
+          field("username", cognitoUser.username())
+          "Found Cognito user without associated user roles"
         }
         return null
       }

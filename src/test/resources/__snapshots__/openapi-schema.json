@@ -119,7 +119,34 @@
           }
         },
         "security": [],
-        "operationId": "getApiAdministrationUsers",
+        "operationId": "listUsers",
+        "deprecated": false
+      }
+    },
+    "/api/administration/users/{username}": {
+      "delete": {
+        "summary": "Delete user",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "username",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
+          }
+        },
+        "security": [],
+        "operationId": "deleteUser",
         "deprecated": false
       }
     },

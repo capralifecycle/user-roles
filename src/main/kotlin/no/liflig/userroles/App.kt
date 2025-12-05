@@ -25,7 +25,7 @@ class App(
 
   val userAdministrationService =
       UserAdministrationService(
-          userRoleRepository = userRoleRepo,
+          userRoleRepo = userRoleRepo,
           cognitoClientWrapper = cognitoClientWrapper,
       )
 
