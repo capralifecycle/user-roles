@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import kotlinx.serialization.json.JsonPrimitive
 import no.liflig.userroles.testutils.createJdbiForTests
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -35,7 +36,7 @@ class UserRoleRepositoryTest {
                     Role(
                         orgId = "org1234",
                         roleName = "orgMember",
-                        roleValue = """{"boards": [1,2,3]}""",
+                        roleValue = JsonPrimitive("test"),
                     ),
                 ),
         )
@@ -62,7 +63,7 @@ class UserRoleRepositoryTest {
                     Role(
                         orgId = "org1234",
                         roleName = "orgMember",
-                        roleValue = """{"boards": [1,2,3]}""",
+                        roleValue = JsonPrimitive("test"),
                     ),
                 ),
         )
@@ -89,7 +90,7 @@ class UserRoleRepositoryTest {
                         Role(
                             orgId = "org1234",
                             roleName = "orgMember",
-                            roleValue = """{"boards": [1,2,3]}""",
+                            roleValue = JsonPrimitive("test"),
                         ),
                     ),
             )

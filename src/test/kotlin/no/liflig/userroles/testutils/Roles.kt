@@ -1,5 +1,6 @@
 package no.liflig.userroles.testutils
 
+import kotlinx.serialization.json.JsonElement
 import no.liflig.userroles.roles.Role
 import no.liflig.userroles.roles.UserRole
 
@@ -18,7 +19,7 @@ fun createRole(
     applicationName: String? = "test-application",
     orgId: String? = "liflig",
     roleName: String = "admin",
-    roleValue: String? = null,
+    roleValue: JsonElement? = null,
 ) =
     Role(
         applicationName = applicationName,

@@ -2,6 +2,7 @@ package no.liflig.userroles.roles
 
 import java.util.UUID
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 import no.liflig.documentstore.entity.Entity
 import no.liflig.documentstore.entity.UuidEntityId
 import no.liflig.userroles.common.serialization.SerializableUUID
@@ -18,10 +19,14 @@ data class UserRole(
 
 @Serializable
 data class Role(
+    /** The application that this role grants access to. */
     val applicationName: String? = null,
+    /** The organization that this role grants access to. */
     val orgId: String? = null,
+    /** The user's role in this organization and application. */
     val roleName: String,
-    val roleValue: String? = null,
+    /** Arbitrary JSON data to attach to the role. */
+    val roleValue: JsonElement? = null,
 )
 
 @Serializable

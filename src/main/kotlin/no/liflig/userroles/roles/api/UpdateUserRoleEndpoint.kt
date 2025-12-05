@@ -60,6 +60,6 @@ data class UpdateRoleRequest(
             errorResponse = "Failed to parse user role update request",
             includeExceptionMessageInErrorResponse = true,
         )
-    val example = UpdateRoleRequest(roles = listOf(exampleRole))
+    val example = UpdateRoleRequest(roles = UserRoleDto.example.roles)
   }
 }
