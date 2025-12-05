@@ -4,6 +4,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import no.liflig.userroles.administration.api.UserAdministrationApiTest
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.createRole
@@ -13,6 +14,10 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
 
+/**
+ * Some parts of the [UserAdministrationService] are tested with integration tests in
+ * [UserAdministrationApiTest]. But we do more granular tests here.
+ */
 class UserAdministrationServiceTest {
   @RegisterExtension private val services = TestServices.get()
   private val userAdministrationService = services.app.userAdministrationService

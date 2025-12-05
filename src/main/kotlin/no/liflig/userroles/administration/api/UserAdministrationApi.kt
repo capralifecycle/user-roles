@@ -7,6 +7,7 @@ class UserAdministrationApi(userAdministrationService: UserAdministrationService
   override val endpoints =
       listOf(
           ListUsersEndpoint(userAdministrationService),
+          DeleteUserEndpoint(userAdministrationService),
       )
 
   companion object {

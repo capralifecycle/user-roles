@@ -1,6 +1,8 @@
 package no.liflig.userroles.administration.api
 
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.administration.MockCognitoClient
 import no.liflig.userroles.administration.UserCursor
@@ -8,13 +10,18 @@ import no.liflig.userroles.administration.UserFilter
 import no.liflig.userroles.administration.UserSearchField
 import no.liflig.userroles.administration.createCognitoUser
 import no.liflig.userroles.roles.UserRole
+import no.liflig.userroles.testutils.DEFAULT_TEST_USERNAME
 import no.liflig.userroles.testutils.TestServices
 import no.liflig.userroles.testutils.createRole
+import no.liflig.userroles.testutils.createUserRole
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
+import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
 
@@ -88,6 +95,33 @@ class UserAdministrationApiTest {
             UserCursor(cognitoPaginationToken = "test-pagination-token", pageOffset = 10),
         )
   }
+
+  @Test
+  fun `delete user`() {
+    val userRole = createUserRole(username = DEFAULT_TEST_USERNAME, createRole(orgId = "org1"))
+
+    val cognitoClient =
+        object : MockCognitoClient {
+          var requestCount = 0
+
+          override fun adminDeleteUser(request: AdminDeleteUserRequest): AdminDeleteUserResponse {
+            request.username().shouldNotBeNull().shouldBe(userRole.userId)
+            request.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
+
+            requestCount++
+
+            return AdminDeleteUserResponse.builder().build()
+          }
+        }
+    services.mockCognito(cognitoClient)
+    userRoleRepo.create(userRole)
+
+    val response = services.sendDeleteUserRequest(username = userRole.userId)
+    response.status.shouldBe(Status.OK)
+    response.body.text.shouldBeEmpty()
+
+    cognitoClient.requestCount.shouldBe(1)
+  }
 }
 
 private fun TestServices.sendListUsersRequest(limit: Int): Response {
@@ -95,5 +129,12 @@ private fun TestServices.sendListUsersRequest(limit: Int): Response {
       Request(Method.GET, "${baseUrl}/api/administration/users")
           .query("limit", limit.toString())
           .withApiCredentials()
+  )
+}
+
+private fun TestServices.sendDeleteUserRequest(username: String): Response {
+  return apiClient(
+      Request(Method.DELETE, "${baseUrl}/api/administration/users/${username}")
+          .withApiCredentials(),
   )
 }

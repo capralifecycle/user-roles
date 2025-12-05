@@ -33,6 +33,7 @@ class ListUsersEndpoint(
     val spec =
         path.meta {
           summary = "List users"
+          operationId = "listUsers"
           queries +=
               listOf(
                   limitQuery,
