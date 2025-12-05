@@ -17,7 +17,7 @@
       "applicationName": null,
       "orgId": "orgId3",
       "roleName": "orgMember",
-      "roleValue": "{\"boards\": [1,2,3]}"
+      "roleValue": "test"
     },
     {
       "applicationName": null,

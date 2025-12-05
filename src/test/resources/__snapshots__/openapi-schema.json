@@ -102,16 +102,10 @@
                       },
                       "roles": [
                         {
-                          "applicationName": "logistics",
-                          "orgId": null,
+                          "applicationName": "example-application",
+                          "orgId": "example-org",
                           "roleName": "admin",
-                          "roleValue": null
-                        },
-                        {
-                          "applicationName": "admin",
-                          "orgId": null,
-                          "roleName": "view",
-                          "roleValue": null
+                          "roleValue": {}
                         }
                       ]
                     }
@@ -162,13 +156,13 @@
                 "example": {
                   "userRoles": [
                     {
-                      "userId": "customerName",
+                      "userId": "test.testesen",
                       "roles": [
                         {
-                          "applicationName": null,
-                          "orgId": null,
+                          "applicationName": "example-application",
+                          "orgId": "example-org",
                           "roleName": "admin",
-                          "roleValue": "{\"boards\": [1,2,3]}"
+                          "roleValue": {}
                         }
                       ]
                     }
@@ -235,19 +229,13 @@
             "content": {
               "application/json": {
                 "example": {
-                  "userId": "ola.nordmann",
+                  "userId": "test.testesen",
                   "roles": [
                     {
-                      "applicationName": "logistics",
-                      "orgId": null,
+                      "applicationName": "example-application",
+                      "orgId": "example-org",
                       "roleName": "admin",
-                      "roleValue": null
-                    },
-                    {
-                      "applicationName": "admin",
-                      "orgId": null,
-                      "roleName": "view",
-                      "roleValue": null
+                      "roleValue": {}
                     }
                   ]
                 },
@@ -284,10 +272,10 @@
               "example": {
                 "roles": [
                   {
-                    "applicationName": null,
-                    "orgId": null,
+                    "applicationName": "example-application",
+                    "orgId": "example-org",
                     "roleName": "admin",
-                    "roleValue": "{\"boards\": [1,2,3]}"
+                    "roleValue": {}
                   }
                 ]
               },
@@ -304,19 +292,13 @@
             "content": {
               "application/json": {
                 "example": {
-                  "userId": "ola.nordmann",
+                  "userId": "test.testesen",
                   "roles": [
                     {
-                      "applicationName": "logistics",
-                      "orgId": null,
+                      "applicationName": "example-application",
+                      "orgId": "example-org",
                       "roleName": "admin",
-                      "roleValue": null
-                    },
-                    {
-                      "applicationName": "admin",
-                      "orgId": null,
-                      "roleName": "view",
-                      "roleValue": null
+                      "roleValue": {}
                     }
                   ]
                 },
@@ -338,7 +320,7 @@
       "UserRoleDto": {
         "properties": {
           "userId": {
-            "example": "customerName",
+            "example": "test.testesen",
             "type": "string",
             "nullable": false
           },
@@ -348,8 +330,10 @@
             },
             "example": [
               {
+                "applicationName": "example-application",
+                "orgId": "example-org",
                 "roleName": "admin",
-                "roleValue": "{\"boards\": [1,2,3]}"
+                "roleValue": {}
               }
             ],
             "type": "array",
@@ -357,11 +341,13 @@
           }
         },
         "example": {
-          "userId": "customerName",
+          "userId": "test.testesen",
           "roles": [
             {
+              "applicationName": "example-application",
+              "orgId": "example-org",
               "roleName": "admin",
-              "roleValue": "{\"boards\": [1,2,3]}"
+              "roleValue": {}
             }
           ]
         },
@@ -374,7 +360,12 @@
       "Role": {
         "properties": {
           "applicationName": {
-            "example": "logistics",
+            "example": "example-application",
+            "type": "string",
+            "nullable": true
+          },
+          "orgId": {
+            "example": "example-org",
             "type": "string",
             "nullable": true
           },
@@ -382,11 +373,21 @@
             "example": "admin",
             "type": "string",
             "nullable": false
+          },
+          "roleValue": {
+            "additionalProperties": {
+              "properties": {},
+              "example": {},
+              "type": "object"
+            },
+            "type": "object"
           }
         },
         "example": {
-          "applicationName": "logistics",
-          "roleName": "admin"
+          "applicationName": "example-application",
+          "orgId": "example-org",
+          "roleName": "admin",
+          "roleValue": {}
         },
         "type": "object",
         "required": [
@@ -401,8 +402,10 @@
             },
             "example": [
               {
+                "applicationName": "example-application",
+                "orgId": "example-org",
                 "roleName": "admin",
-                "roleValue": "{\"boards\": [1,2,3]}"
+                "roleValue": {}
               }
             ],
             "type": "array",
@@ -412,8 +415,10 @@
         "example": {
           "roles": [
             {
+              "applicationName": "example-application",
+              "orgId": "example-org",
               "roleName": "admin",
-              "roleValue": "{\"boards\": [1,2,3]}"
+              "roleValue": {}
             }
           ]
         },
@@ -430,11 +435,13 @@
             },
             "example": [
               {
-                "userId": "customerName",
+                "userId": "test.testesen",
                 "roles": [
                   {
+                    "applicationName": "example-application",
+                    "orgId": "example-org",
                     "roleName": "admin",
-                    "roleValue": "{\"boards\": [1,2,3]}"
+                    "roleValue": {}
                   }
                 ]
               }
@@ -446,11 +453,13 @@
         "example": {
           "userRoles": [
             {
-              "userId": "customerName",
+              "userId": "test.testesen",
               "roles": [
                 {
+                  "applicationName": "example-application",
+                  "orgId": "example-org",
                   "roleName": "admin",
-                  "roleValue": "{\"boards\": [1,2,3]}"
+                  "roleValue": {}
                 }
               ]
             }
@@ -492,12 +501,10 @@
                 },
                 "roles": [
                   {
-                    "applicationName": "logistics",
-                    "roleName": "admin"
-                  },
-                  {
-                    "applicationName": "admin",
-                    "roleName": "view"
+                    "applicationName": "example-application",
+                    "orgId": "example-org",
+                    "roleName": "admin",
+                    "roleValue": {}
                   }
                 ]
               }
@@ -528,12 +535,10 @@
               },
               "roles": [
                 {
-                  "applicationName": "logistics",
-                  "roleName": "admin"
-                },
-                {
-                  "applicationName": "admin",
-                  "roleName": "view"
+                  "applicationName": "example-application",
+                  "orgId": "example-org",
+                  "roleName": "admin",
+                  "roleValue": {}
                 }
               ]
             }
@@ -600,12 +605,10 @@
             },
             "example": [
               {
-                "applicationName": "logistics",
-                "roleName": "admin"
-              },
-              {
-                "applicationName": "admin",
-                "roleName": "view"
+                "applicationName": "example-application",
+                "orgId": "example-org",
+                "roleName": "admin",
+                "roleValue": {}
               }
             ],
             "type": "array",
@@ -631,12 +634,10 @@
           },
           "roles": [
             {
-              "applicationName": "logistics",
-              "roleName": "admin"
-            },
-            {
-              "applicationName": "admin",
-              "roleName": "view"
+              "applicationName": "example-application",
+              "orgId": "example-org",
+              "roleName": "admin",
+              "roleValue": {}
             }
           ]
         },

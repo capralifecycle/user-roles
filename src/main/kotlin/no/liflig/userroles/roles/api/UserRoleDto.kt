@@ -1,6 +1,7 @@
 package no.liflig.userroles.roles.api
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.roles.Role
 import no.liflig.userroles.roles.UserRole
@@ -14,20 +15,14 @@ data class UserRoleDto(
     val bodyLens = createJsonBodyLens(serializer())
     val example =
         UserRoleDto(
-            userId = "ola.nordmann",
+            userId = "test.testesen",
             roles =
                 listOf(
                     Role(
-                        applicationName = "logistics",
-                        orgId = null,
+                        applicationName = "example-application",
+                        orgId = "example-org",
                         roleName = "admin",
-                        roleValue = null,
-                    ),
-                    Role(
-                        applicationName = "admin",
-                        orgId = null,
-                        roleName = "view",
-                        roleValue = null,
+                        roleValue = JsonObject(emptyMap()),
                     ),
                 ),
         )
@@ -44,21 +39,7 @@ data class ListUserRoleDto(
     val bodyLens = createJsonBodyLens(serializer())
     val example =
         ListUserRoleDto(
-            userRoles =
-                listOf(
-                    UserRoleDto(
-                        userId = "customerName",
-                        roles = listOf(exampleRole),
-                    ),
-                ),
+            userRoles = listOf(UserRoleDto.example),
         )
   }
 }
-
-val exampleRole =
-    Role(
-        applicationName = null,
-        orgId = null,
-        roleName = "admin",
-        roleValue = """{"boards": [1,2,3]}""",
-    )

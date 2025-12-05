@@ -2,6 +2,7 @@ package no.liflig.userroles.roles
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.matchers.shouldBe
+import kotlinx.serialization.json.JsonPrimitive
 import no.liflig.snapshot.verifyJsonSnapshot
 import no.liflig.userroles.common.readJsonResource
 import no.liflig.userroles.roles.api.UpdateRoleRequest
@@ -44,7 +45,7 @@ class UserRoleCrudApiTest {
           Role(
               orgId = "orgId3",
               roleName = "orgMember",
-              roleValue = """{"boards": [1,2,3]}""",
+              roleValue = JsonPrimitive("test"),
           ),
           Role(
               roleName = "admin",
