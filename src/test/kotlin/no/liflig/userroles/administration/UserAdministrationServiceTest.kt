@@ -348,20 +348,6 @@ class UserAdministrationServiceTest {
   }
 }
 
-private const val DEFAULT_LIMIT = 20
-
-private fun ListUsersRequest.verify(
-    expectedLimit: Int = DEFAULT_LIMIT,
-    expectedFilter: String? = null,
-    expectedPaginationToken: String? = null,
-    expectedUserPoolId: String = MockCognitoClient.USER_POOL_ID,
-) {
-  this.limit().shouldBe(expectedLimit)
-  this.filter().shouldBe(expectedFilter)
-  this.paginationToken().shouldBe(expectedPaginationToken)
-  this.userPoolId().shouldBe(expectedUserPoolId)
-}
-
 private fun createUserFilter(
     searchString: String? = null,
     searchField: UserSearchField? = null,
