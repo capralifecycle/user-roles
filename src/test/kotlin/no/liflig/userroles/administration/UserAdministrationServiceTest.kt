@@ -348,21 +348,6 @@ class UserAdministrationServiceTest {
   }
 }
 
-private fun createUserFilter(
-    searchString: String? = null,
-    searchField: UserSearchField? = null,
-    orgId: String? = null,
-    applicationName: String? = null,
-    roleName: String? = null,
-) =
-    UserFilter(
-        searchString = searchString,
-        searchField = searchField,
-        orgId = orgId,
-        applicationName = applicationName,
-        roleName = roleName,
-    )
-
 private fun List<UserDataWithRoles>.shouldEqualRoles(userRoles: List<UserRole>) {
   this.shouldHaveSize(userRoles.size)
 
