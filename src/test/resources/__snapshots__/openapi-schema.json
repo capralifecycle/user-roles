@@ -701,12 +701,14 @@
         "example": "USERNAME",
         "enum": [
           "USERNAME",
+          "USER_ID",
           "EMAIL",
           "PHONE_NUMBER",
           "NAME",
           "GIVEN_NAME",
           "FAMILY_NAME",
-          "PREFERRED_USERNAME"
+          "PREFERRED_USERNAME",
+          "USER_STATUS"
         ],
         "type": "string",
         "nullable": false
