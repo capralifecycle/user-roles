@@ -6,21 +6,21 @@ import no.liflig.userroles.roles.UserRole
 data class UserFilter(
     val searchString: String?,
     val searchField: UserSearchField?,
-    val organizationId: String?,
+    val orgId: String?,
     val applicationName: String?,
     val roleName: String?,
 ) {
   fun matches(userRole: UserRole): Boolean {
     /**
-     * Super-admins match all organizationId / applicationName filters, since they are implicitly
-     * part of all orgs and applications. We only do this if no filter is provided for `roleName`.
+     * Super-admins match all orgId / applicationName filters, since they are implicitly part of all
+     * orgs and applications. We only do this if no filter is provided for `roleName`.
      */
     val matchAllOrganizationsAndApplications =
         userRole.isSuperAdmin() && (this.roleName == null || this.roleName == SUPER_ADMIN_ROLE_NAME)
 
     if (
-        organizationId != null &&
-            userRole.roles.none { it.orgId == this.organizationId } &&
+        orgId != null &&
+            userRole.roles.none { it.orgId == this.orgId } &&
             !matchAllOrganizationsAndApplications
     ) {
       return false
