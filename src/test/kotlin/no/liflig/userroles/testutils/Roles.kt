@@ -6,11 +6,11 @@ import no.liflig.userroles.roles.UserRole
 const val DEFAULT_TEST_USERNAME = "test.testesen"
 
 fun createUserRole(
-    userId: String = DEFAULT_TEST_USERNAME,
+    username: String = DEFAULT_TEST_USERNAME,
     vararg roles: Role,
 ) =
     UserRole(
-        userId = userId,
+        userId = username,
         roles = roles.asList(),
     )
 

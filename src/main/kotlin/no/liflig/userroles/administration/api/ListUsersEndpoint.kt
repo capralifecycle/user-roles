@@ -35,7 +35,7 @@ class ListUsersEndpoint(
 
     private val searchStringQuery = Query.optional("searchString")
     private val searchFieldQuery = Query.enum<UserSearchField>().optional("searchField")
-    private val organizationIdQuery = Query.optional("orgId")
+    private val orgIdQuery = Query.optional("orgId")
     private val applicationNameQuery = Query.optional("applicationName")
     private val roleNameQuery = Query.optional("roleName")
   }
@@ -51,7 +51,7 @@ class ListUsersEndpoint(
                   cursorQuery,
                   searchStringQuery,
                   searchFieldQuery,
-                  organizationIdQuery,
+                  orgIdQuery,
                   applicationNameQuery,
                   roleNameQuery,
               )
@@ -75,7 +75,7 @@ class ListUsersEndpoint(
         UserFilter(
             searchString = searchStringQuery(request),
             searchField = searchFieldQuery(request),
-            organizationId = organizationIdQuery(request),
+            orgId = orgIdQuery(request),
             applicationName = applicationNameQuery(request),
             roleName = roleNameQuery(request),
         )
