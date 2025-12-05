@@ -1,7 +1,10 @@
 package no.liflig.userroles.administration
 
+import no.liflig.documentstore.entity.Versioned
 import no.liflig.logging.getLogger
+import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.roles.UserRoleRepository
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 
 private val log = getLogger()
 
@@ -61,38 +64,46 @@ class UserAdministrationService(
       val roles =
           userRoleRepository.listByUserIds(userIds = cognitoResponse.users().map { it.username() })
 
-      userLoop@ for ((index, cognitoUser) in cognitoResponse.users().withIndex().drop(pageOffset)) {
-        val role =
-            roles.find { it.data.userId == cognitoUser.username() }
-                ?: run {
-                  log.error {
-                    field("cognitoUsername", cognitoUser.username())
-                    "Found Cognito user without corresponding user role"
-                  }
-                  continue@userLoop
-                }
+      userLoop@ for ((index, cognitoUser) in
+          cognitoResponse.users().asSequence().withIndex().drop(pageOffset)) {
+        val userRole = findRolesForUser(cognitoUser, roles) ?: continue@userLoop
 
-        if (!filter.matches(role.data)) {
+        if (!filter.matches(userRole)) {
           continue@userLoop
         }
 
         /**
-         * If we reach our `limit` halfway through, then we:
-         * - Set our page offset to where we are now in the page, so that we can return a cursor
-         *   pointing to the middle of the page (see [UserCursor])
-         * - Break out of the fetch loop, because in this case, we don't want to do any of the
-         *   things we normally do below:
-         *     - We don't want to add to any more to the users list
-         *     - We don't want to update the Cognito pagination token (since we need to fetch this
-         *       same page again on the next request)
-         *     - We don't want to reset the page offset
+         * If we reach our `limit` halfway through the page, then we:
+         * - Check if our [UserFilter] matches any of the remaining users in the page.
+         * - If there are no matches in the rest of the page, then we just break out of the user
+         *   loop and return the next Cognito pagination token and `pageOffset = 0` as normal.
+         * - But if there are matches in the rest of the page, then we have to continue our
+         *   pagination on the next request from where we reached our `limit` here.
+         *     - We do this by setting our pageOffset to where we are now in the page, so that we
+         *       can return a cursor pointing to the middle of the page (see `UserCursor`).
+         *     - Then we break out of the fetch loop, because in this case, we don't want to do any
+         *       of the things we normally do below:
+         *         - We don't want to add to any more to the users list
+         *         - We don't want to update the Cognito pagination token (since we need to fetch
+         *           this same page again on the next request)
+         *         - We don't want to reset the page offset
          */
         if (users.size == limit) {
-          pageOffset = index
-          break@fetchLoop
+          val hasMatchInRestOfPage =
+              cognitoResponse.users().asSequence().drop(index).any { cognitoUser ->
+                val userRole = findRolesForUser(cognitoUser, roles) ?: return@any false
+                return@any filter.matches(userRole)
+              }
+
+          if (hasMatchInRestOfPage) {
+            pageOffset = index
+            break@fetchLoop
+          } else {
+            break@userLoop
+          }
         }
 
-        users.add(UserDataWithRoles.fromCognitoAndUserRole(cognitoUser, role.data))
+        users.add(UserDataWithRoles.fromCognitoAndUserRole(cognitoUser, userRole))
       }
 
       /**
@@ -126,6 +137,20 @@ class UserAdministrationService(
             },
     )
   }
+}
+
+private fun findRolesForUser(
+    cognitoUser: UserType,
+    userRoles: List<Versioned<UserRole>>,
+): UserRole? {
+  return userRoles.find { it.data.userId == cognitoUser.username() }?.data
+      ?: run {
+        log.error {
+          field("cognitoUsername", cognitoUser.username())
+          "Found Cognito user without corresponding user role"
+        }
+        return null
+      }
 }
 
 data class UserList(
