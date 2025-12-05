@@ -1,9 +1,11 @@
 package no.liflig.userroles.administration
 
+import io.kotest.matchers.shouldBe
 import java.time.Instant
 import no.liflig.userroles.testutils.DEFAULT_TEST_USERNAME
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserStatusType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 
@@ -55,4 +57,18 @@ fun createCognitoUser(
       .enabled(enabled)
       .attributes(attributeList)
       .build()
+}
+
+const val DEFAULT_LIMIT = 20
+
+fun ListUsersRequest.verify(
+    expectedLimit: Int = DEFAULT_LIMIT,
+    expectedFilter: String? = null,
+    expectedPaginationToken: String? = null,
+    expectedUserPoolId: String = MockCognitoClient.USER_POOL_ID,
+) {
+  this.limit().shouldBe(expectedLimit)
+  this.filter().shouldBe(expectedFilter)
+  this.paginationToken().shouldBe(expectedPaginationToken)
+  this.userPoolId().shouldBe(expectedUserPoolId)
 }

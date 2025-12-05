@@ -3,7 +3,8 @@ package no.liflig.userroles.administration.api
 import java.time.Instant
 import kotlinx.serialization.Serializable
 import no.liflig.http4k.setup.createJsonBodyLens
-import no.liflig.http4k.setup.errorResponse
+import no.liflig.publicexception.ErrorCode
+import no.liflig.publicexception.PublicException
 import no.liflig.userroles.administration.UserAdministrationService
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserDataWithRoles
@@ -27,19 +28,6 @@ import org.http4k.lens.int
 class ListUsersEndpoint(
     private val userAdministrationService: UserAdministrationService,
 ) : Endpoint {
-  companion object {
-    /** Minimum 1, max 60 (limitation from Cognito). Suggestion: Default to limit 20. */
-    private val limitQuery = Query.int().required("limit")
-    /** See [ListUsersResponse] */
-    private val cursorQuery = Query.optional("cursor")
-
-    private val searchStringQuery = Query.optional("searchString")
-    private val searchFieldQuery = Query.enum<UserSearchField>().optional("searchField")
-    private val orgIdQuery = Query.optional("orgId")
-    private val applicationNameQuery = Query.optional("applicationName")
-    private val roleNameQuery = Query.optional("roleName")
-  }
-
   override fun route(): ContractRoute {
     val path = UserAdministrationApi.PATH
     val spec =
@@ -61,34 +49,57 @@ class ListUsersEndpoint(
   }
 
   private fun handler(request: Request): Response {
-    val limit = limitQuery(request)
-    if (limit !in 1..60) {
-      return errorResponse(
-          request,
-          Status.BAD_REQUEST,
-          title = "Invalid parameter to List Users",
-          detail = "Limit (page size) must be in the range [1, 60]",
-      )
-    }
+    val limit = getLimitFromRequest(request)
+    val filter = getUserFilterFromRequest(request)
+    val cursor = getCursorFromRequest(request, limit = limit)
 
-    val filter =
-        UserFilter(
-            searchString = searchStringQuery(request),
-            searchField = searchFieldQuery(request),
-            orgId = orgIdQuery(request),
-            applicationName = applicationNameQuery(request),
-            roleName = roleNameQuery(request),
-        )
-    val cursor = cursorQuery(request)?.let { UserCursor.fromString(it, limit = limit) }
+    val result = userAdministrationService.listUsers(limit, filter, cursor)
 
-    val result =
-        userAdministrationService.listUsers(limit = limit, filter = filter, cursor = cursor)
     val responseBody =
         ListUsersResponse(
             nextCursor = result.nextCursor?.toString(),
             users = result.users,
         )
     return Response(Status.OK).with(ListUsersResponse.bodyLens.of(responseBody))
+  }
+
+  companion object {
+    /** Minimum 1, max 60 (limitation from Cognito). Suggestion: Default to limit 20. */
+    private val limitQuery = Query.int().required("limit")
+    /** See [ListUsersResponse] */
+    private val cursorQuery = Query.optional("cursor")
+
+    private val searchStringQuery = Query.optional("searchString")
+    private val searchFieldQuery = Query.enum<UserSearchField>().optional("searchField")
+    private val orgIdQuery = Query.optional("orgId")
+    private val applicationNameQuery = Query.optional("applicationName")
+    private val roleNameQuery = Query.optional("roleName")
+
+    fun getLimitFromRequest(request: Request): Int {
+      val limit = limitQuery(request)
+      if (limit !in 1..60) {
+        throw PublicException(
+            ErrorCode.BAD_REQUEST,
+            publicMessage = "Invalid limit parameter given to List Users",
+            publicDetail = "Limit (page size) must be in the range [1, 60]",
+        )
+      }
+      return limit
+    }
+
+    fun getUserFilterFromRequest(request: Request): UserFilter {
+      return UserFilter(
+          searchString = searchStringQuery(request),
+          searchField = searchFieldQuery(request),
+          orgId = orgIdQuery(request),
+          applicationName = applicationNameQuery(request),
+          roleName = roleNameQuery(request),
+      )
+    }
+
+    fun getCursorFromRequest(request: Request, limit: Int): UserCursor? {
+      return cursorQuery(request)?.let { UserCursor.fromString(it, limit = limit) }
+    }
   }
 }
 
