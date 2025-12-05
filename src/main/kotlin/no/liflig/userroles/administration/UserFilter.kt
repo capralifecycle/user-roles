@@ -57,22 +57,32 @@ data class UserFilter(
   }
 }
 
+/**
+ * User search fields allowed by Cognito. See
+ * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUsers.html#API_ListUsers_RequestParameters).
+ *
+ * Some of these fields may not be relevant for you, e.g. if they're not configured on your user
+ * pool. So you probably want to expose only a subset of these search fields in the API of your
+ * service that calls User Roles.
+ *
+ * We purposefully omit the `status` search field here, because it's tricky to handle:
+ * - `status` is the `enabled` boolean on users in Cognito (see [UserDataWithRoles.enabled]), not
+ *   the "user status" (CONFIRMED/UNCONFIRMED etc.).
+ * - But when searching, you don't search for `enabled = true/false`, you search for `status =
+ *   "Enabled"/"Disabled"`.
+ * - If we wanted to allow searching on an `enabled` boolean, we would need some special handling
+ *   here to map appropriately. We don't really see a use case at the moment for searching on this
+ *   field, so we just drop it here.
+ */
 enum class UserSearchField(val cognitoAttribute: String) {
-  USERNAME(CognitoUserAttributes.USERNAME),
-  EMAIL(CognitoUserAttributes.EMAIL),
-  PHONE_NUMBER(CognitoUserAttributes.PHONE_NUMBER),
-  NAME(CognitoUserAttributes.NAME),
-  GIVEN_NAME(CognitoUserAttributes.GIVEN_NAME),
-  FAMILY_NAME(CognitoUserAttributes.FAMILY_NAME),
-  PREFERRED_USERNAME(CognitoUserAttributes.PREFERRED_USERNAME),
-}
-
-private object CognitoUserAttributes {
-  const val USERNAME = "username"
-  const val EMAIL = "email"
-  const val PHONE_NUMBER = "phone_number"
-  const val NAME = "name"
-  const val GIVEN_NAME = "given_name"
-  const val FAMILY_NAME = "family_name"
-  const val PREFERRED_USERNAME = "preferred_username"
+  USERNAME("username"),
+  /** `sub` is the Open-ID Connect (OIDC) attribute for user ID. */
+  USER_ID("sub"),
+  EMAIL("email"),
+  PHONE_NUMBER("phone_number"),
+  NAME("name"),
+  GIVEN_NAME("given_name"),
+  FAMILY_NAME("family_name"),
+  PREFERRED_USERNAME("preferred_username"),
+  USER_STATUS("cognito:user_status"),
 }
