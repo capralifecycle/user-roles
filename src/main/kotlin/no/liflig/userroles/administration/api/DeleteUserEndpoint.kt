@@ -18,7 +18,7 @@ class DeleteUserEndpoint(
     val path = UserAdministrationApi.PATH / Path.of("username")
     val spec =
         path.meta {
-          summary = "Delete user"
+          summary = "Delete user from identity provider, and its associated roles"
           operationId = "deleteUser"
           returning(Status.OK)
         }

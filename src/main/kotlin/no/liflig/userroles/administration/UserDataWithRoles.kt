@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 import no.liflig.userroles.common.serialization.SerializableInstant
 import no.liflig.userroles.roles.Role
 import no.liflig.userroles.roles.UserRole
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
+import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 
 /**
@@ -118,11 +121,11 @@ data class UserDataWithRoles(
         val value = attribute.value()
         /** Extract certain standard attributes, put rest in [attributes] map. */
         when (key) {
-          "sub" -> userId = value
-          "email" -> email = value
-          "email_verified" -> emailVerified = value == "true"
-          "phone_number" -> phoneNumber = value
-          "phone_number_verified" -> phoneNumberVerified = value == "true"
+          CognitoAttribute.SUB -> userId = value
+          CognitoAttribute.EMAIL -> email = value
+          CognitoAttribute.EMAIL_VERIFIED -> emailVerified = value == "true"
+          CognitoAttribute.PHONE_NUMBER -> phoneNumber = value
+          CognitoAttribute.PHONE_NUMBER_VERIFIED -> phoneNumberVerified = value == "true"
           else -> attributes[key] = value
         }
       }
@@ -174,3 +177,90 @@ data class UserPhoneNumber(
      */
     val verified: Boolean,
 )
+
+/** A subset of the fields from [UserDataWithRoles], used for creating and updating users. */
+@Serializable
+data class UserUpdateData(
+    /** See [UserDataWithRoles.username]. */
+    val username: String,
+    /** See [UserDataWithRoles.email]. */
+    val email: UserEmail?,
+    /** See [UserDataWithRoles.phoneNumber]. */
+    val phoneNumber: UserPhoneNumber?,
+    /** See [UserDataWithRoles.attributes]. */
+    val attributes: Map<String, String>,
+    /** See [UserDataWithRoles.roles]. */
+    val roles: List<Role>,
+)
+
+@Serializable
+data class CreateUserRequest(
+    val user: UserUpdateData,
+    /**
+     * Can be:
+     * - Empty (don't send an invitation)
+     * - EMAIL (send email invitation, but not SMS)
+     * - SMS (send SMS invitation, but not email)
+     * - EMAIL and SMS (send both email and SMS invitation)
+     */
+    val invitationMessages: Set<InvitationMessageType>,
+) {
+  fun toCognitoRequest(userPoolId: String): AdminCreateUserRequest {
+    val request = AdminCreateUserRequest.builder()
+
+    request.userPoolId(userPoolId)
+    request.username(user.username)
+
+    val attributes = ArrayList<AttributeType>()
+    if (user.email != null) {
+      attributes.add(createAttribute(CognitoAttribute.EMAIL, user.email.value))
+      attributes.add(
+          createAttribute(
+              CognitoAttribute.EMAIL_VERIFIED,
+              if (user.email.verified) "true" else "false",
+          )
+      )
+    }
+    if (user.phoneNumber != null) {
+      attributes.add(createAttribute(CognitoAttribute.PHONE_NUMBER, user.phoneNumber.value))
+      attributes.add(
+          createAttribute(
+              CognitoAttribute.PHONE_NUMBER_VERIFIED,
+              if (user.phoneNumber.verified) "true" else "false",
+          )
+      )
+    }
+    for ((name, value) in user.attributes) {
+      attributes.add(createAttribute(name, value))
+    }
+    request.userAttributes(attributes)
+
+    request.desiredDeliveryMediums(invitationMessages.map { it.toCognito() })
+
+    return request.build()
+  }
+}
+
+enum class InvitationMessageType {
+  EMAIL,
+  SMS;
+
+  fun toCognito(): DeliveryMediumType {
+    return when (this) {
+      EMAIL -> DeliveryMediumType.EMAIL
+      SMS -> DeliveryMediumType.SMS
+    }
+  }
+}
+
+object CognitoAttribute {
+  const val EMAIL = "email"
+  const val EMAIL_VERIFIED = "email_verified"
+  const val PHONE_NUMBER = "phone_number"
+  const val PHONE_NUMBER_VERIFIED = "phone_number_verified"
+  const val SUB = "sub"
+}
+
+fun createAttribute(name: String, value: String): AttributeType {
+  return AttributeType.builder().name(name).value(value).build()
+}

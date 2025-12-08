@@ -36,26 +36,19 @@ fun createCognitoUser(
     status: UserStatusType = UserStatusType.CONFIRMED,
     createDate: Instant = Instant.parse("2025-12-04T07:25:11Z"),
     enabled: Boolean = true,
-    attributes: Map<String, String> = emptyMap(),
+    attributes: List<AttributeType> = emptyList(),
+    userId: String = "4b670e7f-0ae9-4ce8-9a8b-b27d00d2f31d",
 ): UserType {
-  val attributeList =
-      attributes.mapTo(ArrayList()) { (key, value) ->
-        AttributeType.builder().name(key).value(value).build()
-      }
-
+  val attributes = attributes.toMutableList()
   /** sub (user ID) is required. */
-  if (!attributes.containsKey("sub")) {
-    attributeList.add(
-        AttributeType.builder().name("sub").value("4b670e7f-0ae9-4ce8-9a8b-b27d00d2f31d").build()
-    )
-  }
+  attributes.add(createAttribute("sub", userId))
 
   return UserType.builder()
       .username(username)
       .userStatus(status)
       .userCreateDate(createDate)
       .enabled(enabled)
-      .attributes(attributeList)
+      .attributes(attributes)
       .build()
 }
 

@@ -1,6 +1,5 @@
 package no.liflig.userroles.administration.api
 
-import java.time.Instant
 import kotlinx.serialization.Serializable
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.publicexception.ErrorCode
@@ -8,12 +7,9 @@ import no.liflig.publicexception.PublicException
 import no.liflig.userroles.administration.UserAdministrationService
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserDataWithRoles
-import no.liflig.userroles.administration.UserEmail
 import no.liflig.userroles.administration.UserFilter
-import no.liflig.userroles.administration.UserPhoneNumber
 import no.liflig.userroles.administration.UserSearchField
 import no.liflig.userroles.common.http4k.Endpoint
-import no.liflig.userroles.roles.api.UserRoleDto
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.Method
@@ -32,7 +28,7 @@ class ListUsersEndpoint(
     val path = UserAdministrationApi.PATH
     val spec =
         path.meta {
-          summary = "List users"
+          summary = "List users from identity provider, along with their associated roles"
           operationId = "listUsers"
           queries +=
               listOf(
@@ -120,23 +116,7 @@ data class ListUsersResponse(
                         pageOffset = 0,
                     )
                     .toString(),
-            users =
-                listOf(
-                    UserDataWithRoles(
-                        username = "test.testesen",
-                        userId = "03e2d410-6591-4409-be77-6aca0833656d",
-                        email = UserEmail("test@example.org", verified = true),
-                        phoneNumber = UserPhoneNumber("12345678", verified = true),
-                        userStatus = "CONFIRMED",
-                        enabled = true,
-                        createdAt = Instant.parse("2025-12-03T11:32:59Z"),
-                        attributes =
-                            mapOf(
-                                "name" to "Test Testesen",
-                            ),
-                        roles = UserRoleDto.example.roles,
-                    )
-                ),
+            users = listOf(EXAMPLE_USER_DATA_WITH_ROLES),
         )
   }
 }

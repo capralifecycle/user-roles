@@ -7,6 +7,7 @@ import no.liflig.publicexception.ErrorCode
 import no.liflig.publicexception.PublicException
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.roles.UserRoleRepository
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 
 private val log = getLogger()
@@ -15,6 +16,14 @@ class UserAdministrationService(
     private val userRoleRepo: UserRoleRepository,
     private val cognitoClientWrapper: CognitoClientWrapper,
 ) {
+  companion object {
+    /**
+     * For now, this is hardcoded as AWS Cognito. We may want to support different identity
+     * providers in the future, and in that case, we should set this dynamically.
+     */
+    private const val IDENTITY_PROVIDER_NAME = "AWS Cognito"
+  }
+
   /**
    * @param limit Number of users to return. Minimum 1, max 60.
    * @param cursor Null if this is the first fetch.
@@ -63,7 +72,8 @@ class UserAdministrationService(
           } catch (e: Exception) {
             throw PublicException(
                 ErrorCode.INTERNAL_SERVER_ERROR,
-                publicMessage = "Failed to fetch users from our identity provider (Cognito)",
+                publicMessage =
+                    "Failed to fetch users from our identity provider (${IDENTITY_PROVIDER_NAME})",
                 cause = e,
             )
           }
@@ -161,6 +171,61 @@ class UserAdministrationService(
   }
 
   /** @throws PublicException To provide more context to the client about exactly what failed. */
+  fun createUser(request: CreateUserRequest): UserDataWithRoles {
+    val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
+
+    val userRole: Versioned<UserRole> =
+        try {
+          userRoleRepo.create(UserRole(userId = request.user.username, roles = request.user.roles))
+        } catch (e: Exception) {
+          val isDuplicateUsername = e.message?.contains("user_role_user_id_idx") == true
+          if (isDuplicateUsername) {
+            throw PublicException(
+                ErrorCode.CONFLICT,
+                publicMessage = "Failed to create roles for user",
+                publicDetail = "Roles already exist for username '${request.user.username}'",
+                internalDetail =
+                    "This may be because roles have been created for a user, but the user is not registered in our identity provider (${IDENTITY_PROVIDER_NAME}) yet",
+                cause = e,
+            )
+          } else {
+            throw PublicException(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                publicMessage = "Failed to create roles for user",
+                cause = e,
+            )
+          }
+        }
+
+    val cognitoResponse: AdminCreateUserResponse =
+        try {
+          cognitoClient.adminCreateUser(request.toCognitoRequest(userPoolId = userPoolId))
+        } catch (e: Exception) {
+          /**
+           * If we fail to create the user in Cognito, we also want to delete the user role we
+           * created.
+           */
+          try {
+            userRoleRepo.delete(userRole)
+          } catch (deleteException: Exception) {
+            log.error(deleteException) {
+              field("username", request.user.username)
+              "Failed to clean up created user role after user registration failed"
+            }
+          }
+
+          throw PublicException(
+              ErrorCode.INTERNAL_SERVER_ERROR,
+              publicMessage =
+                  "Failed to register user in our identity provider (${IDENTITY_PROVIDER_NAME})",
+              cause = e,
+          )
+        }
+
+    return UserDataWithRoles.fromCognitoAndUserRole(cognitoResponse.user(), userRole.data)
+  }
+
+  /** @throws PublicException To provide more context to the client about exactly what failed. */
   fun deleteUser(username: String) {
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
@@ -169,7 +234,8 @@ class UserAdministrationService(
     } catch (e: Exception) {
       throw PublicException(
           ErrorCode.INTERNAL_SERVER_ERROR,
-          publicMessage = "Failed to delete user data in our identity provider (Cognito)",
+          publicMessage =
+              "Failed to delete user data in our identity provider (${IDENTITY_PROVIDER_NAME})",
           cause = e,
       )
     }
@@ -183,7 +249,7 @@ class UserAdministrationService(
          */
         log.error {
           field("username", username)
-          "Successfully deleted user data in Cognito, but failed to find associated user roles for that user"
+          "Successfully deleted user data in our identity provider (${IDENTITY_PROVIDER_NAME}), but failed to find roles associated with the user"
         }
         return
       }
@@ -194,27 +260,27 @@ class UserAdministrationService(
         throw PublicException(
             ErrorCode.INTERNAL_SERVER_ERROR,
             publicMessage =
-                "Successfully deleted user data in our identity provider, but failed to delete the roles associated with the user",
+                "Successfully deleted user data in our identity provider (${IDENTITY_PROVIDER_NAME}), but failed to delete the roles associated with the user",
             publicDetail = "Manual cleanup by a system administrator may be required",
             cause = e,
         )
       }
     }
   }
-}
 
-private fun findRolesForUser(
-    cognitoUser: UserType,
-    userRoles: List<Versioned<UserRole>>,
-): UserRole? {
-  return userRoles.find { it.data.userId == cognitoUser.username() }?.data
-      ?: run {
-        log.error {
-          field("username", cognitoUser.username())
-          "Found Cognito user without associated user roles"
+  private fun findRolesForUser(
+      cognitoUser: UserType,
+      userRoles: List<Versioned<UserRole>>,
+  ): UserRole? {
+    return userRoles.find { it.data.userId == cognitoUser.username() }?.data
+        ?: run {
+          log.error {
+            field("username", cognitoUser.username())
+            "Found user in our identity provider (${IDENTITY_PROVIDER_NAME}) without associated user roles"
+          }
+          return null
         }
-        return null
-      }
+  }
 }
 
 data class UserList(

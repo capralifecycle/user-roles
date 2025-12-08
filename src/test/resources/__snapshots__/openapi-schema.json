@@ -13,7 +13,7 @@
   "paths": {
     "/api/administration/users": {
       "get": {
-        "summary": "List users",
+        "summary": "List users from identity provider, along with their associated roles",
         "tags": [
           "/api"
         ],
@@ -121,11 +121,96 @@
         "security": [],
         "operationId": "listUsers",
         "deprecated": false
+      },
+      "post": {
+        "summary": "Register user in identity provider, and create associated roles",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "user": {
+                  "username": "test.testesen",
+                  "email": {
+                    "value": "test@example.org",
+                    "verified": true
+                  },
+                  "phoneNumber": {
+                    "value": "12345678",
+                    "verified": true
+                  },
+                  "attributes": {
+                    "name": "Test Testesen"
+                  },
+                  "roles": [
+                    {
+                      "applicationName": "example-application",
+                      "orgId": "example-org",
+                      "roleName": "admin",
+                      "roleValue": {}
+                    }
+                  ]
+                },
+                "invitationMessages": [
+                  "EMAIL"
+                ]
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "username": "test.testesen",
+                  "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                  "email": {
+                    "value": "test@example.org",
+                    "verified": true
+                  },
+                  "phoneNumber": {
+                    "value": "12345678",
+                    "verified": true
+                  },
+                  "userStatus": "CONFIRMED",
+                  "enabled": true,
+                  "createdAt": "2025-12-03T11:32:59Z",
+                  "attributes": {
+                    "name": "Test Testesen"
+                  },
+                  "roles": [
+                    {
+                      "applicationName": "example-application",
+                      "orgId": "example-org",
+                      "roleName": "admin",
+                      "roleValue": {}
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UserDataWithRoles"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "createUser",
+        "deprecated": false
       }
     },
     "/api/administration/users/{username}": {
       "delete": {
-        "summary": "Delete user",
+        "summary": "Delete user from identity provider, and its associated roles",
         "tags": [
           "/api"
         ],
@@ -737,6 +822,138 @@
           "FAMILY_NAME",
           "PREFERRED_USERNAME",
           "USER_STATUS"
+        ],
+        "type": "string",
+        "nullable": false
+      },
+      "CreateUserRequest": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserUpdateData"
+          },
+          "invitationMessages": {
+            "items": {
+              "$ref": "#/components/schemas/InvitationMessageType"
+            },
+            "example": [
+              "EMAIL"
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "user": {
+            "username": "test.testesen",
+            "email": {
+              "value": "test@example.org",
+              "verified": true
+            },
+            "phoneNumber": {
+              "value": "12345678",
+              "verified": true
+            },
+            "attributes": {
+              "name": "Test Testesen"
+            },
+            "roles": [
+              {
+                "applicationName": "example-application",
+                "orgId": "example-org",
+                "roleName": "admin",
+                "roleValue": {}
+              }
+            ]
+          },
+          "invitationMessages": [
+            "EMAIL"
+          ]
+        },
+        "type": "object",
+        "required": [
+          "invitationMessages",
+          "user"
+        ]
+      },
+      "UserUpdateData": {
+        "properties": {
+          "username": {
+            "example": "test.testesen",
+            "type": "string",
+            "nullable": false
+          },
+          "email": {
+            "$ref": "#/components/schemas/UserEmail"
+          },
+          "phoneNumber": {
+            "$ref": "#/components/schemas/UserPhoneNumber"
+          },
+          "attributes": {
+            "additionalProperties": {
+              "properties": {
+                "name": {
+                  "example": "Test Testesen",
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "example": {
+                "name": "Test Testesen"
+              },
+              "type": "object"
+            },
+            "type": "object"
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            },
+            "example": [
+              {
+                "applicationName": "example-application",
+                "orgId": "example-org",
+                "roleName": "admin",
+                "roleValue": {}
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "username": "test.testesen",
+          "email": {
+            "value": "test@example.org",
+            "verified": true
+          },
+          "phoneNumber": {
+            "value": "12345678",
+            "verified": true
+          },
+          "attributes": {
+            "name": "Test Testesen"
+          },
+          "roles": [
+            {
+              "applicationName": "example-application",
+              "orgId": "example-org",
+              "roleName": "admin",
+              "roleValue": {}
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "attributes",
+          "roles",
+          "username"
+        ]
+      },
+      "InvitationMessageType": {
+        "example": "EMAIL",
+        "enum": [
+          "EMAIL",
+          "SMS"
         ],
         "type": "string",
         "nullable": false

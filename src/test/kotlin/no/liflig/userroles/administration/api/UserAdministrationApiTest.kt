@@ -1,14 +1,26 @@
 package no.liflig.userroles.administration.api
 
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.maps.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
+import java.time.Instant
 import no.liflig.snapshot.verifyJsonSnapshot
+import no.liflig.userroles.administration.CognitoAttribute
+import no.liflig.userroles.administration.CreateUserRequest
+import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.MockCognitoClient
 import no.liflig.userroles.administration.UserCursor
+import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.administration.UserFilter
 import no.liflig.userroles.administration.UserSearchField
+import no.liflig.userroles.administration.createAttribute
 import no.liflig.userroles.administration.createCognitoUser
+import no.liflig.userroles.common.serialization.json
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.testutils.DEFAULT_TEST_USERNAME
 import no.liflig.userroles.testutils.TestServices
@@ -20,10 +32,14 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserStatusType
 
 class UserAdministrationApiTest {
   @RegisterExtension private val services = TestServices.get()
@@ -41,12 +57,12 @@ class UserAdministrationApiTest {
                       createCognitoUser(
                           username,
                           attributes =
-                              mapOf(
-                                  "email" to "test@example.org",
-                                  "email_verified" to "true",
-                                  "phone_number" to "12345678",
-                                  "phone_number_verified" to "true",
-                                  "name" to "Test Testesen",
+                              listOf(
+                                  createAttribute(CognitoAttribute.EMAIL, "test@example.org"),
+                                  createAttribute(CognitoAttribute.EMAIL_VERIFIED, "true"),
+                                  createAttribute(CognitoAttribute.PHONE_NUMBER, "12345678"),
+                                  createAttribute(CognitoAttribute.PHONE_NUMBER_VERIFIED, "true"),
+                                  createAttribute("name", "Test Testesen"),
                               ),
                       )
                   )
@@ -97,6 +113,87 @@ class UserAdministrationApiTest {
   }
 
   @Test
+  fun `create user`() {
+    val user = EXAMPLE_USER_UPDATE_DATA
+    val request =
+        CreateUserRequest(
+            user = user,
+            invitationMessages = setOf(InvitationMessageType.EMAIL, InvitationMessageType.SMS),
+        )
+
+    val userStatus = "FORCE_CHANGE_PASSWORD"
+    val userCreateDate = Instant.parse("2025-12-08T14:36:03Z")
+    val userId = "5cb274a4-3281-4560-86f3-d32d68849b0d"
+
+    val cognitoClient =
+        object : MockCognitoClient {
+          var requestCount = 0
+
+          override fun adminCreateUser(
+              cognitoRequest: AdminCreateUserRequest
+          ): AdminCreateUserResponse {
+            cognitoRequest.should {
+              it.username().shouldBe(user.username)
+              it.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
+              it.userAttributes()
+                  .shouldContainExactlyInAnyOrder(
+                      createAttribute(CognitoAttribute.EMAIL, user.email!!.value),
+                      createAttribute(
+                          CognitoAttribute.EMAIL_VERIFIED,
+                          user.email.verified.toString(),
+                      ),
+                      createAttribute(CognitoAttribute.PHONE_NUMBER, user.phoneNumber!!.value),
+                      createAttribute(
+                          CognitoAttribute.PHONE_NUMBER_VERIFIED,
+                          user.phoneNumber.verified.toString(),
+                      ),
+                      createAttribute("name", "Test Testesen"),
+                  )
+              it.desiredDeliveryMediums()
+                  .shouldContainExactlyInAnyOrder(DeliveryMediumType.EMAIL, DeliveryMediumType.SMS)
+            }
+
+            requestCount++
+
+            return AdminCreateUserResponse.builder()
+                .user(
+                    createCognitoUser(
+                        username = user.username,
+                        status = UserStatusType.fromValue(userStatus),
+                        createDate = userCreateDate,
+                        attributes = cognitoRequest.userAttributes(),
+                        userId = userId,
+                        enabled = true,
+                    )
+                )
+                .build()
+          }
+        }
+    services.mockCognito(cognitoClient)
+
+    val response = services.sendCreateUserRequest(request)
+    response.status.shouldBe(Status.OK)
+
+    val responseBody = json.decodeFromString<UserDataWithRoles>(response.body.text)
+    responseBody.should {
+      it.username.shouldBe(user.username)
+      it.userId.shouldBe(userId)
+      it.email.shouldNotBeNull().shouldBe(user.email)
+      it.phoneNumber.shouldNotBeNull().shouldBe(user.phoneNumber)
+      it.userStatus.shouldBe(userStatus)
+      it.enabled.shouldBeTrue()
+      it.createdAt.shouldBe(userCreateDate)
+      it.attributes.shouldNotBeEmpty().shouldBe(user.attributes)
+      it.roles.shouldNotBeEmpty().shouldBe(user.roles)
+    }
+
+    cognitoClient.requestCount.shouldBe(1)
+
+    val userRole = userRoleRepo.getByUserId(user.username).shouldNotBeNull()
+    userRole.data.roles.shouldBe(user.roles)
+  }
+
+  @Test
   fun `delete user`() {
     val userRole = createUserRole(username = DEFAULT_TEST_USERNAME, createRole(orgId = "org1"))
 
@@ -129,6 +226,14 @@ private fun TestServices.sendListUsersRequest(limit: Int): Response {
       Request(Method.GET, "${baseUrl}/api/administration/users")
           .query("limit", limit.toString())
           .withApiCredentials()
+  )
+}
+
+private fun TestServices.sendCreateUserRequest(body: CreateUserRequest): Response {
+  return apiClient(
+      Request(Method.POST, "${baseUrl}/api/administration/users")
+          .body(json.encodeToString(body))
+          .withApiCredentials(),
   )
 }
 
