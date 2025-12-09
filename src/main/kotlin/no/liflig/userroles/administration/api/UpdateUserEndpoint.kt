@@ -3,6 +3,7 @@ package no.liflig.userroles.administration.api
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.administration.UpdateUserRequest
 import no.liflig.userroles.administration.UserAdministrationService
+import no.liflig.userroles.administration.UserAdministrationService.Companion.IDENTITY_PROVIDER_NAME
 import no.liflig.userroles.common.http4k.Endpoint
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
@@ -18,7 +19,8 @@ class UpdateUserEndpoint(
     val path = UserAdministrationApi.PATH
     val spec =
         path.meta {
-          summary = "Update user in identity provider, and their associated roles"
+          summary =
+              "Update existing user in identity provider (${IDENTITY_PROVIDER_NAME}), and their associated roles"
           operationId = "updateUser"
           receiving(requestBodyLens to requestBodyExample)
           /** No response body - see [UserAdministrationService.updateUser] for why. */

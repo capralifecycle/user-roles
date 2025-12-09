@@ -5,6 +5,7 @@ import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.publicexception.ErrorCode
 import no.liflig.publicexception.PublicException
 import no.liflig.userroles.administration.UserAdministrationService
+import no.liflig.userroles.administration.UserAdministrationService.Companion.IDENTITY_PROVIDER_NAME
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.administration.UserFilter
@@ -28,7 +29,8 @@ class ListUsersEndpoint(
     val path = UserAdministrationApi.PATH
     val spec =
         path.meta {
-          summary = "List users from identity provider, along with their associated roles"
+          summary =
+              "List users from identity provider (${IDENTITY_PROVIDER_NAME}), along with their associated roles"
           operationId = "listUsers"
           queries +=
               listOf(

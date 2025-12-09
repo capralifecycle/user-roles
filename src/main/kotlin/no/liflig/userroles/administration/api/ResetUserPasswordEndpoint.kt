@@ -1,6 +1,7 @@
 package no.liflig.userroles.administration.api
 
 import no.liflig.userroles.administration.UserAdministrationService
+import no.liflig.userroles.administration.UserAdministrationService.Companion.IDENTITY_PROVIDER_NAME
 import no.liflig.userroles.common.http4k.Endpoint
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
@@ -18,7 +19,7 @@ class ResetUserPasswordEndpoint(
     val path = UserAdministrationApi.PATH / Path.of("username") / "reset-password"
     val spec =
         path.meta {
-          summary = "Reset password for user"
+          summary = "Reset password for user in identity provider (${IDENTITY_PROVIDER_NAME})"
           operationId = "resetUserPassword"
           returning(Status.OK)
         }

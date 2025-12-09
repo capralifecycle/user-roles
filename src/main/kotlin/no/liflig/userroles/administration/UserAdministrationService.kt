@@ -21,7 +21,7 @@ class UserAdministrationService(
      * For now, this is hardcoded as AWS Cognito. We may want to support different identity
      * providers in the future, and in that case, we should set this dynamically.
      */
-    private const val IDENTITY_PROVIDER_NAME = "AWS Cognito"
+    const val IDENTITY_PROVIDER_NAME = "AWS Cognito"
   }
 
   /**

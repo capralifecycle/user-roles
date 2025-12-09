@@ -1,6 +1,7 @@
 package no.liflig.userroles.administration.api
 
 import no.liflig.userroles.administration.UserAdministrationService
+import no.liflig.userroles.administration.UserAdministrationService.Companion.IDENTITY_PROVIDER_NAME
 import no.liflig.userroles.common.http4k.Endpoint
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.div
@@ -18,7 +19,8 @@ class DeleteUserEndpoint(
     val path = UserAdministrationApi.PATH / Path.of("username")
     val spec =
         path.meta {
-          summary = "Delete user from identity provider, and its associated roles"
+          summary =
+              "Delete user from identity provider (${IDENTITY_PROVIDER_NAME}), and its associated roles"
           operationId = "deleteUser"
           returning(Status.OK)
         }

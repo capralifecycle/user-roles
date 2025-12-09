@@ -2,6 +2,7 @@ package no.liflig.userroles.administration.api
 
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.administration.UserAdministrationService
+import no.liflig.userroles.administration.UserAdministrationService.Companion.IDENTITY_PROVIDER_NAME
 import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.common.http4k.Endpoint
 import org.http4k.contract.ContractRoute
@@ -21,7 +22,8 @@ class GetUserEndpoint(
     val path = UserAdministrationApi.PATH / Path.of("username")
     val spec =
         path.meta {
-          summary = "Get user by username, with associated roles"
+          summary =
+              "Get user by username from identity provider (${IDENTITY_PROVIDER_NAME}), with associated roles"
           operationId = "getUser"
           returning(Status.OK, responseBodyLens to EXAMPLE_USER_DATA_WITH_ROLES)
         }
