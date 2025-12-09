@@ -4,13 +4,17 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldBeEmpty
 import java.time.Instant
 import no.liflig.snapshot.verifyJsonSnapshot
+import no.liflig.userroles.administration.COGNITO_CUSTOM_ATTRIBUTE_PREFIX
 import no.liflig.userroles.administration.CreateUserRequest
 import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.MockCognitoClient
 import no.liflig.userroles.administration.StandardAttribute
+import no.liflig.userroles.administration.UpdateUserRequest
+import no.liflig.userroles.administration.UserAdministrationService
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserFilter
 import no.liflig.userroles.administration.UserSearchField
@@ -32,6 +36,9 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreate
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
@@ -40,6 +47,16 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.UserStatusT
 class UserAdministrationApiTest {
   @RegisterExtension private val services = TestServices.get()
   private val userRoleRepo = services.app.userRoleRepo
+
+  companion object {
+    val TEST_USER =
+        EXAMPLE_USER_UPDATE_DATA.let {
+          it.copy(
+              /** To test custom attributes (see [COGNITO_CUSTOM_ATTRIBUTE_PREFIX]). */
+              attributes = it.attributes + mapOf("astrologicalSign" to "Libra"),
+          )
+        }
+  }
 
   @Test
   fun `list users`() {
@@ -57,8 +74,17 @@ class UserAdministrationApiTest {
                                   createAttribute(StandardAttribute.EMAIL, "test@example.org"),
                                   createAttribute(StandardAttribute.EMAIL_VERIFIED, "true"),
                                   createAttribute(StandardAttribute.PHONE_NUMBER, "12345678"),
-                                  createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, "true"),
-                                  createAttribute("name", "Test Testesen"),
+                                  createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, "false"),
+                                  /** "name" is a standard attribute, so no "custom:" prefix. */
+                                  AttributeType.builder()
+                                      .name("name")
+                                      .value("Test Testesen")
+                                      .build(),
+                                  /** Custom attributes have "custom:" prefix. */
+                                  AttributeType.builder()
+                                      .name("custom:astrologicalSign")
+                                      .value("Libra")
+                                      .build(),
                               ),
                       )
                   )
@@ -110,7 +136,7 @@ class UserAdministrationApiTest {
 
   @Test
   fun `create user`() {
-    val user = EXAMPLE_USER_UPDATE_DATA
+    val user = TEST_USER
     val request =
         CreateUserRequest(
             user = user,
@@ -143,7 +169,13 @@ class UserAdministrationApiTest {
                           StandardAttribute.PHONE_NUMBER_VERIFIED,
                           user.phoneNumber.verified.toString(),
                       ),
-                      createAttribute("name", "Test Testesen"),
+                      /** "name" is a standard attribute, so no "custom:" prefix. */
+                      AttributeType.builder().name("name").value("Test Testesen").build(),
+                      /** Custom attributes have "custom:" prefix. */
+                      AttributeType.builder()
+                          .name("custom:astrologicalSign")
+                          .value("Libra")
+                          .build(),
                   )
               it.desiredDeliveryMediums()
                   .shouldContainExactlyInAnyOrder(DeliveryMediumType.EMAIL, DeliveryMediumType.SMS)
@@ -179,6 +211,79 @@ class UserAdministrationApiTest {
         "administration/create-user-response.json",
         response.body.text,
     )
+  }
+
+  @Test
+  fun `update user`() {
+    val username = TEST_USER.username
+    val existingUserRole =
+        userRoleRepo.create(
+            createUserRole(
+                username,
+                createRole(roleName = "member", orgId = "org1", applicationName = "app1"),
+            ),
+        )
+    val updatedUser =
+        TEST_USER.copy(
+            /**
+             * Set `phoneNumber = null`, to test that we map it to blank values in our request to
+             * Cognito (see [UpdateUserRequest.toCognitoRequest]).
+             */
+            phoneNumber = null,
+            /** Promote to admin in app1, add member role in app2. */
+            roles =
+                listOf(
+                    createRole(roleName = "admin", orgId = "org1", applicationName = "app1"),
+                    createRole(roleName = "member", orgId = "org1", applicationName = "app2"),
+                ),
+        )
+    updatedUser.roles.shouldNotBe(existingUserRole.data.roles)
+
+    val cognitoClient =
+        object : MockCognitoClient {
+          var requestCount = 0
+
+          override fun adminUpdateUserAttributes(
+              request: AdminUpdateUserAttributesRequest
+          ): AdminUpdateUserAttributesResponse {
+            request.should {
+              it.username().shouldBe(updatedUser.username)
+              it.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
+              it.userAttributes()
+                  .shouldContainExactlyInAnyOrder(
+                      createAttribute(StandardAttribute.EMAIL, updatedUser.email!!.value),
+                      createAttribute(
+                          StandardAttribute.EMAIL_VERIFIED,
+                          updatedUser.email.verified.toString(),
+                      ),
+                      createAttribute(StandardAttribute.PHONE_NUMBER, value = ""),
+                      createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, value = ""),
+                      /** "name" is a standard attribute, so no "custom:" prefix. */
+                      AttributeType.builder().name("name").value("Test Testesen").build(),
+                      /** Custom attributes have "custom:" prefix. */
+                      AttributeType.builder()
+                          .name("custom:astrologicalSign")
+                          .value("Libra")
+                          .build(),
+                  )
+            }
+
+            requestCount++
+
+            return AdminUpdateUserAttributesResponse.builder().build()
+          }
+        }
+    services.mockCognito(cognitoClient)
+
+    val response = services.sendUpdateUserRequest(UpdateUserRequest(updatedUser))
+    response.status.shouldBe(Status.OK)
+    /** We expect empty response body here (see [UserAdministrationService.updateUser]). */
+    response.body.text.shouldBeEmpty()
+
+    cognitoClient.requestCount.shouldBe(1)
+
+    val updatedUserRole = userRoleRepo.getByUserId(username).shouldNotBeNull()
+    updatedUserRole.data.roles.shouldBe(updatedUser.roles)
   }
 
   @Test
@@ -220,6 +325,14 @@ private fun TestServices.sendListUsersRequest(limit: Int): Response {
 private fun TestServices.sendCreateUserRequest(body: CreateUserRequest): Response {
   return apiClient(
       Request(Method.POST, "${baseUrl}/api/administration/users")
+          .body(json.encodeToString(body))
+          .withApiCredentials(),
+  )
+}
+
+private fun TestServices.sendUpdateUserRequest(body: UpdateUserRequest): Response {
+  return apiClient(
+      Request(Method.PUT, "${baseUrl}/api/administration/users")
           .body(json.encodeToString(body))
           .withApiCredentials(),
   )
