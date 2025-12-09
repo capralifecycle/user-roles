@@ -496,8 +496,8 @@
                     <exclude>META-INF/NOTICE.txt</exclude>
                     <exclude>META-INF/io.netty.versions.properties</exclude>
                     <exclude>META-INF/kotlinx_coroutines_core.version</exclude>
-                    <exlude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.properties
-                    </exlude>
+                    <exclude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.properties
+                    </exclude>
                     <exclude>META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.xml
                     </exclude>
                     <exclude>META-INF/kotlinx-serialization-json.kotlin_module</exclude>
