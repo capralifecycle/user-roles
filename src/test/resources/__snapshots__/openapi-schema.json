@@ -171,35 +171,33 @@
             "content": {
               "application/json": {
                 "example": {
-                  "user": {
-                    "username": "test.testesen",
-                    "userId": "03e2d410-6591-4409-be77-6aca0833656d",
-                    "email": {
-                      "value": "test@example.org",
-                      "verified": true
-                    },
-                    "phoneNumber": {
-                      "value": "12345678",
-                      "verified": true
-                    },
-                    "userStatus": "CONFIRMED",
-                    "enabled": true,
-                    "createdAt": "2025-12-03T11:32:59Z",
-                    "attributes": {
-                      "name": "Test Testesen"
-                    },
-                    "roles": [
-                      {
-                        "applicationName": "example-application",
-                        "orgId": "example-org",
-                        "roleName": "admin",
-                        "roleValue": {}
-                      }
-                    ]
-                  }
+                  "username": "test.testesen",
+                  "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                  "email": {
+                    "value": "test@example.org",
+                    "verified": true
+                  },
+                  "phoneNumber": {
+                    "value": "12345678",
+                    "verified": true
+                  },
+                  "userStatus": "CONFIRMED",
+                  "enabled": true,
+                  "createdAt": "2025-12-03T11:32:59Z",
+                  "attributes": {
+                    "name": "Test Testesen"
+                  },
+                  "roles": [
+                    {
+                      "applicationName": "example-application",
+                      "orgId": "example-org",
+                      "roleName": "admin",
+                      "roleValue": {}
+                    }
+                  ]
                 },
                 "schema": {
-                  "$ref": "#/components/schemas/CreateUserResponse"
+                  "$ref": "#/components/schemas/UserDataWithRoles"
                 }
               }
             }
@@ -284,6 +282,63 @@
         },
         "security": [],
         "operationId": "deleteUser",
+        "deprecated": false
+      },
+      "get": {
+        "summary": "Get user by username, with associated roles",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "username",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "username": "test.testesen",
+                  "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                  "email": {
+                    "value": "test@example.org",
+                    "verified": true
+                  },
+                  "phoneNumber": {
+                    "value": "12345678",
+                    "verified": true
+                  },
+                  "userStatus": "CONFIRMED",
+                  "enabled": true,
+                  "createdAt": "2025-12-03T11:32:59Z",
+                  "attributes": {
+                    "name": "Test Testesen"
+                  },
+                  "roles": [
+                    {
+                      "applicationName": "example-application",
+                      "orgId": "example-org",
+                      "roleName": "admin",
+                      "roleValue": {}
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UserDataWithRoles"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "getUser",
         "deprecated": false
       }
     },
@@ -634,85 +689,6 @@
           "userRoles"
         ]
       },
-      "ListUsersResponse": {
-        "properties": {
-          "nextCursor": {
-            "example": "example-pagination-token___0",
-            "type": "string",
-            "nullable": true
-          },
-          "users": {
-            "items": {
-              "$ref": "#/components/schemas/UserDataWithRoles"
-            },
-            "example": [
-              {
-                "username": "test.testesen",
-                "userId": "03e2d410-6591-4409-be77-6aca0833656d",
-                "email": {
-                  "value": "test@example.org",
-                  "verified": true
-                },
-                "phoneNumber": {
-                  "value": "12345678",
-                  "verified": true
-                },
-                "userStatus": "CONFIRMED",
-                "enabled": true,
-                "createdAt": "2025-12-03T11:32:59Z",
-                "attributes": {
-                  "name": "Test Testesen"
-                },
-                "roles": [
-                  {
-                    "applicationName": "example-application",
-                    "orgId": "example-org",
-                    "roleName": "admin",
-                    "roleValue": {}
-                  }
-                ]
-              }
-            ],
-            "type": "array",
-            "nullable": false
-          }
-        },
-        "example": {
-          "nextCursor": "example-pagination-token___0",
-          "users": [
-            {
-              "username": "test.testesen",
-              "userId": "03e2d410-6591-4409-be77-6aca0833656d",
-              "email": {
-                "value": "test@example.org",
-                "verified": true
-              },
-              "phoneNumber": {
-                "value": "12345678",
-                "verified": true
-              },
-              "userStatus": "CONFIRMED",
-              "enabled": true,
-              "createdAt": "2025-12-03T11:32:59Z",
-              "attributes": {
-                "name": "Test Testesen"
-              },
-              "roles": [
-                {
-                  "applicationName": "example-application",
-                  "orgId": "example-org",
-                  "roleName": "admin",
-                  "roleValue": {}
-                }
-              ]
-            }
-          ]
-        },
-        "type": "object",
-        "required": [
-          "users"
-        ]
-      },
       "UserDataWithRoles": {
         "properties": {
           "username": {
@@ -862,6 +838,85 @@
           "verified"
         ]
       },
+      "ListUsersResponse": {
+        "properties": {
+          "nextCursor": {
+            "example": "example-pagination-token___0",
+            "type": "string",
+            "nullable": true
+          },
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/UserDataWithRoles"
+            },
+            "example": [
+              {
+                "username": "test.testesen",
+                "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                "email": {
+                  "value": "test@example.org",
+                  "verified": true
+                },
+                "phoneNumber": {
+                  "value": "12345678",
+                  "verified": true
+                },
+                "userStatus": "CONFIRMED",
+                "enabled": true,
+                "createdAt": "2025-12-03T11:32:59Z",
+                "attributes": {
+                  "name": "Test Testesen"
+                },
+                "roles": [
+                  {
+                    "applicationName": "example-application",
+                    "orgId": "example-org",
+                    "roleName": "admin",
+                    "roleValue": {}
+                  }
+                ]
+              }
+            ],
+            "type": "array",
+            "nullable": false
+          }
+        },
+        "example": {
+          "nextCursor": "example-pagination-token___0",
+          "users": [
+            {
+              "username": "test.testesen",
+              "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+              "email": {
+                "value": "test@example.org",
+                "verified": true
+              },
+              "phoneNumber": {
+                "value": "12345678",
+                "verified": true
+              },
+              "userStatus": "CONFIRMED",
+              "enabled": true,
+              "createdAt": "2025-12-03T11:32:59Z",
+              "attributes": {
+                "name": "Test Testesen"
+              },
+              "roles": [
+                {
+                  "applicationName": "example-application",
+                  "orgId": "example-org",
+                  "roleName": "admin",
+                  "roleValue": {}
+                }
+              ]
+            }
+          ]
+        },
+        "type": "object",
+        "required": [
+          "users"
+        ]
+      },
       "UserSearchField": {
         "example": "USERNAME",
         "enum": [
@@ -877,45 +932,6 @@
         ],
         "type": "string",
         "nullable": false
-      },
-      "CreateUserResponse": {
-        "properties": {
-          "user": {
-            "$ref": "#/components/schemas/UserDataWithRoles"
-          }
-        },
-        "example": {
-          "user": {
-            "username": "test.testesen",
-            "userId": "03e2d410-6591-4409-be77-6aca0833656d",
-            "email": {
-              "value": "test@example.org",
-              "verified": true
-            },
-            "phoneNumber": {
-              "value": "12345678",
-              "verified": true
-            },
-            "userStatus": "CONFIRMED",
-            "enabled": true,
-            "createdAt": "2025-12-03T11:32:59Z",
-            "attributes": {
-              "name": "Test Testesen"
-            },
-            "roles": [
-              {
-                "applicationName": "example-application",
-                "orgId": "example-org",
-                "roleName": "admin",
-                "roleValue": {}
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "user"
-        ]
       },
       "CreateUserRequest": {
         "properties": {

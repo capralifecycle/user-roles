@@ -1,5 +1,6 @@
 package no.liflig.userroles.administration
 
+import java.time.Instant
 import kotlinx.serialization.Serializable
 import no.liflig.logging.field
 import no.liflig.publicexception.ErrorCode
@@ -8,6 +9,7 @@ import no.liflig.userroles.common.serialization.SerializableInstant
 import no.liflig.userroles.roles.Role
 import no.liflig.userroles.roles.UserRole
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
@@ -108,8 +110,40 @@ data class UserDataWithRoles(
     val roles: List<Role>,
 ) {
   companion object {
-    fun fromCognitoAndUserRole(cognitoUser: UserType, userRole: UserRole): UserDataWithRoles {
-      val username: String = cognitoUser.username()
+    fun fromCognitoUserTypeAndUserRole(
+        cognitoUser: UserType,
+        userRole: UserRole,
+    ): UserDataWithRoles =
+        fromCognitoFieldsAndUserRole(
+            username = cognitoUser.username(),
+            cognitoAttributes = cognitoUser.attributes(),
+            userStatus = cognitoUser.userStatusAsString(),
+            enabled = cognitoUser.enabled(),
+            createdAt = cognitoUser.userCreateDate(),
+            userRole = userRole,
+        )
+
+    fun fromCognitoGetResponseAndUserRole(
+        cognitoGetResponse: AdminGetUserResponse,
+        userRole: UserRole,
+    ): UserDataWithRoles =
+        fromCognitoFieldsAndUserRole(
+            username = cognitoGetResponse.username(),
+            cognitoAttributes = cognitoGetResponse.userAttributes(),
+            userStatus = cognitoGetResponse.userStatusAsString(),
+            enabled = cognitoGetResponse.enabled(),
+            createdAt = cognitoGetResponse.userCreateDate(),
+            userRole = userRole,
+        )
+
+    private fun fromCognitoFieldsAndUserRole(
+        username: String,
+        cognitoAttributes: List<AttributeType>,
+        userStatus: String,
+        enabled: Boolean,
+        createdAt: Instant,
+        userRole: UserRole,
+    ): UserDataWithRoles {
       var userId: String? = null
 
       var email: String? = null
@@ -123,7 +157,7 @@ data class UserDataWithRoles(
       /** Use [LinkedHashMap] in order to maintain the order of attributes from Cognito. */
       val attributes = LinkedHashMap<String, String>()
 
-      cognitoUser.attributes().forEach { attribute ->
+      cognitoAttributes.forEach { attribute ->
         val key = attribute.name()
         val value = attribute.value()
         /** Extract certain standard attributes, put rest in [attributes] map. */
@@ -156,9 +190,9 @@ data class UserDataWithRoles(
           email = email?.let { UserEmail(value = it, verified = emailVerified) },
           phoneNumber =
               phoneNumber?.let { UserPhoneNumber(value = it, verified = phoneNumberVerified) },
-          userStatus = cognitoUser.userStatusAsString(),
-          enabled = cognitoUser.enabled(),
-          createdAt = cognitoUser.userCreateDate(),
+          userStatus = userStatus,
+          enabled = enabled,
+          createdAt = createdAt,
           attributes = attributes,
           roles = userRole.roles,
       )
@@ -303,12 +337,6 @@ enum class InvitationMessageType {
     }
   }
 }
-
-/**
- * We use a wrapper class for this, in case we want to add more things to this response in the
- * future.
- */
-@Serializable data class CreateUserResponse(val user: UserDataWithRoles)
 
 /**
  * We use a wrapper class for this, in case we want to add more things to this request than just

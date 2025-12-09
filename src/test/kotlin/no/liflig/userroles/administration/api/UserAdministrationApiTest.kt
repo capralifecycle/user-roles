@@ -36,6 +36,8 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreate
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
@@ -56,44 +58,67 @@ class UserAdministrationApiTest {
               attributes = it.attributes + mapOf("astrologicalSign" to "Libra"),
           )
         }
+    val TEST_COGNITO_USER =
+        createCognitoUser(
+            username = "test.testesen",
+            attributes =
+                listOf(
+                    createAttribute(StandardAttribute.EMAIL, "test@example.org"),
+                    createAttribute(StandardAttribute.EMAIL_VERIFIED, "true"),
+                    createAttribute(StandardAttribute.PHONE_NUMBER, "12345678"),
+                    createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, "false"),
+                    /** "name" is a standard attribute, so no "custom:" prefix. */
+                    AttributeType.builder().name("name").value("Test Testesen").build(),
+                    /** Custom attributes have "custom:" prefix. */
+                    AttributeType.builder().name("custom:astrologicalSign").value("Libra").build(),
+                ),
+        )
+  }
+
+  @Test
+  fun `get user`() {
+    val user = TEST_COGNITO_USER
+
+    services.mockCognito(
+        object : MockCognitoClient {
+          override fun adminGetUser(request: AdminGetUserRequest): AdminGetUserResponse {
+            return AdminGetUserResponse.builder()
+                .username(user.username())
+                .userStatus(user.userStatus())
+                .userCreateDate(user.userCreateDate())
+                .enabled(user.enabled())
+                .userAttributes(user.attributes())
+                .build()
+          }
+        }
+    )
+
+    userRoleRepo.create(UserRole(userId = user.username(), roles = listOf(createRole())))
+
+    val response = services.sendGetUserRequest(username = user.username())
+    response.status.shouldBe(Status.OK)
+
+    verifyJsonSnapshot(
+        "administration/get-user-response.json",
+        response.body.text,
+    )
   }
 
   @Test
   fun `list users`() {
-    val username = "test.testesen"
+    val cognitoUser = TEST_COGNITO_USER
 
     services.mockCognito(
         object : MockCognitoClient {
           override fun listUsers(req: ListUsersRequest) =
               ListUsersResponse.builder()
-                  .users(
-                      createCognitoUser(
-                          username,
-                          attributes =
-                              listOf(
-                                  createAttribute(StandardAttribute.EMAIL, "test@example.org"),
-                                  createAttribute(StandardAttribute.EMAIL_VERIFIED, "true"),
-                                  createAttribute(StandardAttribute.PHONE_NUMBER, "12345678"),
-                                  createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, "false"),
-                                  /** "name" is a standard attribute, so no "custom:" prefix. */
-                                  AttributeType.builder()
-                                      .name("name")
-                                      .value("Test Testesen")
-                                      .build(),
-                                  /** Custom attributes have "custom:" prefix. */
-                                  AttributeType.builder()
-                                      .name("custom:astrologicalSign")
-                                      .value("Libra")
-                                      .build(),
-                              ),
-                      )
-                  )
+                  .users(cognitoUser)
                   .paginationToken("test-pagination-token")
                   .build()
         }
     )
 
-    userRoleRepo.create(UserRole(userId = username, roles = listOf(createRole())))
+    userRoleRepo.create(UserRole(userId = cognitoUser.username(), roles = listOf(createRole())))
 
     val response = services.sendListUsersRequest(limit = 60)
 
@@ -312,6 +337,12 @@ class UserAdministrationApiTest {
 
     cognitoClient.requestCount.shouldBe(1)
   }
+}
+
+private fun TestServices.sendGetUserRequest(username: String): Response {
+  return apiClient(
+      Request(Method.GET, "${baseUrl}/api/administration/users/${username}").withApiCredentials(),
+  )
 }
 
 private fun TestServices.sendListUsersRequest(limit: Int): Response {

@@ -24,6 +24,32 @@ class UserAdministrationService(
     private const val IDENTITY_PROVIDER_NAME = "AWS Cognito"
   }
 
+  /** @throws PublicException To provide more context to the client about exactly what failed. */
+  fun getUser(username: String): UserDataWithRoles {
+    val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
+
+    val userRole =
+        userRoleRepo.getByUserId(username)
+            ?: throw PublicException(
+                ErrorCode.NOT_FOUND,
+                publicMessage = "No roles found for user '${username}'",
+            )
+
+    val cognitoResponse =
+        try {
+          cognitoClient.adminGetUser { it.username(username).userPoolId(userPoolId) }
+        } catch (e: Exception) {
+          throw PublicException(
+              ErrorCode.INTERNAL_SERVER_ERROR,
+              publicMessage =
+                  "Failed to get user '${username}' from our identity provider (${IDENTITY_PROVIDER_NAME})",
+              cause = e,
+          )
+        }
+
+    return UserDataWithRoles.fromCognitoGetResponseAndUserRole(cognitoResponse, userRole.data)
+  }
+
   /**
    * @param limit Number of users to return. Minimum 1, max 60.
    * @param cursor Null if this is the first fetch.
@@ -135,7 +161,7 @@ class UserAdministrationService(
           }
         }
 
-        users.add(UserDataWithRoles.fromCognitoAndUserRole(cognitoUser, userRole))
+        users.add(UserDataWithRoles.fromCognitoUserTypeAndUserRole(cognitoUser, userRole))
       }
 
       /**
@@ -171,7 +197,7 @@ class UserAdministrationService(
   }
 
   /** @throws PublicException To provide more context to the client about exactly what failed. */
-  fun createUser(request: CreateUserRequest): CreateUserResponse {
+  fun createUser(request: CreateUserRequest): UserDataWithRoles {
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
     val userRole: Versioned<UserRole> =
@@ -222,9 +248,7 @@ class UserAdministrationService(
           )
         }
 
-    return CreateUserResponse(
-        user = UserDataWithRoles.fromCognitoAndUserRole(cognitoResponse.user(), userRole.data)
-    )
+    return UserDataWithRoles.fromCognitoUserTypeAndUserRole(cognitoResponse.user(), userRole.data)
   }
 
   /**

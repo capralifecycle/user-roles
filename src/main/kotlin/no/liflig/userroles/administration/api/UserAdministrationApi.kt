@@ -12,6 +12,7 @@ import no.liflig.userroles.roles.api.UserRoleDto
 class UserAdministrationApi(userAdministrationService: UserAdministrationService) : EndpointGroup {
   override val endpoints =
       listOf(
+          GetUserEndpoint(userAdministrationService),
           ListUsersEndpoint(userAdministrationService),
           CreateUserEndpoint(userAdministrationService),
           UpdateUserEndpoint(userAdministrationService),
