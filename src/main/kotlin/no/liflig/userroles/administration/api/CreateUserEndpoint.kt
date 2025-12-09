@@ -2,9 +2,9 @@ package no.liflig.userroles.administration.api
 
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.administration.CreateUserRequest
+import no.liflig.userroles.administration.CreateUserResponse
 import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.UserAdministrationService
-import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.common.http4k.Endpoint
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
@@ -24,7 +24,7 @@ class CreateUserEndpoint(
           summary = "Register user in identity provider, and create associated roles"
           operationId = "createUser"
           receiving(requestBodyLens to requestBodyExample)
-          returning(Status.OK, responseBodyLens to EXAMPLE_USER_DATA_WITH_ROLES)
+          returning(Status.OK, responseBodyLens to responseBodyExample)
         }
     return spec.bindContract(Method.POST) to ::handler
   }
@@ -45,6 +45,7 @@ class CreateUserEndpoint(
             invitationMessages = setOf(InvitationMessageType.EMAIL),
         )
 
-    private val responseBodyLens = createJsonBodyLens(UserDataWithRoles.serializer())
+    private val responseBodyLens = createJsonBodyLens(CreateUserResponse.serializer())
+    private val responseBodyExample = CreateUserResponse(user = EXAMPLE_USER_DATA_WITH_ROLES)
   }
 }
