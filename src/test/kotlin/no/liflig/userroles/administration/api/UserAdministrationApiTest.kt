@@ -38,6 +38,8 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDelete
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminResetUserPasswordRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminResetUserPasswordResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
@@ -337,6 +339,34 @@ class UserAdministrationApiTest {
 
     cognitoClient.requestCount.shouldBe(1)
   }
+
+  @Test
+  fun `reset user password`() {
+    val username = DEFAULT_TEST_USERNAME
+
+    val cognitoClient =
+        object : MockCognitoClient {
+          var requestCount = 0
+
+          override fun adminResetUserPassword(
+              request: AdminResetUserPasswordRequest
+          ): AdminResetUserPasswordResponse {
+            request.username().shouldBe(username)
+            request.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
+
+            requestCount++
+
+            return AdminResetUserPasswordResponse.builder().build()
+          }
+        }
+    services.mockCognito(cognitoClient)
+
+    val response = services.sendResetUserPasswordRequest(username = username)
+    response.status.shouldBe(Status.OK)
+    response.body.text.shouldBeEmpty()
+
+    cognitoClient.requestCount.shouldBe(1)
+  }
 }
 
 private fun TestServices.sendGetUserRequest(username: String): Response {
@@ -372,6 +402,13 @@ private fun TestServices.sendUpdateUserRequest(body: UpdateUserRequest): Respons
 private fun TestServices.sendDeleteUserRequest(username: String): Response {
   return apiClient(
       Request(Method.DELETE, "${baseUrl}/api/administration/users/${username}")
+          .withApiCredentials(),
+  )
+}
+
+private fun TestServices.sendResetUserPasswordRequest(username: String): Response {
+  return apiClient(
+      Request(Method.POST, "${baseUrl}/api/administration/users/${username}/reset-password")
           .withApiCredentials(),
   )
 }

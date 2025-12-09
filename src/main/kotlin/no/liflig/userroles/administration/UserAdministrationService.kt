@@ -24,7 +24,12 @@ class UserAdministrationService(
     private const val IDENTITY_PROVIDER_NAME = "AWS Cognito"
   }
 
-  /** @throws PublicException To provide more context to the client about exactly what failed. */
+  /**
+   * See
+   * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminGetUser.html).
+   *
+   * @throws PublicException To provide more context to the client about exactly what failed.
+   */
   fun getUser(username: String): UserDataWithRoles {
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
@@ -51,6 +56,9 @@ class UserAdministrationService(
   }
 
   /**
+   * See
+   * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUsers.html).
+   *
    * @param limit Number of users to return. Minimum 1, max 60.
    * @param cursor Null if this is the first fetch.
    * @throws PublicException To provide more context to the client about exactly what failed.
@@ -196,7 +204,12 @@ class UserAdministrationService(
     )
   }
 
-  /** @throws PublicException To provide more context to the client about exactly what failed. */
+  /**
+   * See
+   * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html).
+   *
+   * @throws PublicException To provide more context to the client about exactly what failed.
+   */
   fun createUser(request: CreateUserRequest): UserDataWithRoles {
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
@@ -256,6 +269,9 @@ class UserAdministrationService(
    * success. We _could_ fetch the user from Cognito after updating, but that contributes to the
    * Cognito request limit, which we may not want.
    *
+   * See
+   * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html).
+   *
    * @throws PublicException To provide more context to the client about exactly what failed.
    */
   fun updateUser(request: UpdateUserRequest) {
@@ -307,7 +323,12 @@ class UserAdministrationService(
     }
   }
 
-  /** @throws PublicException To provide more context to the client about exactly what failed. */
+  /**
+   * See
+   * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminDeleteUser.html).
+   *
+   * @throws PublicException To provide more context to the client about exactly what failed.
+   */
   fun deleteUser(username: String) {
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
@@ -347,6 +368,30 @@ class UserAdministrationService(
             cause = e,
         )
       }
+    }
+  }
+
+  /**
+   * After this is called, a password-reset code will be sent to the user (provided they have a
+   * verified email or phone number registered).
+   *
+   * See
+   * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminResetUserPassword.html).
+   *
+   * @throws PublicException To provide more context to the client about what failed.
+   */
+  fun resetUserPassword(username: String) {
+    val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
+
+    try {
+      cognitoClient.adminResetUserPassword { it.username(username).userPoolId(userPoolId) }
+    } catch (e: Exception) {
+      throw PublicException(
+          ErrorCode.INTERNAL_SERVER_ERROR,
+          publicMessage =
+              "Failed to reset user password in our identity provider (${IDENTITY_PROVIDER_NAME})",
+          cause = e,
+      )
     }
   }
 

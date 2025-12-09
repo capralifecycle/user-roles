@@ -342,6 +342,33 @@
         "deprecated": false
       }
     },
+    "/api/administration/users/{username}/reset-password": {
+      "post": {
+        "summary": "Reset password for user",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "username",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
+          }
+        },
+        "security": [],
+        "operationId": "resetUserPassword",
+        "deprecated": false
+      }
+    },
     "/api/userroles": {
       "get": {
         "summary": "Get user roles",

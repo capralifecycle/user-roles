@@ -17,6 +17,7 @@ class UserAdministrationApi(userAdministrationService: UserAdministrationService
           CreateUserEndpoint(userAdministrationService),
           UpdateUserEndpoint(userAdministrationService),
           DeleteUserEndpoint(userAdministrationService),
+          ResetUserPasswordEndpoint(userAdministrationService),
       )
 
   companion object {
