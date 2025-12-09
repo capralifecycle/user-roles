@@ -1,10 +1,14 @@
 package no.liflig.userroles.administration
 
 import kotlinx.serialization.Serializable
+import no.liflig.logging.field
+import no.liflig.publicexception.ErrorCode
+import no.liflig.publicexception.PublicException
 import no.liflig.userroles.common.serialization.SerializableInstant
 import no.liflig.userroles.roles.Role
 import no.liflig.userroles.roles.UserRole
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
@@ -39,6 +43,9 @@ data class UserDataWithRoles(
      * when creating the user), and appears to be a UUID (we don't validate that it's a UUID here,
      * since Cognito may change this format in the future). You'll typically just use [username],
      * though we still expose this here in case you have a use-case for it.
+     *
+     * We set this from the `sub` attribute from Cognito, which is the Open-ID Connect field for the
+     * user ID.
      */
     val userId: String,
     /**
@@ -121,12 +128,15 @@ data class UserDataWithRoles(
         val value = attribute.value()
         /** Extract certain standard attributes, put rest in [attributes] map. */
         when (key) {
-          CognitoAttribute.SUB -> userId = value
-          CognitoAttribute.EMAIL -> email = value
-          CognitoAttribute.EMAIL_VERIFIED -> emailVerified = value == "true"
-          CognitoAttribute.PHONE_NUMBER -> phoneNumber = value
-          CognitoAttribute.PHONE_NUMBER_VERIFIED -> phoneNumberVerified = value == "true"
-          else -> attributes[key] = value
+          StandardAttribute.SUB.attributeName -> userId = value
+          StandardAttribute.EMAIL.attributeName -> email = value
+          StandardAttribute.EMAIL_VERIFIED.attributeName -> emailVerified = value == "true"
+          StandardAttribute.PHONE_NUMBER.attributeName -> phoneNumber = value
+          StandardAttribute.PHONE_NUMBER_VERIFIED.attributeName ->
+              phoneNumberVerified = value == "true"
+          else -> {
+            attributes[key.removePrefix(COGNITO_CUSTOM_ATTRIBUTE_PREFIX)] = value
+          }
         }
       }
 
@@ -165,7 +175,14 @@ data class UserEmail(
      * attribute in Cognito.
      */
     val verified: Boolean,
-)
+) {
+  fun toCognitoAttributes(): List<AttributeType> {
+    return listOf(
+        createAttribute(StandardAttribute.EMAIL, this.value),
+        createAttribute(StandardAttribute.EMAIL_VERIFIED, if (this.verified) "true" else "false"),
+    )
+  }
+}
 
 @Serializable
 data class UserPhoneNumber(
@@ -176,7 +193,17 @@ data class UserPhoneNumber(
      * attribute in Cognito.
      */
     val verified: Boolean,
-)
+) {
+  fun toCognitoAttributes(): List<AttributeType> {
+    return listOf(
+        createAttribute(StandardAttribute.PHONE_NUMBER, this.value),
+        createAttribute(
+            StandardAttribute.PHONE_NUMBER_VERIFIED,
+            if (this.verified) "true" else "false",
+        ),
+    )
+  }
+}
 
 /** A subset of the fields from [UserDataWithRoles], used for creating and updating users. */
 @Serializable
@@ -187,12 +214,22 @@ data class UserUpdateData(
     val email: UserEmail?,
     /** See [UserDataWithRoles.phoneNumber]. */
     val phoneNumber: UserPhoneNumber?,
-    /** See [UserDataWithRoles.attributes]. */
+    /**
+     * See [UserDataWithRoles.attributes].
+     *
+     * When updating a user, setting an attribute to a blank value will remove the attribute from
+     * Cognito. Unfortunately, this is the only way to remove attributes from Cognito, as just
+     * omitting the attribute from this map will make the attribute remain in Cognito.
+     *
+     * See
+     * [Cognito docs for the AdminUpdateUserAttributes operation](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html).
+     */
     val attributes: Map<String, String>,
     /** See [UserDataWithRoles.roles]. */
     val roles: List<Role>,
 )
 
+/** @throws PublicException In constructor, if request was invalid. */
 @Serializable
 data class CreateUserRequest(
     val user: UserUpdateData,
@@ -205,6 +242,32 @@ data class CreateUserRequest(
      */
     val invitationMessages: Set<InvitationMessageType>,
 ) {
+  init {
+    /**
+     * Cognito enforces that email/phone number must be set when choosing email/SMS as the desired
+     * delivery medium. So we enforce that here as well, in order to give a more descriptive error
+     * message to the client.
+     *
+     * See
+     * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html).
+     */
+    if (invitationMessages.contains(InvitationMessageType.EMAIL) && user.email == null) {
+      throw PublicException(
+          ErrorCode.BAD_REQUEST,
+          publicMessage = "Email must be set for user in order to send email invitation",
+          logFields = listOf(field("username", user.username)),
+      )
+    }
+
+    if (invitationMessages.contains(InvitationMessageType.SMS) && user.phoneNumber == null) {
+      throw PublicException(
+          ErrorCode.BAD_REQUEST,
+          publicMessage = "Phone number must be set for user in order to send SMS invitation",
+          logFields = listOf(field("username", user.username)),
+      )
+    }
+  }
+
   fun toCognitoRequest(userPoolId: String): AdminCreateUserRequest {
     val request = AdminCreateUserRequest.builder()
 
@@ -213,22 +276,10 @@ data class CreateUserRequest(
 
     val attributes = ArrayList<AttributeType>()
     if (user.email != null) {
-      attributes.add(createAttribute(CognitoAttribute.EMAIL, user.email.value))
-      attributes.add(
-          createAttribute(
-              CognitoAttribute.EMAIL_VERIFIED,
-              if (user.email.verified) "true" else "false",
-          )
-      )
+      attributes.addAll(user.email.toCognitoAttributes())
     }
     if (user.phoneNumber != null) {
-      attributes.add(createAttribute(CognitoAttribute.PHONE_NUMBER, user.phoneNumber.value))
-      attributes.add(
-          createAttribute(
-              CognitoAttribute.PHONE_NUMBER_VERIFIED,
-              if (user.phoneNumber.verified) "true" else "false",
-          )
-      )
+      attributes.addAll(user.phoneNumber.toCognitoAttributes())
     }
     for ((name, value) in user.attributes) {
       attributes.add(createAttribute(name, value))
@@ -253,14 +304,55 @@ enum class InvitationMessageType {
   }
 }
 
-object CognitoAttribute {
-  const val EMAIL = "email"
-  const val EMAIL_VERIFIED = "email_verified"
-  const val PHONE_NUMBER = "phone_number"
-  const val PHONE_NUMBER_VERIFIED = "phone_number_verified"
-  const val SUB = "sub"
-}
+/**
+ * We use a wrapper class for this, in case we want to add more things to this response in the
+ * future.
+ */
+@Serializable data class CreateUserResponse(val user: UserDataWithRoles)
 
-fun createAttribute(name: String, value: String): AttributeType {
-  return AttributeType.builder().name(name).value(value).build()
+/**
+ * We use a wrapper class for this, in case we want to add more things to this request than just
+ * [UserUpdateData] in the future.
+ */
+@Serializable
+data class UpdateUserRequest(val user: UserUpdateData) {
+  fun toCognitoRequest(userPoolId: String): AdminUpdateUserAttributesRequest {
+    val request = AdminUpdateUserAttributesRequest.builder()
+
+    request.userPoolId(userPoolId)
+    request.username(user.username)
+
+    val attributes = ArrayList<AttributeType>()
+    if (user.email != null && user.email.value.isNotEmpty()) {
+      attributes.addAll(user.email.toCognitoAttributes())
+    } else {
+      /**
+       * In order to remove an attribute from Cognito, we must submit the attribute with a blank
+       * value. If [UserUpdateData.email] is set to `null`, we do this to make sure any old email is
+       * not remaining.
+       */
+      attributes.add(createAttribute(StandardAttribute.EMAIL, value = ""))
+      attributes.add(createAttribute(StandardAttribute.EMAIL_VERIFIED, value = ""))
+    }
+
+    if (user.phoneNumber != null && user.phoneNumber.value.isNotEmpty()) {
+      attributes.addAll(user.phoneNumber.toCognitoAttributes())
+    } else {
+      /**
+       * In order to remove an attribute from Cognito, we must submit the attribute with a blank
+       * value. If [UserUpdateData.phoneNumber] is set to `null`, we do this to make sure any old
+       * email is not remaining.
+       */
+      attributes.add(createAttribute(StandardAttribute.PHONE_NUMBER, value = ""))
+      attributes.add(createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, value = ""))
+    }
+
+    for ((name, value) in user.attributes) {
+      attributes.add(createAttribute(name, value))
+    }
+
+    request.userAttributes(attributes)
+
+    return request.build()
+  }
 }

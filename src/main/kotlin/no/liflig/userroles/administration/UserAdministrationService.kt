@@ -171,7 +171,7 @@ class UserAdministrationService(
   }
 
   /** @throws PublicException To provide more context to the client about exactly what failed. */
-  fun createUser(request: CreateUserRequest): UserDataWithRoles {
+  fun createUser(request: CreateUserRequest): CreateUserResponse {
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
     val userRole: Versioned<UserRole> =
@@ -222,7 +222,65 @@ class UserAdministrationService(
           )
         }
 
-    return UserDataWithRoles.fromCognitoAndUserRole(cognitoResponse.user(), userRole.data)
+    return CreateUserResponse(
+        user = UserDataWithRoles.fromCognitoAndUserRole(cognitoResponse.user(), userRole.data)
+    )
+  }
+
+  /**
+   * Returns nothing, because Cognito's `AdminUpdateUserAttributes` does not return anything on
+   * success. We _could_ fetch the user from Cognito after updating, but that contributes to the
+   * Cognito request limit, which we may not want.
+   *
+   * @throws PublicException To provide more context to the client about exactly what failed.
+   */
+  fun updateUser(request: UpdateUserRequest) {
+    val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
+
+    val previousUserRole: Versioned<UserRole> =
+        userRoleRepo.getByUserId(request.user.username)
+            ?: throw PublicException(
+                ErrorCode.NOT_FOUND,
+                publicMessage = "Failed to update user '${request.user.username}'",
+                publicDetail = "No roles found for user",
+            )
+    var updatedUserRole: Versioned<UserRole>? = null
+
+    if (previousUserRole.data.roles != request.user.roles) {
+      try {
+        updatedUserRole =
+            userRoleRepo.update(previousUserRole.map { it.copy(roles = request.user.roles) })
+      } catch (e: Exception) {
+        throw PublicException(
+            ErrorCode.INTERNAL_SERVER_ERROR,
+            publicMessage = "Failed to update roles for user",
+            cause = e,
+        )
+      }
+    }
+
+    try {
+      cognitoClient.adminUpdateUserAttributes(request.toCognitoRequest(userPoolId = userPoolId))
+    } catch (e: Exception) {
+      /** If we fail to update the user in Cognito, we want to revert the user role update. */
+      if (updatedUserRole != null) {
+        try {
+          userRoleRepo.update(previousUserRole.data, updatedUserRole.version)
+        } catch (e: Exception) {
+          log.error(e) {
+            field("username", request.user.username)
+            "Failed to revert user role update after user attribute update failed"
+          }
+        }
+      }
+
+      throw PublicException(
+          ErrorCode.INTERNAL_SERVER_ERROR,
+          publicMessage =
+              "Failed to update user attributes in our identity provider (${IDENTITY_PROVIDER_NAME})",
+          cause = e,
+      )
+    }
   }
 
   /** @throws PublicException To provide more context to the client about exactly what failed. */

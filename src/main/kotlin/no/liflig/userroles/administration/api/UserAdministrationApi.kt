@@ -14,6 +14,7 @@ class UserAdministrationApi(userAdministrationService: UserAdministrationService
       listOf(
           ListUsersEndpoint(userAdministrationService),
           CreateUserEndpoint(userAdministrationService),
+          UpdateUserEndpoint(userAdministrationService),
           DeleteUserEndpoint(userAdministrationService),
       )
 

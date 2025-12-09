@@ -10,10 +10,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 import java.time.Instant
 import no.liflig.snapshot.verifyJsonSnapshot
-import no.liflig.userroles.administration.CognitoAttribute
 import no.liflig.userroles.administration.CreateUserRequest
 import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.MockCognitoClient
+import no.liflig.userroles.administration.StandardAttribute
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.administration.UserFilter
@@ -58,10 +58,10 @@ class UserAdministrationApiTest {
                           username,
                           attributes =
                               listOf(
-                                  createAttribute(CognitoAttribute.EMAIL, "test@example.org"),
-                                  createAttribute(CognitoAttribute.EMAIL_VERIFIED, "true"),
-                                  createAttribute(CognitoAttribute.PHONE_NUMBER, "12345678"),
-                                  createAttribute(CognitoAttribute.PHONE_NUMBER_VERIFIED, "true"),
+                                  createAttribute(StandardAttribute.EMAIL, "test@example.org"),
+                                  createAttribute(StandardAttribute.EMAIL_VERIFIED, "true"),
+                                  createAttribute(StandardAttribute.PHONE_NUMBER, "12345678"),
+                                  createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, "true"),
                                   createAttribute("name", "Test Testesen"),
                               ),
                       )
@@ -137,14 +137,14 @@ class UserAdministrationApiTest {
               it.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
               it.userAttributes()
                   .shouldContainExactlyInAnyOrder(
-                      createAttribute(CognitoAttribute.EMAIL, user.email!!.value),
+                      createAttribute(StandardAttribute.EMAIL, user.email!!.value),
                       createAttribute(
-                          CognitoAttribute.EMAIL_VERIFIED,
+                          StandardAttribute.EMAIL_VERIFIED,
                           user.email.verified.toString(),
                       ),
-                      createAttribute(CognitoAttribute.PHONE_NUMBER, user.phoneNumber!!.value),
+                      createAttribute(StandardAttribute.PHONE_NUMBER, user.phoneNumber!!.value),
                       createAttribute(
-                          CognitoAttribute.PHONE_NUMBER_VERIFIED,
+                          StandardAttribute.PHONE_NUMBER_VERIFIED,
                           user.phoneNumber.verified.toString(),
                       ),
                       createAttribute("name", "Test Testesen"),

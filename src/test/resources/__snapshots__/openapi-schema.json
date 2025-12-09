@@ -171,8 +171,56 @@
             "content": {
               "application/json": {
                 "example": {
+                  "user": {
+                    "username": "test.testesen",
+                    "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+                    "email": {
+                      "value": "test@example.org",
+                      "verified": true
+                    },
+                    "phoneNumber": {
+                      "value": "12345678",
+                      "verified": true
+                    },
+                    "userStatus": "CONFIRMED",
+                    "enabled": true,
+                    "createdAt": "2025-12-03T11:32:59Z",
+                    "attributes": {
+                      "name": "Test Testesen"
+                    },
+                    "roles": [
+                      {
+                        "applicationName": "example-application",
+                        "orgId": "example-org",
+                        "roleName": "admin",
+                        "roleValue": {}
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "operationId": "createUser",
+        "deprecated": false
+      },
+      "put": {
+        "summary": "Update user in identity provider, and their associated roles",
+        "tags": [
+          "/api"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "user": {
                   "username": "test.testesen",
-                  "userId": "03e2d410-6591-4409-be77-6aca0833656d",
                   "email": {
                     "value": "test@example.org",
                     "verified": true
@@ -181,9 +229,6 @@
                     "value": "12345678",
                     "verified": true
                   },
-                  "userStatus": "CONFIRMED",
-                  "enabled": true,
-                  "createdAt": "2025-12-03T11:32:59Z",
                   "attributes": {
                     "name": "Test Testesen"
                   },
@@ -195,16 +240,23 @@
                       "roleValue": {}
                     }
                   ]
-                },
-                "schema": {
-                  "$ref": "#/components/schemas/UserDataWithRoles"
                 }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
               }
             }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {}
           }
         },
         "security": [],
-        "operationId": "createUser",
+        "operationId": "updateUser",
         "deprecated": false
       }
     },
@@ -826,6 +878,45 @@
         "type": "string",
         "nullable": false
       },
+      "CreateUserResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDataWithRoles"
+          }
+        },
+        "example": {
+          "user": {
+            "username": "test.testesen",
+            "userId": "03e2d410-6591-4409-be77-6aca0833656d",
+            "email": {
+              "value": "test@example.org",
+              "verified": true
+            },
+            "phoneNumber": {
+              "value": "12345678",
+              "verified": true
+            },
+            "userStatus": "CONFIRMED",
+            "enabled": true,
+            "createdAt": "2025-12-03T11:32:59Z",
+            "attributes": {
+              "name": "Test Testesen"
+            },
+            "roles": [
+              {
+                "applicationName": "example-application",
+                "orgId": "example-org",
+                "roleName": "admin",
+                "roleValue": {}
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "user"
+        ]
+      },
       "CreateUserRequest": {
         "properties": {
           "user": {
@@ -957,6 +1048,41 @@
         ],
         "type": "string",
         "nullable": false
+      },
+      "UpdateUserRequest": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserUpdateData"
+          }
+        },
+        "example": {
+          "user": {
+            "username": "test.testesen",
+            "email": {
+              "value": "test@example.org",
+              "verified": true
+            },
+            "phoneNumber": {
+              "value": "12345678",
+              "verified": true
+            },
+            "attributes": {
+              "name": "Test Testesen"
+            },
+            "roles": [
+              {
+                "applicationName": "example-application",
+                "orgId": "example-org",
+                "roleName": "admin",
+                "roleValue": {}
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "user"
+        ]
       }
     },
     "securitySchemes": {}
