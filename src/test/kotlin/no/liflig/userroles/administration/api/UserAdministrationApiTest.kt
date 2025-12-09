@@ -1,9 +1,6 @@
 package no.liflig.userroles.administration.api
 
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.collections.shouldNotBeEmpty
-import io.kotest.matchers.maps.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -15,7 +12,6 @@ import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.MockCognitoClient
 import no.liflig.userroles.administration.StandardAttribute
 import no.liflig.userroles.administration.UserCursor
-import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.administration.UserFilter
 import no.liflig.userroles.administration.UserSearchField
 import no.liflig.userroles.administration.createAttribute
@@ -174,23 +170,15 @@ class UserAdministrationApiTest {
     val response = services.sendCreateUserRequest(request)
     response.status.shouldBe(Status.OK)
 
-    val responseBody = json.decodeFromString<UserDataWithRoles>(response.body.text)
-    responseBody.should {
-      it.username.shouldBe(user.username)
-      it.userId.shouldBe(userId)
-      it.email.shouldNotBeNull().shouldBe(user.email)
-      it.phoneNumber.shouldNotBeNull().shouldBe(user.phoneNumber)
-      it.userStatus.shouldBe(userStatus)
-      it.enabled.shouldBeTrue()
-      it.createdAt.shouldBe(userCreateDate)
-      it.attributes.shouldNotBeEmpty().shouldBe(user.attributes)
-      it.roles.shouldNotBeEmpty().shouldBe(user.roles)
-    }
-
     cognitoClient.requestCount.shouldBe(1)
 
     val userRole = userRoleRepo.getByUserId(user.username).shouldNotBeNull()
     userRole.data.roles.shouldBe(user.roles)
+
+    verifyJsonSnapshot(
+        "administration/create-user-response.json",
+        response.body.text,
+    )
   }
 
   @Test
