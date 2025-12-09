@@ -5,7 +5,9 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import no.liflig.publicexception.PublicException
 import no.liflig.userroles.administration.api.EXAMPLE_USER_UPDATE_DATA
@@ -18,6 +20,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
 
@@ -378,10 +382,7 @@ class UserAdministrationServiceTest {
           CreateUserRequest(user = user, invitationMessages = emptySet())
       )
     }
-    /**
-     * User administration service wraps exception, so we expect the cause to be our
-     * CognitoException here.
-     */
+    /** User administration service wraps exception, so we expect cause to be CognitoException. */
     exception.cause.shouldBeInstanceOf<CognitoException>()
 
     userRoleRepo.getByUserId(user.username).shouldBeNull()
@@ -418,6 +419,38 @@ class UserAdministrationServiceTest {
     exception.publicDetail.shouldBe("Roles already exist for username '${username}'")
 
     cognitoClient.requestCount.shouldBe(0)
+  }
+
+  @Test
+  fun `if Cognito update user request fails, user role should remain unchanged`() {
+    val username = EXAMPLE_USER_UPDATE_DATA.username
+
+    val existingUserRole =
+        userRoleRepo.create(createUserRole(username, createRole(roleName = "role-1")))
+
+    val updatedUser = EXAMPLE_USER_UPDATE_DATA.copy(roles = listOf(createRole(roleName = "role-2")))
+
+    class CognitoException : RuntimeException()
+
+    services.mockCognito(
+        object : MockCognitoClient {
+          override fun adminUpdateUserAttributes(
+              request: AdminUpdateUserAttributesRequest
+          ): AdminUpdateUserAttributesResponse {
+            throw CognitoException()
+          }
+        }
+    )
+
+    val exception = shouldThrowAny {
+      userAdministrationService.updateUser(UpdateUserRequest(updatedUser))
+    }
+    /** User administration service wraps exception, so we expect cause to be CognitoException. */
+    exception.cause.shouldBeInstanceOf<CognitoException>()
+
+    val currentUserRole = userRoleRepo.getByUserId(username).shouldNotBeNull()
+    currentUserRole.data.roles.shouldBe(existingUserRole.data.roles)
+    currentUserRole.data.roles.shouldNotBe(updatedUser.roles)
   }
 }
 
