@@ -79,8 +79,8 @@ class ListUsersEndpoint(
       if (limit !in 1..60) {
         throw PublicException(
             ErrorCode.BAD_REQUEST,
-            publicMessage = "Invalid limit parameter given to List Users",
-            publicDetail = "Limit (page size) must be in the range [1, 60]",
+            publicMessage = "Invalid limit parameter (page size) given to List Users",
+            publicDetail = "Limit must be in the range [1, 60]",
         )
       }
       return limit
