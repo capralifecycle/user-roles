@@ -1,9 +1,14 @@
 package no.liflig.userroles.administration
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
+import no.liflig.publicexception.PublicException
+import no.liflig.userroles.administration.api.EXAMPLE_USER_UPDATE_DATA
 import no.liflig.userroles.administration.api.UserAdministrationApiTest
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.testutils.TestServices
@@ -11,6 +16,8 @@ import no.liflig.userroles.testutils.createRole
 import no.liflig.userroles.testutils.createUserRole
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersResponse
 
@@ -350,6 +357,67 @@ class UserAdministrationServiceTest {
 
     result4.nextCursor.shouldBeNull()
     result4.users.shouldBeEmpty()
+  }
+
+  @Test
+  fun `if Cognito create user request fails, user role should not be stored`() {
+    val user = EXAMPLE_USER_UPDATE_DATA
+
+    class CognitoException : RuntimeException()
+
+    services.mockCognito(
+        object : MockCognitoClient {
+          override fun adminCreateUser(request: AdminCreateUserRequest): AdminCreateUserResponse {
+            throw CognitoException()
+          }
+        }
+    )
+
+    val exception = shouldThrowAny {
+      userAdministrationService.createUser(
+          CreateUserRequest(user = user, invitationMessages = emptySet())
+      )
+    }
+    /**
+     * User administration service wraps exception, so we expect the cause to be our
+     * CognitoException here.
+     */
+    exception.cause.shouldBeInstanceOf<CognitoException>()
+
+    userRoleRepo.getByUserId(user.username).shouldBeNull()
+  }
+
+  @Test
+  fun `if storing user role fails, no create user request should be sent to Cognito`() {
+    val username = "mr.unique"
+    /** Create existing user with this username, so our unique index will fail. */
+    userRoleRepo.create(createUserRole(username = username))
+
+    val newUser = EXAMPLE_USER_UPDATE_DATA.copy(username = username)
+
+    val cognitoClient =
+        object : MockCognitoClient {
+          var requestCount = 0
+
+          override fun adminCreateUser(request: AdminCreateUserRequest): AdminCreateUserResponse {
+            requestCount++
+
+            return AdminCreateUserResponse.builder()
+                .user(createCognitoUser(username = username))
+                .build()
+          }
+        }
+    services.mockCognito(cognitoClient)
+
+    val exception =
+        shouldThrow<PublicException> {
+          userAdministrationService.createUser(
+              CreateUserRequest(user = newUser, invitationMessages = emptySet())
+          )
+        }
+    exception.publicDetail.shouldBe("Roles already exist for username '${username}'")
+
+    cognitoClient.requestCount.shouldBe(0)
   }
 }
 
