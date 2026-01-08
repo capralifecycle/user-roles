@@ -13,7 +13,7 @@
   "paths": {
     "/api/administration/users": {
       "get": {
-        "summary": "List users from identity provider (AWS Cognito), along with their associated roles",
+        "summary": "List users from identity provider service, along with their associated roles",
         "tags": [
           "/api"
         ],
@@ -123,7 +123,7 @@
         "deprecated": false
       },
       "post": {
-        "summary": "Register new user in identity provider (AWS Cognito), and create associated roles",
+        "summary": "Register new user in identity provider service, and create associated roles",
         "tags": [
           "/api"
         ],
@@ -208,7 +208,7 @@
         "deprecated": false
       },
       "put": {
-        "summary": "Update existing user in identity provider (AWS Cognito), and their associated roles",
+        "summary": "Update existing user in identity provider service, and their associated roles",
         "tags": [
           "/api"
         ],
@@ -260,7 +260,7 @@
     },
     "/api/administration/users/{username}": {
       "delete": {
-        "summary": "Delete user from identity provider (AWS Cognito), and its associated roles",
+        "summary": "Delete user from identity provider service, and its associated roles",
         "tags": [
           "/api"
         ],
@@ -285,7 +285,7 @@
         "deprecated": false
       },
       "get": {
-        "summary": "Get user by username from identity provider (AWS Cognito), with associated roles",
+        "summary": "Get user by username from identity provider service, with associated roles",
         "tags": [
           "/api"
         ],
@@ -344,7 +344,7 @@
     },
     "/api/administration/users/{username}/reset-password": {
       "post": {
-        "summary": "Reset password for user in identity provider (AWS Cognito)",
+        "summary": "Reset password for user in identity provider",
         "tags": [
           "/api"
         ],

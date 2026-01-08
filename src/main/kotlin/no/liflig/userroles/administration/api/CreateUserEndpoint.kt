@@ -4,7 +4,6 @@ import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.administration.CreateUserRequest
 import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.UserAdministrationService
-import no.liflig.userroles.administration.UserAdministrationService.Companion.IDENTITY_PROVIDER_NAME
 import no.liflig.userroles.administration.UserDataWithRoles
 import no.liflig.userroles.common.http4k.Endpoint
 import org.http4k.contract.ContractRoute
@@ -22,8 +21,7 @@ class CreateUserEndpoint(
     val path = UserAdministrationApi.PATH
     val spec =
         path.meta {
-          summary =
-              "Register new user in identity provider (${IDENTITY_PROVIDER_NAME}), and create associated roles"
+          summary = "Register new user in identity provider service, and create associated roles"
           operationId = "createUser"
           receiving(requestBodyLens to requestBodyExample)
           returning(Status.OK, responseBodyLens to EXAMPLE_USER_DATA_WITH_ROLES)
