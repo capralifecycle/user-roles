@@ -57,7 +57,7 @@ data class UserDataWithRoles(
      * If you do that, you can make this non-nullable when copying this class to your consumer
      * service, to assert that you expect this to always be set when deserializing.
      *
-     * This object combines the `phone_number` and `phone_number_verified` attributes from Cognito.
+     * This object combines the `email` and `email_verified` attributes from Cognito.
      */
     val email: UserEmail?,
     /**
