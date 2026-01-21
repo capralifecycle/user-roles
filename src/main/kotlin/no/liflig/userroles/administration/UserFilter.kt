@@ -10,35 +10,35 @@ data class UserFilter(
     val applicationName: String?,
     val roleName: String?,
 ) {
+  /**
+   * Returns true if the given user role has a role that matches [orgId], [applicationName] and
+   * [roleName].
+   */
   fun matches(userRole: UserRole): Boolean {
+    /** Special case for no filter, to handle users with no roles. */
+    if (orgId == null && applicationName == null && roleName == null) {
+      return true
+    }
+
     /**
      * Super-admins match all orgId / applicationName filters, since they are implicitly part of all
      * orgs and applications. We only do this if no filter is provided for `roleName`.
      */
-    val matchAllOrganizationsAndApplications =
+    val matchAllOrgsAndApps =
         userRole.isSuperAdmin() && (this.roleName == null || this.roleName == SUPER_ADMIN_ROLE_NAME)
 
-    if (
-        orgId != null &&
-            userRole.roles.none { it.orgId == this.orgId } &&
-            !matchAllOrganizationsAndApplications
-    ) {
-      return false
-    }
+    return userRole.roles.any { role ->
+      val orgIdMatches = (orgId == null || role.orgId == orgId || matchAllOrgsAndApps)
 
-    if (
-        applicationName != null &&
-            userRole.roles.none { it.applicationName == this.applicationName } &&
-            !matchAllOrganizationsAndApplications
-    ) {
-      return false
-    }
+      val applicationMatches =
+          (applicationName == null ||
+              role.applicationName == applicationName ||
+              matchAllOrgsAndApps)
 
-    if (roleName != null && userRole.roles.none { it.roleName == this.roleName }) {
-      return false
-    }
+      val roleNameMatches = (roleName == null || role.roleName == roleName)
 
-    return true
+      orgIdMatches && applicationMatches && roleNameMatches
+    }
   }
 
   fun getCognitoFilterString(): String? {

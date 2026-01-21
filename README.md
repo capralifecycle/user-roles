@@ -35,7 +35,7 @@ _Note that this repo only contains the User Roles service_
 ```
 {
   "username": "user123",
-  "userroles": [
+  "roles": [
     {
       "applicationName": "application1",
       "orgId": "orgId1",
