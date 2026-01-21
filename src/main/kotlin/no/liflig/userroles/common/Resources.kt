@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.liflig.userroles.common
 
 import java.io.InputStream

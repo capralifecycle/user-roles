@@ -1,12 +1,9 @@
 package no.liflig.userroles.common.config
 
 import java.util.Properties
-import no.liflig.logging.getLogger
 import no.liflig.properties.loadProperties
 import no.liflig.properties.string
 import no.liflig.properties.stringNotNull
-
-private val log = getLogger()
 
 /**
  * Holds configuration of the service.
