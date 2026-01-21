@@ -1,7 +1,8 @@
 # User Roles
 
-The User Roles Service is a core data service responsible for storing user roles for RBAC (
-Role-Based Access Control), and integrating with AWS Cognito to provide a user administration API.
+The User Roles Service is a core data service responsible for storing user roles for
+RBAC (Role-Based Access Control), and integrating with AWS Cognito to provide a user administration
+API.
 
 * [Documentation](#documentation)
 * [Architecture](#architecture)
@@ -74,7 +75,7 @@ will still start, and only the administration API will respond with 500 Internal
 
 ### Administration API
 
-When referring to “our identity provider” below, we mean AWS Cognito. But User Roles may be expanded
+When referring to "our identity provider" below, we mean AWS Cognito. But User Roles may be expanded
 in the future to support other identity providers.
 
 The user administration API does not take responsibility for verifying that a requesting user is
@@ -85,7 +86,7 @@ authorization.
 
 | Endpoint                                                                                                                                                                                                                                                                        | What                                                                                                                                                                                                                                                                                                       | Cognito API used                                                                                                                            |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| GET /api/administration/users/{username}                                                                                                                                                                                                                                        | Get user data from our identity provider along with their roles                                                                                                                                                                                                                                            | [AdminGetUser](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminGetUser.html)                           |
+| GET /api/administration/users/{username}                                                                                                                                                                                                                                        | Get user data from our identity provider, along with their roles                                                                                                                                                                                                                                           | [AdminGetUser](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminGetUser.html)                           |
 | POST /api/administration/users                                                                                                                                                                                                                                                  | Register user in our identity provider, along with roles                                                                                                                                                                                                                                                   | [AdminCreateUser](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html)                     |
 | PUT /api/administration/users                                                                                                                                                                                                                                                   | Update existing user in our identity provider, along with their roles                                                                                                                                                                                                                                      | [AdminUpdateUserAttributes](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html) |
 | DELETE /api/administration/users/{username}                                                                                                                                                                                                                                     | Delete user in our identity provider, along with their roles                                                                                                                                                                                                                                               | [AdminDeleteUser](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminDeleteUser.html)                     |
@@ -94,7 +95,7 @@ authorization.
 
 #### Data structure of user data with roles
 
-```json
+```json5
 {
   "username": "test.testesen",
   "userId": "4b670e7f-0ae9-4ce8-9a8b-b27d00d2f31d",
