@@ -31,7 +31,7 @@ class UserRoleCrudApiTest {
     services.clear()
   }
 
-  private val userId = "user123"
+  private val username = "user123"
   private val roles =
       listOf(
           Role(
@@ -55,7 +55,7 @@ class UserRoleCrudApiTest {
   @Order(1)
   @Test
   fun `create user role`() {
-    val response = services.putUserRole(userId, UpdateRoleRequest(roles))
+    val response = services.putUserRole(username, UpdateRoleRequest(roles))
     response.status shouldBe Status.OK
 
     shouldNotThrowAny { UserRoleDto.bodyLens(response) }
@@ -72,7 +72,7 @@ class UserRoleCrudApiTest {
   fun `update user role`() {
     val requestBody = readJsonResource<UpdateRoleRequest>("crudtest/update-user-role-request.json")
 
-    val response = services.putUserRole(userId, requestBody)
+    val response = services.putUserRole(username, requestBody)
     response.status shouldBe Status.OK
 
     shouldNotThrowAny { UserRoleDto.bodyLens(response) }
@@ -87,7 +87,7 @@ class UserRoleCrudApiTest {
   @Order(3)
   @Test
   fun `get user role`() {
-    val response = services.getUserRole(userId)
+    val response = services.getUserRole(username)
     response.status shouldBe Status.OK
 
     shouldNotThrowAny { UserRoleDto.bodyLens(response) }
@@ -102,30 +102,30 @@ class UserRoleCrudApiTest {
   @Order(4)
   @Test
   fun `delete user role`() {
-    val deleteResponse = services.deleteUserRole(userId)
+    val deleteResponse = services.deleteUserRole(username)
     deleteResponse.status shouldBe Status.OK
 
-    val getResponse = services.getUserRole(userId)
+    val getResponse = services.getUserRole(username)
     getResponse.status shouldBe Status.NOT_FOUND
   }
 }
 
-fun TestServices.putUserRole(userId: String, requestBody: UpdateRoleRequest): Response {
+fun TestServices.putUserRole(username: String, requestBody: UpdateRoleRequest): Response {
   return apiClient(
-      Request(Method.PUT, "${baseUrl}/api/userroles/${userId}")
+      Request(Method.PUT, "${baseUrl}/api/userroles/${username}")
           .with(UpdateRoleRequest.bodyLens.of(requestBody))
           .withApiCredentials(),
   )
 }
 
-fun TestServices.getUserRole(userId: String): Response {
+fun TestServices.getUserRole(username: String): Response {
   return apiClient(
-      Request(Method.GET, "${baseUrl}/api/userroles/${userId}").withApiCredentials(),
+      Request(Method.GET, "${baseUrl}/api/userroles/${username}").withApiCredentials(),
   )
 }
 
-fun TestServices.deleteUserRole(userId: String): Response {
+fun TestServices.deleteUserRole(username: String): Response {
   return apiClient(
-      Request(Method.DELETE, "${baseUrl}/api/userroles/${userId}").withApiCredentials(),
+      Request(Method.DELETE, "${baseUrl}/api/userroles/${username}").withApiCredentials(),
   )
 }

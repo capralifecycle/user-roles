@@ -371,8 +371,7 @@
     },
     "/api/userroles": {
       "get": {
-        "summary": "Get user roles",
-        "description": "Get user roles",
+        "summary": "List user roles",
         "tags": [
           "/api"
         ],
@@ -402,7 +401,7 @@
                 "example": {
                   "userRoles": [
                     {
-                      "userId": "test.testesen",
+                      "username": "test.testesen",
                       "roles": [
                         {
                           "applicationName": "example-application",
@@ -426,10 +425,10 @@
         "deprecated": false
       }
     },
-    "/api/userroles/{userId}": {
+    "/api/userroles/{username}": {
       "delete": {
         "summary": "Delete user role",
-        "description": "Delete user role",
+        "description": "Username should be the user's username in our identity provider",
         "tags": [
           "/api"
         ],
@@ -439,7 +438,7 @@
               "type": "string"
             },
             "in": "path",
-            "name": "userId",
+            "name": "username",
             "required": true
           }
         ],
@@ -450,12 +449,12 @@
           }
         },
         "security": [],
-        "operationId": "deleteApiUserroles_userId",
+        "operationId": "deleteApiUserroles_username",
         "deprecated": false
       },
       "get": {
-        "summary": "Get userRole",
-        "description": "Get userRole",
+        "summary": "Get user role",
+        "description": "Username should be the user's username in our identity provider",
         "tags": [
           "/api"
         ],
@@ -465,7 +464,7 @@
               "type": "string"
             },
             "in": "path",
-            "name": "userId",
+            "name": "username",
             "required": true
           }
         ],
@@ -475,7 +474,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "userId": "test.testesen",
+                  "username": "test.testesen",
                   "roles": [
                     {
                       "applicationName": "example-application",
@@ -493,7 +492,7 @@
           }
         },
         "security": [],
-        "operationId": "getApiUserroles_userId",
+        "operationId": "getApiUserroles_username",
         "deprecated": false
       },
       "put": {
@@ -508,7 +507,7 @@
               "type": "string"
             },
             "in": "path",
-            "name": "userId",
+            "name": "username",
             "required": true
           }
         ],
@@ -538,7 +537,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "userId": "test.testesen",
+                  "username": "test.testesen",
                   "roles": [
                     {
                       "applicationName": "example-application",
@@ -556,7 +555,7 @@
           }
         },
         "security": [],
-        "operationId": "putApiUserroles_userId",
+        "operationId": "putApiUserroles_username",
         "deprecated": false
       }
     }
@@ -565,7 +564,7 @@
     "schemas": {
       "UserRoleDto": {
         "properties": {
-          "userId": {
+          "username": {
             "example": "test.testesen",
             "type": "string",
             "nullable": false
@@ -587,7 +586,7 @@
           }
         },
         "example": {
-          "userId": "test.testesen",
+          "username": "test.testesen",
           "roles": [
             {
               "applicationName": "example-application",
@@ -600,7 +599,7 @@
         "type": "object",
         "required": [
           "roles",
-          "userId"
+          "username"
         ]
       },
       "Role": {
@@ -681,7 +680,7 @@
             },
             "example": [
               {
-                "userId": "test.testesen",
+                "username": "test.testesen",
                 "roles": [
                   {
                     "applicationName": "example-application",
@@ -699,7 +698,7 @@
         "example": {
           "userRoles": [
             {
-              "userId": "test.testesen",
+              "username": "test.testesen",
               "roles": [
                 {
                   "applicationName": "example-application",

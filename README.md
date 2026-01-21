@@ -1,4 +1,4 @@
-A generic service featuring RBAC (Role Based Access Control). 
+A generic service featuring RBAC (Role Based Access Control).
 
 ## Documentation
 
@@ -10,19 +10,23 @@ More information is found here:
 - [Main confluence page](https://liflig.atlassian.net/wiki/x/AQC3)
 
 # Example architecture
-Can be used in conjunction with e.g. AWS Cognito and a [pretoken generation trigger lambda](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html) to add custom claims to an identity token.
+
+Can be used in conjunction with e.g. AWS Cognito and
+a [pretoken generation trigger lambda](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-token-generation.html)
+to add custom claims to an identity token.
 
 _Note that this repo only contains the User Roles service_
 ![img.png](architecture.png)
 
 # Endpoints
+
 ## CRUD endpoints
 
-| Endpoint                   |                 What                 |
-|----------------------------|:------------------------------------:|
-| PUT /userroles/{userId}    | create or update user roles for user |
-| GET /userroles/{userId}    |       get user roles for user        |
-| DELETE /userroles/{userId} |                                      |
+| Endpoint                     |                 What                 |
+|------------------------------|:------------------------------------:|
+| PUT /userroles/{username}    | create or update user roles for user |
+| GET /userroles/{username}    |       get user roles for user        |
+| DELETE /userroles/{username} |                                      |
 
 **NB!** Currently no support for post, but can be implemented later.
 
@@ -30,7 +34,7 @@ _Note that this repo only contains the User Roles service_
 
 ```
 {
-  "userId": "userId123",
+  "username": "user123",
   "userroles": [
     {
       "applicationName": "application1",
@@ -76,22 +80,22 @@ _Note that this repo only contains the User Roles service_
 
    All of these will skip tests to be quick.
 
-   1. Option 1: In IDE
+1. Option 1: In IDE
 
-      Run the `Main` file.
+   Run the `Main` file.
 
-   1. Option 2: Via Maven
+1. Option 2: Via Maven
 
-      ```bash
-      ./build-and-run.sh
-      ```
+   ```bash
+   ./build-and-run.sh
+   ```
 
-   1. Option 3: Package and run with the actual Docker image
+1. Option 3: Package and run with the actual Docker image
 
-      ```bash
-      # See the script for details.
-      ./build-and-run-docker.sh
-      ```
+   ```bash
+   # See the script for details.
+   ./build-and-run-docker.sh
+   ```
 
 1. Access the service at http://localhost:8080/health
 

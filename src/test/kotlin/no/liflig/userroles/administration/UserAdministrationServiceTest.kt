@@ -60,7 +60,7 @@ class UserAdministrationServiceTest {
             request.verify()
 
             return ListUsersResponse.builder()
-                .users(userRoles.map { createCognitoUser(username = it.userId) })
+                .users(userRoles.map { createCognitoUser(username = it.username) })
                 .build()
           }
         },
@@ -72,7 +72,7 @@ class UserAdministrationServiceTest {
     result.users.shouldHaveSize(userRoles.size).forEachIndexed { index, user ->
       val userRole = userRoles[index]
 
-      user.username.shouldBe(userRole.userId)
+      user.username.shouldBe(userRole.username)
       user.roles.shouldBe(userRole.roles)
     }
   }
@@ -182,7 +182,7 @@ class UserAdministrationServiceTest {
             request.verify()
 
             return ListUsersResponse.builder()
-                .users(userRoles.map { createCognitoUser(it.userId) })
+                .users(userRoles.map { createCognitoUser(it.username) })
                 .build()
           }
         }
@@ -311,7 +311,7 @@ class UserAdministrationServiceTest {
             }
 
             return ListUsersResponse.builder()
-                .users(userRolesSlice.map { createCognitoUser(it.userId) })
+                .users(userRolesSlice.map { createCognitoUser(it.username) })
                 .paginationToken(paginationToken)
                 .build()
           }
@@ -385,7 +385,7 @@ class UserAdministrationServiceTest {
     /** User administration service wraps exception, so we expect cause to be CognitoException. */
     exception.cause.shouldBeInstanceOf<CognitoException>()
 
-    userRoleRepo.getByUserId(user.username).shouldBeNull()
+    userRoleRepo.getByUsername(user.username).shouldBeNull()
   }
 
   @Test
@@ -448,7 +448,7 @@ class UserAdministrationServiceTest {
     /** User administration service wraps exception, so we expect cause to be CognitoException. */
     exception.cause.shouldBeInstanceOf<CognitoException>()
 
-    val currentUserRole = userRoleRepo.getByUserId(username).shouldNotBeNull()
+    val currentUserRole = userRoleRepo.getByUsername(username).shouldNotBeNull()
     currentUserRole.data.roles.shouldBe(existingUserRole.data.roles)
     currentUserRole.data.roles.shouldNotBe(updatedUser.roles)
   }
@@ -460,7 +460,7 @@ private fun List<UserDataWithRoles>.shouldEqualRoles(userRoles: List<UserRole>) 
   this.forEachIndexed { index, user ->
     val userRole = userRoles[index]
 
-    user.username.shouldBe(userRole.userId)
+    user.username.shouldBe(userRole.username)
     user.roles.shouldBe(userRole.roles)
   }
 }

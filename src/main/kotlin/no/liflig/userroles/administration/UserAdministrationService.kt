@@ -34,7 +34,7 @@ class UserAdministrationService(
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
     val userRole =
-        userRoleRepo.getByUserId(username)
+        userRoleRepo.getByUsername(username)
             ?: throw PublicException(
                 ErrorCode.NOT_FOUND,
                 publicMessage = "No roles found for user '${username}'",
@@ -120,7 +120,7 @@ class UserAdministrationService(
       val usernames: List<String> = cognitoResponse.users().map { it.username() }
       val roles =
           try {
-            userRoleRepo.listByUserIds(userIds = cognitoResponse.users().map { it.username() })
+            userRoleRepo.listByUsernames(usernames = cognitoResponse.users().map { it.username() })
           } catch (e: Exception) {
             throw PublicException(
                 ErrorCode.INTERNAL_SERVER_ERROR,
@@ -215,9 +215,12 @@ class UserAdministrationService(
 
     val userRole: Versioned<UserRole> =
         try {
-          userRoleRepo.create(UserRole(userId = request.user.username, roles = request.user.roles))
+          userRoleRepo.create(
+              UserRole(username = request.user.username, roles = request.user.roles)
+          )
         } catch (e: Exception) {
-          val isDuplicateUsername = e.message?.contains("user_role_user_id_idx") == true
+          val isDuplicateUsername =
+              e.message?.contains(UserRoleRepository.USERNAME_UNIQUE_INDEX_NAME) == true
           if (isDuplicateUsername) {
             throw PublicException(
                 ErrorCode.CONFLICT,
@@ -278,7 +281,7 @@ class UserAdministrationService(
     val (cognitoClient, userPoolId) = cognitoClientWrapper.getOrThrow()
 
     val previousUserRole: Versioned<UserRole> =
-        userRoleRepo.getByUserId(request.user.username)
+        userRoleRepo.getByUsername(request.user.username)
             ?: throw PublicException(
                 ErrorCode.NOT_FOUND,
                 publicMessage = "Failed to update user '${request.user.username}'",
@@ -344,7 +347,7 @@ class UserAdministrationService(
     }
 
     userRoleRepo.transactional {
-      val userRole = userRoleRepo.getByUserId(username)
+      val userRole = userRoleRepo.getByUsername(username)
       if (userRole == null) {
         /**
          * We expect the user to have an associated user role. If they don't, we log an error, but
@@ -399,7 +402,7 @@ class UserAdministrationService(
       cognitoUser: UserType,
       userRoles: List<Versioned<UserRole>>,
   ): UserRole? {
-    return userRoles.find { it.data.userId == cognitoUser.username() }?.data
+    return userRoles.find { it.data.username == cognitoUser.username() }?.data
         ?: run {
           log.error {
             field("username", cognitoUser.username())

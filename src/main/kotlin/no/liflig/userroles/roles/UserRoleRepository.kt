@@ -13,10 +13,12 @@ class UserRoleRepository(jdbi: Jdbi) :
     ) {
   companion object {
     const val TABLE_NAME = "userroles"
+    const val USERNAME_UNIQUE_INDEX_NAME = "user_role_username_idx"
   }
 
-  fun getByUserId(userId: String): Versioned<UserRole>? {
-    return getByPredicate("data->>'userId' = :userId") { bind("userId", userId) }.firstOrNull()
+  fun getByUsername(username: String): Versioned<UserRole>? {
+    return getByPredicate("data->>'username' = :username") { bind("username", username) }
+        .firstOrNull()
   }
 
   fun getByOrgIdOrRoleName(
@@ -40,14 +42,14 @@ class UserRoleRepository(jdbi: Jdbi) :
     }
   }
 
-  fun listByUserIds(userIds: List<String>): List<Versioned<UserRole>> {
+  fun listByUsernames(usernames: List<String>): List<Versioned<UserRole>> {
     return getByPredicate(
         """
-        data->>'userId' = ANY(:userIds)
+        data->>'username' = ANY(:usernames)
         """
             .trimIndent(),
     ) {
-      bindArray("userIds", String::class.java, userIds)
+      bindArray("usernames", String::class.java, usernames)
     }
   }
 }

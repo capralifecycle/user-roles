@@ -74,6 +74,7 @@ data class UserFilter(
  *   here to map appropriately. We don't really see a use case at the moment for searching on this
  *   field, so we just drop it here.
  */
+@Suppress("unused")
 enum class UserSearchField(val cognitoAttribute: String) {
   USERNAME("username"),
   /** `sub` is the Open-ID Connect (OIDC) attribute for user ID. */

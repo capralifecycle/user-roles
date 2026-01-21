@@ -1,7 +1,7 @@
 {
   "userRoles": [
     {
-      "userId": "user1231",
+      "username": "user1231",
       "roles": [
         {
           "applicationName": null,
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "userId": "user1233",
+      "username": "user1233",
       "roles": [
         {
           "applicationName": null,
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "userId": "user1234",
+      "username": "user1234",
       "roles": [
         {
           "applicationName": null,
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "userId": "user1235",
+      "username": "user1235",
       "roles": [
         {
           "applicationName": null,
@@ -69,7 +69,7 @@
       ]
     },
     {
-      "userId": "user1236",
+      "username": "user1236",
       "roles": [
         {
           "applicationName": null,

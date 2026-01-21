@@ -3,7 +3,6 @@ package no.liflig.userroles.roles.api
 import kotlinx.serialization.Serializable
 import no.liflig.http4k.setup.createJsonBodyLens
 import no.liflig.userroles.common.http4k.Endpoint
-import no.liflig.userroles.common.http4k.userIdPathLens
 import no.liflig.userroles.roles.Role
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.roles.UserRoleRepository
@@ -15,13 +14,14 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
+import org.http4k.lens.Path
 
 /** Contains the endpoint for updating a user role */
 class UpdateUserRoleEndpoint(
     private val userRoleRepo: UserRoleRepository,
 ) : Endpoint {
   override fun route(): ContractRoute {
-    val path = UserRoleApi.PATH / userIdPathLens
+    val path = UserRoleApi.PATH / Path.of("username")
     val spec =
         path.meta {
           summary = "Update user role"
@@ -32,13 +32,16 @@ class UpdateUserRoleEndpoint(
     return spec.bindContract(Method.PUT) to ::handler
   }
 
-  private fun handler(userId: String) =
+  private fun handler(username: String) =
       fun(request: Request): Response {
         val body = UpdateRoleRequest.bodyLens(request)
 
-        val existingUserRole = userRoleRepo.getByUserId(userId)
+        val existingUserRole = userRoleRepo.getByUsername(username)
+
         if (existingUserRole == null) {
-          val createdUserRole = userRoleRepo.create(UserRole(userId = userId, roles = body.roles))
+          val createdUserRole =
+              userRoleRepo.create(UserRole(username = username, roles = body.roles))
+
           return Response(Status.OK).with(UserRoleDto.bodyLens of createdUserRole.data.toDto())
         } else {
           val updatedUserRole =

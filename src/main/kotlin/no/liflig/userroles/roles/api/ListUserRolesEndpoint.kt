@@ -25,10 +25,8 @@ class ListUserRolesEndpoint(
     val path = UserRoleApi.PATH
     val spec =
         path.meta {
-          summary = "Get user roles"
-          description = "Get user roles"
-          queries += orgIdQuery
-          queries += roleNameQuery
+          summary = "List user roles"
+          queries += listOf(orgIdQuery, roleNameQuery)
           returning(status = Status.OK, body = ListUserRoleDto.bodyLens to ListUserRoleDto.example)
         }
     return spec.bindContract(Method.GET) to ::handler

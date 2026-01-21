@@ -11,7 +11,7 @@ fun createUserRole(
     vararg roles: Role,
 ) =
     UserRole(
-        userId = username,
+        username = username,
         roles = roles.asList(),
     )
 

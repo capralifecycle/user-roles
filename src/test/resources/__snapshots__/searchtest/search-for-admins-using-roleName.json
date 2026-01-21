@@ -1,7 +1,7 @@
 {
   "userRoles": [
     {
-      "userId": "user1231",
+      "username": "user1231",
       "roles": [
         {
           "applicationName": null,
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "userId": "user1232",
+      "username": "user1232",
       "roles": [
         {
           "applicationName": null,
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "userId": "user1239",
+      "username": "user1239",
       "roles": [
         {
           "applicationName": null,

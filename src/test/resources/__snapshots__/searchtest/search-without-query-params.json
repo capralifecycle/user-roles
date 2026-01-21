@@ -1,7 +1,7 @@
 {
   "userRoles": [
     {
-      "userId": "user1231",
+      "username": "user1231",
       "roles": [
         {
           "applicationName": null,
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "userId": "user1232",
+      "username": "user1232",
       "roles": [
         {
           "applicationName": null,
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "userId": "user1233",
+      "username": "user1233",
       "roles": [
         {
           "applicationName": null,
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "userId": "user1234",
+      "username": "user1234",
       "roles": [
         {
           "applicationName": null,
@@ -63,7 +63,7 @@
       ]
     },
     {
-      "userId": "user1235",
+      "username": "user1235",
       "roles": [
         {
           "applicationName": null,
@@ -80,7 +80,7 @@
       ]
     },
     {
-      "userId": "user1236",
+      "username": "user1236",
       "roles": [
         {
           "applicationName": null,
@@ -91,7 +91,7 @@
       ]
     },
     {
-      "userId": "user1237",
+      "username": "user1237",
       "roles": [
         {
           "applicationName": null,
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "userId": "user1238",
+      "username": "user1238",
       "roles": [
         {
           "applicationName": null,
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "userId": "user1239",
+      "username": "user1239",
       "roles": [
         {
           "applicationName": null,

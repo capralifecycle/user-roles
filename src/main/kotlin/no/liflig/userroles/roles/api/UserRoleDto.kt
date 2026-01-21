@@ -8,14 +8,14 @@ import no.liflig.userroles.roles.UserRole
 
 @Serializable
 data class UserRoleDto(
-    val userId: String,
+    val username: String,
     val roles: List<Role>,
 ) {
   companion object {
     val bodyLens = createJsonBodyLens(serializer())
     val example =
         UserRoleDto(
-            userId = "test.testesen",
+            username = "test.testesen",
             roles =
                 listOf(
                     Role(
@@ -29,7 +29,7 @@ data class UserRoleDto(
   }
 }
 
-fun UserRole.toDto() = UserRoleDto(userId = userId, roles = roles)
+fun UserRole.toDto() = UserRoleDto(username = username, roles = roles)
 
 @Serializable
 data class ListUserRoleDto(

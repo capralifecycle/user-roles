@@ -22,11 +22,11 @@ class UserRoleRepositoryTest {
 
   @Test
   fun `Role creation with valid role name succeeds`() {
-    val userId = "testUser"
+    val username = "testUser"
 
     val userRole =
         UserRole(
-            userId = userId,
+            username = username,
             roles =
                 listOf(
                     Role(
@@ -43,17 +43,17 @@ class UserRoleRepositoryTest {
 
     userRoleRepository.create(userRole)
 
-    val userRoleResult = userRoleRepository.getByUserId(userId)
+    val userRoleResult = userRoleRepository.getByUsername(username)
     userRole shouldBe userRoleResult?.data
   }
 
   @Test
-  fun `Creation with duplicate userId fails - unique index works as expected`() {
-    val userId = "testUser"
+  fun `Creation with duplicate username fails - unique index works as expected`() {
+    val username = "testUser"
 
     val userRole =
         UserRole(
-            userId = userId,
+            username = username,
             roles =
                 listOf(
                     Role(
@@ -67,12 +67,12 @@ class UserRoleRepositoryTest {
                     ),
                 ),
         )
-    val userRole2 = UserRole(userId = userId, roles = listOf())
+    val userRole2 = UserRole(username = username, roles = listOf())
 
     userRoleRepository.create(userRole)
 
     val exception = shouldThrow<Exception> { userRoleRepository.create(userRole2) }
-    exception.message shouldContain "user_role_user_id_idx"
+    exception.message shouldContain UserRoleRepository.USERNAME_UNIQUE_INDEX_NAME
   }
 
   @Test
@@ -80,7 +80,7 @@ class UserRoleRepositoryTest {
     val (userRole, version) =
         userRoleRepository.create(
             UserRole(
-                userId = "testUser",
+                username = "testUser",
                 roles =
                     listOf(
                         Role(
@@ -104,11 +104,11 @@ class UserRoleRepositoryTest {
 
   @Test
   fun `ListAll returns all users`() {
-    val userId = "testUser"
+    val username = "testUser"
 
     for (i in 0..2) {
       UserRole(
-              userId = userId + i,
+              username = username + i,
               roles = listOf(),
           )
           .apply { userRoleRepository.create(this) }

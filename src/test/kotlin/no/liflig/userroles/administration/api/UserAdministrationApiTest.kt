@@ -95,7 +95,7 @@ class UserAdministrationApiTest {
         }
     )
 
-    userRoleRepo.create(UserRole(userId = user.username(), roles = listOf(createRole())))
+    userRoleRepo.create(UserRole(username = user.username(), roles = listOf(createRole())))
 
     val response = services.sendGetUserRequest(username = user.username())
     response.status.shouldBe(Status.OK)
@@ -120,7 +120,7 @@ class UserAdministrationApiTest {
         }
     )
 
-    userRoleRepo.create(UserRole(userId = cognitoUser.username(), roles = listOf(createRole())))
+    userRoleRepo.create(UserRole(username = cognitoUser.username(), roles = listOf(createRole())))
 
     val response = services.sendListUsersRequest(limit = 60)
 
@@ -231,7 +231,7 @@ class UserAdministrationApiTest {
 
     cognitoClient.requestCount.shouldBe(1)
 
-    val userRole = userRoleRepo.getByUserId(user.username).shouldNotBeNull()
+    val userRole = userRoleRepo.getByUsername(user.username).shouldNotBeNull()
     userRole.data.roles.shouldBe(user.roles)
 
     verifyJsonSnapshot(
@@ -309,7 +309,7 @@ class UserAdministrationApiTest {
 
     cognitoClient.requestCount.shouldBe(1)
 
-    val updatedUserRole = userRoleRepo.getByUserId(username).shouldNotBeNull()
+    val updatedUserRole = userRoleRepo.getByUsername(username).shouldNotBeNull()
     updatedUserRole.data.roles.shouldBe(updatedUser.roles)
   }
 
@@ -322,7 +322,7 @@ class UserAdministrationApiTest {
           var requestCount = 0
 
           override fun adminDeleteUser(request: AdminDeleteUserRequest): AdminDeleteUserResponse {
-            request.username().shouldNotBeNull().shouldBe(userRole.userId)
+            request.username().shouldNotBeNull().shouldBe(userRole.username)
             request.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
 
             requestCount++
@@ -333,7 +333,7 @@ class UserAdministrationApiTest {
     services.mockCognito(cognitoClient)
     userRoleRepo.create(userRole)
 
-    val response = services.sendDeleteUserRequest(username = userRole.userId)
+    val response = services.sendDeleteUserRequest(username = userRole.username)
     response.status.shouldBe(Status.OK)
     response.body.text.shouldBeEmpty()
 
