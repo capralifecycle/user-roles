@@ -2,7 +2,8 @@ package no.liflig.userroles.testutils
 
 import no.liflig.documentstore.repository.useHandle
 import no.liflig.userroles.App
-import no.liflig.userroles.administration.MockCognitoClientWrapper
+import no.liflig.userroles.administration.MockCognitoClient
+import no.liflig.userroles.administration.identityprovider.cognito.CognitoIdentityProvider
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.roles.UserRoleRepository
 import org.http4k.core.HttpHandler
@@ -55,13 +56,13 @@ class TestServices private constructor() : BeforeEachCallback {
 
   val jdbi = createJdbiForTests()
 
-  val cognitoClientWrapper = MockCognitoClientWrapper()
+  val identityProvider = DelegatingIdentityProvider()
 
   val app =
       App(
           config,
           jdbi = jdbi,
-          cognitoClientWrapper = cognitoClientWrapper,
+          identityProvider = identityProvider,
       )
 
   /**
@@ -77,7 +78,7 @@ class TestServices private constructor() : BeforeEachCallback {
   fun clear() {
     truncateTable(UserRoleRepository.TABLE_NAME)
 
-    cognitoClientWrapper.reset()
+    identityProvider.reset()
   }
 
   override fun beforeEach(context: ExtensionContext) {
@@ -90,7 +91,11 @@ class TestServices private constructor() : BeforeEachCallback {
    * The mock is reset before each test, in [clear].
    */
   fun mockCognito(client: CognitoIdentityProviderClient) {
-    cognitoClientWrapper.cognitoClient = client
+    identityProvider.delegate =
+        CognitoIdentityProvider(
+            cognitoClient = client,
+            userPoolId = MockCognitoClient.USER_POOL_ID,
+        )
   }
 
   fun Request.withApiCredentials(): Request {

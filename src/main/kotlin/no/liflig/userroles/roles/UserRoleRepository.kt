@@ -13,7 +13,10 @@ class UserRoleRepository(jdbi: Jdbi) :
     ) {
   companion object {
     const val TABLE_NAME = "userroles"
-    const val USERNAME_UNIQUE_INDEX_NAME = "user_role_username_idx"
+
+    /** Returns true if the given exception was caused by a unique index violation on username. */
+    fun isDuplicateUsernameException(exception: Exception): Boolean =
+        exception.message?.contains("user_role_username_idx") == true
   }
 
   fun getByUsername(username: String): Versioned<UserRole>? {

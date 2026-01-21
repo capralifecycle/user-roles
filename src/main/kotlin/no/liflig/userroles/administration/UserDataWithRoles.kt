@@ -1,22 +1,15 @@
 package no.liflig.userroles.administration
 
-import java.time.Instant
 import kotlinx.serialization.Serializable
 import no.liflig.logging.field
 import no.liflig.publicexception.ErrorCode
 import no.liflig.publicexception.PublicException
 import no.liflig.userroles.common.serialization.SerializableInstant
 import no.liflig.userroles.roles.Role
-import no.liflig.userroles.roles.UserRole
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreateUserRequest
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
-import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
-import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 
 /**
- * User data from Cognito joined with the user's roles from this service.
+ * User data from an identity provider (e.g. AWS Cognito) joined with the user's roles from this
+ * service.
  *
  * This is the type returned by the List Users endpoint. You can copy this class into your consumer
  * service in order to deserialize responses from User Roles.
@@ -90,17 +83,17 @@ data class UserDataWithRoles(
     /** The date and time the user was created. */
     val createdAt: SerializableInstant,
     /**
-     * Additional attributes that you have configured on your Cognito user pool.
+     * Additional user attributes beyond the standard fields included on this class. These
+     * attributes can be configured in your Cognito user pool.
      *
      * The OpenID Connect spec (OIDC, used by Cognito) defines a set of standard attributes, such as
      * `name`, which may be included here if they are configured for your user pool. You can also
-     * configure custom attributes on your user pool. See
+     * configure custom attributes. See
      * [Cognito docs](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#cognito-user-pools-standard-attributes)
      * for more.
      *
      * The standard attributes `email`, `email_verified`, `phone_number`, `phone_number_verified`
-     * and `sub` are omitted from this object, since we extract them to the top level of this
-     * object.
+     * and `sub` are omitted from this map, since we extract them to the top level of this class.
      *
      * See Cognito docs for possible entries:
      * https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#cognito-user-pools-standard-attributes
@@ -108,97 +101,7 @@ data class UserDataWithRoles(
     val attributes: Map<String, String>,
     /** The user's roles from the User Roles service. */
     val roles: List<Role>,
-) {
-  companion object {
-    fun fromCognitoUserTypeAndUserRole(
-        cognitoUser: UserType,
-        userRole: UserRole,
-    ): UserDataWithRoles =
-        fromCognitoFieldsAndUserRole(
-            username = cognitoUser.username(),
-            cognitoAttributes = cognitoUser.attributes(),
-            userStatus = cognitoUser.userStatusAsString(),
-            enabled = cognitoUser.enabled(),
-            createdAt = cognitoUser.userCreateDate(),
-            userRole = userRole,
-        )
-
-    fun fromCognitoGetResponseAndUserRole(
-        cognitoGetResponse: AdminGetUserResponse,
-        userRole: UserRole,
-    ): UserDataWithRoles =
-        fromCognitoFieldsAndUserRole(
-            username = cognitoGetResponse.username(),
-            cognitoAttributes = cognitoGetResponse.userAttributes(),
-            userStatus = cognitoGetResponse.userStatusAsString(),
-            enabled = cognitoGetResponse.enabled(),
-            createdAt = cognitoGetResponse.userCreateDate(),
-            userRole = userRole,
-        )
-
-    private fun fromCognitoFieldsAndUserRole(
-        username: String,
-        cognitoAttributes: List<AttributeType>,
-        userStatus: String,
-        enabled: Boolean,
-        createdAt: Instant,
-        userRole: UserRole,
-    ): UserDataWithRoles {
-      var userId: String? = null
-
-      var email: String? = null
-      /** If we don't receive an `email_verified` attribute, assume it's verified. */
-      var emailVerified = true
-
-      var phoneNumber: String? = null
-      /** If we don't receive a `phone_number_verified` attribute, assume it's verified. */
-      var phoneNumberVerified = true
-
-      /** Use [LinkedHashMap] in order to maintain the order of attributes from Cognito. */
-      val attributes = LinkedHashMap<String, String>()
-
-      cognitoAttributes.forEach { attribute ->
-        val key = attribute.name()
-        val value = attribute.value()
-        /** Extract certain standard attributes, put rest in [attributes] map. */
-        when (key) {
-          StandardAttribute.SUB.attributeName -> userId = value
-          StandardAttribute.EMAIL.attributeName -> email = value
-          StandardAttribute.EMAIL_VERIFIED.attributeName -> emailVerified = value == "true"
-          StandardAttribute.PHONE_NUMBER.attributeName -> phoneNumber = value
-          StandardAttribute.PHONE_NUMBER_VERIFIED.attributeName ->
-              phoneNumberVerified = value == "true"
-          else -> {
-            attributes[key.removePrefix(COGNITO_CUSTOM_ATTRIBUTE_PREFIX)] = value
-          }
-        }
-      }
-
-      if (userId == null) {
-        /**
-         * According to Cognito, attributes should always include `sub` (user ID):
-         * https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#cognito-user-pools-standard-attributes
-         */
-        throw IllegalStateException(
-            "Cognito user '${username}' did not have attribute 'sub' (user ID) set, which we always expect to be present"
-        )
-      }
-
-      return UserDataWithRoles(
-          username = username,
-          userId = userId,
-          email = email?.let { UserEmail(value = it, verified = emailVerified) },
-          phoneNumber =
-              phoneNumber?.let { UserPhoneNumber(value = it, verified = phoneNumberVerified) },
-          userStatus = userStatus,
-          enabled = enabled,
-          createdAt = createdAt,
-          attributes = attributes,
-          roles = userRole.roles,
-      )
-    }
-  }
-}
+)
 
 @Serializable
 data class UserEmail(
@@ -209,14 +112,7 @@ data class UserEmail(
      * attribute in Cognito.
      */
     val verified: Boolean,
-) {
-  fun toCognitoAttributes(): List<AttributeType> {
-    return listOf(
-        createAttribute(StandardAttribute.EMAIL, this.value),
-        createAttribute(StandardAttribute.EMAIL_VERIFIED, if (this.verified) "true" else "false"),
-    )
-  }
-}
+)
 
 @Serializable
 data class UserPhoneNumber(
@@ -227,17 +123,7 @@ data class UserPhoneNumber(
      * attribute in Cognito.
      */
     val verified: Boolean,
-) {
-  fun toCognitoAttributes(): List<AttributeType> {
-    return listOf(
-        createAttribute(StandardAttribute.PHONE_NUMBER, this.value),
-        createAttribute(
-            StandardAttribute.PHONE_NUMBER_VERIFIED,
-            if (this.verified) "true" else "false",
-        ),
-    )
-  }
-}
+)
 
 /** A subset of the fields from [UserDataWithRoles], used for creating and updating users. */
 @Serializable
@@ -301,86 +187,15 @@ data class CreateUserRequest(
       )
     }
   }
-
-  fun toCognitoRequest(userPoolId: String): AdminCreateUserRequest {
-    val request = AdminCreateUserRequest.builder()
-
-    request.userPoolId(userPoolId)
-    request.username(user.username)
-
-    val attributes = ArrayList<AttributeType>()
-    if (user.email != null) {
-      attributes.addAll(user.email.toCognitoAttributes())
-    }
-    if (user.phoneNumber != null) {
-      attributes.addAll(user.phoneNumber.toCognitoAttributes())
-    }
-    for ((name, value) in user.attributes) {
-      attributes.add(createAttribute(name, value))
-    }
-    request.userAttributes(attributes)
-
-    request.desiredDeliveryMediums(invitationMessages.map { it.toCognito() })
-
-    return request.build()
-  }
 }
 
 enum class InvitationMessageType {
   EMAIL,
-  SMS;
-
-  fun toCognito(): DeliveryMediumType {
-    return when (this) {
-      EMAIL -> DeliveryMediumType.EMAIL
-      SMS -> DeliveryMediumType.SMS
-    }
-  }
+  SMS,
 }
 
 /**
  * We use a wrapper class for this, in case we want to add more things to this request than just
  * [UserUpdateData] in the future.
  */
-@Serializable
-data class UpdateUserRequest(val user: UserUpdateData) {
-  fun toCognitoRequest(userPoolId: String): AdminUpdateUserAttributesRequest {
-    val request = AdminUpdateUserAttributesRequest.builder()
-
-    request.userPoolId(userPoolId)
-    request.username(user.username)
-
-    val attributes = ArrayList<AttributeType>()
-    if (user.email != null && user.email.value.isNotEmpty()) {
-      attributes.addAll(user.email.toCognitoAttributes())
-    } else {
-      /**
-       * In order to remove an attribute from Cognito, we must submit the attribute with a blank
-       * value. If [UserUpdateData.email] is set to `null`, we do this to make sure any old email is
-       * not remaining.
-       */
-      attributes.add(createAttribute(StandardAttribute.EMAIL, value = ""))
-      attributes.add(createAttribute(StandardAttribute.EMAIL_VERIFIED, value = ""))
-    }
-
-    if (user.phoneNumber != null && user.phoneNumber.value.isNotEmpty()) {
-      attributes.addAll(user.phoneNumber.toCognitoAttributes())
-    } else {
-      /**
-       * In order to remove an attribute from Cognito, we must submit the attribute with a blank
-       * value. If [UserUpdateData.phoneNumber] is set to `null`, we do this to make sure any old
-       * email is not remaining.
-       */
-      attributes.add(createAttribute(StandardAttribute.PHONE_NUMBER, value = ""))
-      attributes.add(createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, value = ""))
-    }
-
-    for ((name, value) in user.attributes) {
-      attributes.add(createAttribute(name, value))
-    }
-
-    request.userAttributes(attributes)
-
-    return request.build()
-  }
-}
+@Serializable data class UpdateUserRequest(val user: UserUpdateData)

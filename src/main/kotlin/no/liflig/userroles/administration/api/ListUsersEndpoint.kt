@@ -47,10 +47,10 @@ class ListUsersEndpoint(
 
   private fun handler(request: Request): Response {
     val limit = getLimitFromRequest(request)
-    val filter = getUserFilterFromRequest(request)
     val cursor = getCursorFromRequest(request, limit = limit)
+    val filter = getUserFilterFromRequest(request)
 
-    val result = userAdministrationService.listUsers(limit, filter, cursor)
+    val result = userAdministrationService.listUsers(limit, cursor, filter)
 
     val responseBody =
         ListUsersResponse(
@@ -84,6 +84,10 @@ class ListUsersEndpoint(
       return limit
     }
 
+    fun getCursorFromRequest(request: Request, limit: Int): UserCursor? {
+      return cursorQuery(request)?.let { UserCursor.fromString(cursor = it, limit = limit) }
+    }
+
     fun getUserFilterFromRequest(request: Request): UserFilter {
       return UserFilter(
           searchString = searchStringQuery(request),
@@ -92,10 +96,6 @@ class ListUsersEndpoint(
           applicationName = applicationNameQuery(request),
           roleName = roleNameQuery(request),
       )
-    }
-
-    fun getCursorFromRequest(request: Request, limit: Int): UserCursor? {
-      return cursorQuery(request)?.let { UserCursor.fromString(it, limit = limit) }
     }
   }
 }
@@ -112,7 +112,7 @@ data class ListUsersResponse(
         ListUsersResponse(
             nextCursor =
                 UserCursor(
-                        cognitoPaginationToken = "example-pagination-token",
+                        cursorFromIdentityProvider = "example-pagination-token",
                         pageOffset = 0,
                     )
                     .toString(),

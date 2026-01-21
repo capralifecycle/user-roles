@@ -1,5 +1,8 @@
-package no.liflig.userroles.administration
+package no.liflig.userroles.administration.identityprovider.cognito
 
+import no.liflig.userroles.administration.UserEmail
+import no.liflig.userroles.administration.UserPhoneNumber
+import no.liflig.userroles.administration.UserSearchField
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 
 /**
@@ -13,7 +16,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeTy
  * All custom (non-standard) attributes must be prefixed by `custom:` in Cognito. We enforce this in
  * [createAttribute].
  */
-enum class StandardAttribute(val attributeName: String) {
+enum class CognitoAttribute(val attributeName: String) {
   /**
    * From OIDC: "End-User's full name in displayable form including all name parts, possibly
    * including titles and suffixes, ordered according to the End-User's locale and preferences."
@@ -133,7 +136,7 @@ enum class StandardAttribute(val attributeName: String) {
    */
   PHONE_NUMBER_VERIFIED("phone_number_verified"),
   /**
-   * See [UserDataWithRoles.userId].
+   * See [no.liflig.userroles.administration.UserDataWithRoles.userId].
    *
    * From Cognito: "Index and search your users based on the sub attribute. The sub attribute is a
    * unique user identifier within each user pool. Users can change attributes like phone_number and
@@ -144,18 +147,18 @@ enum class StandardAttribute(val attributeName: String) {
   SUB("sub"),
 }
 
-fun createAttribute(attribute: StandardAttribute, value: String): AttributeType {
+fun createAttribute(attribute: CognitoAttribute, value: String): AttributeType {
   return AttributeType.builder().name(attribute.attributeName).value(value).build()
 }
 
 /**
  * Creates a Cognito attribute with the given name and value.
  *
- * If the name is a [StandardAttribute], then it uses the name as-is. Otherwise, it adds the
+ * If the name is a [CognitoAttribute], then it uses the name as-is. Otherwise, it adds the
  * [COGNITO_CUSTOM_ATTRIBUTE_PREFIX].
  */
 fun createAttribute(name: String, value: String): AttributeType {
-  val standardAttribute = StandardAttribute.entries.find { it.attributeName == name }
+  val standardAttribute = CognitoAttribute.entries.find { it.attributeName == name }
   if (standardAttribute != null) {
     return createAttribute(attribute = standardAttribute, value)
   }
@@ -177,3 +180,39 @@ fun createAttribute(name: String, value: String): AttributeType {
  * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html).
  */
 const val COGNITO_CUSTOM_ATTRIBUTE_PREFIX = "custom:"
+
+fun UserEmail.toCognitoAttributes(): List<AttributeType> {
+  return listOf(
+      createAttribute(CognitoAttribute.EMAIL, this.value),
+      createAttribute(CognitoAttribute.EMAIL_VERIFIED, if (this.verified) "true" else "false"),
+  )
+}
+
+fun UserPhoneNumber.toCognitoAttributes(): List<AttributeType> {
+  return listOf(
+      createAttribute(CognitoAttribute.PHONE_NUMBER, this.value),
+      createAttribute(
+          CognitoAttribute.PHONE_NUMBER_VERIFIED,
+          if (this.verified) "true" else "false",
+      ),
+  )
+}
+
+/**
+ * See
+ * [Cognito docs](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUsers.html#API_ListUsers_RequestParameters).
+ */
+fun UserSearchField.toCognitoAttribute(): String {
+  return when (this) {
+    UserSearchField.USERNAME -> "username"
+    /** `sub` is the Open-ID Connect (OIDC) attribute for user ID. */
+    UserSearchField.USER_ID -> "sub"
+    UserSearchField.EMAIL -> "email"
+    UserSearchField.PHONE_NUMBER -> "phone_number"
+    UserSearchField.NAME -> "name"
+    UserSearchField.GIVEN_NAME -> "given_name"
+    UserSearchField.FAMILY_NAME -> "family_name"
+    UserSearchField.PREFERRED_USERNAME -> "preferred_username"
+    UserSearchField.USER_STATUS -> "cognito:user_status"
+  }
+}

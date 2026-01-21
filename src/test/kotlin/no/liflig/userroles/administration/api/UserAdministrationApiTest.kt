@@ -8,18 +8,19 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldBeEmpty
 import java.time.Instant
 import no.liflig.snapshot.verifyJsonSnapshot
-import no.liflig.userroles.administration.COGNITO_CUSTOM_ATTRIBUTE_PREFIX
 import no.liflig.userroles.administration.CreateUserRequest
 import no.liflig.userroles.administration.InvitationMessageType
 import no.liflig.userroles.administration.MockCognitoClient
-import no.liflig.userroles.administration.StandardAttribute
 import no.liflig.userroles.administration.UpdateUserRequest
 import no.liflig.userroles.administration.UserAdministrationService
 import no.liflig.userroles.administration.UserCursor
 import no.liflig.userroles.administration.UserFilter
 import no.liflig.userroles.administration.UserSearchField
-import no.liflig.userroles.administration.createAttribute
 import no.liflig.userroles.administration.createCognitoUser
+import no.liflig.userroles.administration.identityprovider.cognito.COGNITO_CUSTOM_ATTRIBUTE_PREFIX
+import no.liflig.userroles.administration.identityprovider.cognito.CognitoAttribute
+import no.liflig.userroles.administration.identityprovider.cognito.CognitoIdentityProvider
+import no.liflig.userroles.administration.identityprovider.cognito.createAttribute
 import no.liflig.userroles.common.serialization.json
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.testutils.DEFAULT_TEST_USERNAME
@@ -65,10 +66,10 @@ class UserAdministrationApiTest {
             username = "test.testesen",
             attributes =
                 listOf(
-                    createAttribute(StandardAttribute.EMAIL, "test@example.org"),
-                    createAttribute(StandardAttribute.EMAIL_VERIFIED, "true"),
-                    createAttribute(StandardAttribute.PHONE_NUMBER, "12345678"),
-                    createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, "false"),
+                    createAttribute(CognitoAttribute.EMAIL, "test@example.org"),
+                    createAttribute(CognitoAttribute.EMAIL_VERIFIED, "true"),
+                    createAttribute(CognitoAttribute.PHONE_NUMBER, "12345678"),
+                    createAttribute(CognitoAttribute.PHONE_NUMBER_VERIFIED, "false"),
                     /** "name" is a standard attribute, so no "custom:" prefix. */
                     AttributeType.builder().name("name").value("Test Testesen").build(),
                     /** Custom attributes have "custom:" prefix. */
@@ -157,7 +158,7 @@ class UserAdministrationApiTest {
 
     ListUsersEndpoint.getCursorFromRequest(request, limit = 20)
         .shouldBe(
-            UserCursor(cognitoPaginationToken = "test-pagination-token", pageOffset = 10),
+            UserCursor(cursorFromIdentityProvider = "test-pagination-token", pageOffset = 10),
         )
   }
 
@@ -186,14 +187,14 @@ class UserAdministrationApiTest {
               it.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
               it.userAttributes()
                   .shouldContainExactlyInAnyOrder(
-                      createAttribute(StandardAttribute.EMAIL, user.email!!.value),
+                      createAttribute(CognitoAttribute.EMAIL, user.email!!.value),
                       createAttribute(
-                          StandardAttribute.EMAIL_VERIFIED,
+                          CognitoAttribute.EMAIL_VERIFIED,
                           user.email.verified.toString(),
                       ),
-                      createAttribute(StandardAttribute.PHONE_NUMBER, user.phoneNumber!!.value),
+                      createAttribute(CognitoAttribute.PHONE_NUMBER, user.phoneNumber!!.value),
                       createAttribute(
-                          StandardAttribute.PHONE_NUMBER_VERIFIED,
+                          CognitoAttribute.PHONE_NUMBER_VERIFIED,
                           user.phoneNumber.verified.toString(),
                       ),
                       /** "name" is a standard attribute, so no "custom:" prefix. */
@@ -254,7 +255,7 @@ class UserAdministrationApiTest {
         TEST_USER.copy(
             /**
              * Set `phoneNumber = null`, to test that we map it to blank values in our request to
-             * Cognito (see [UpdateUserRequest.toCognitoRequest]).
+             * Cognito (see [CognitoIdentityProvider.mapUpdateUserRequest]).
              */
             phoneNumber = null,
             /** Promote to admin in app1, add member role in app2. */
@@ -278,13 +279,13 @@ class UserAdministrationApiTest {
               it.userPoolId().shouldBe(MockCognitoClient.USER_POOL_ID)
               it.userAttributes()
                   .shouldContainExactlyInAnyOrder(
-                      createAttribute(StandardAttribute.EMAIL, updatedUser.email!!.value),
+                      createAttribute(CognitoAttribute.EMAIL, updatedUser.email!!.value),
                       createAttribute(
-                          StandardAttribute.EMAIL_VERIFIED,
+                          CognitoAttribute.EMAIL_VERIFIED,
                           updatedUser.email.verified.toString(),
                       ),
-                      createAttribute(StandardAttribute.PHONE_NUMBER, value = ""),
-                      createAttribute(StandardAttribute.PHONE_NUMBER_VERIFIED, value = ""),
+                      createAttribute(CognitoAttribute.PHONE_NUMBER, value = ""),
+                      createAttribute(CognitoAttribute.PHONE_NUMBER_VERIFIED, value = ""),
                       /** "name" is a standard attribute, so no "custom:" prefix. */
                       AttributeType.builder().name("name").value("Test Testesen").build(),
                       /** Custom attributes have "custom:" prefix. */

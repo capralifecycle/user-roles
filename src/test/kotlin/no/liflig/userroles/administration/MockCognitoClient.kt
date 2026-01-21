@@ -2,23 +2,13 @@ package no.liflig.userroles.administration
 
 import io.kotest.matchers.shouldBe
 import java.time.Instant
+import no.liflig.userroles.administration.identityprovider.cognito.createAttribute
 import no.liflig.userroles.testutils.DEFAULT_TEST_USERNAME
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserStatusType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
-
-class MockCognitoClientWrapper : CognitoClientWrapper {
-  var cognitoClient: CognitoIdentityProviderClient? = null
-
-  override fun getOrThrow() =
-      CognitoClientAndUserPoolId(cognitoClient!!, MockCognitoClient.USER_POOL_ID)
-
-  fun reset() {
-    cognitoClient = null
-  }
-}
 
 /** Base interface for mocking Cognito. */
 interface MockCognitoClient : CognitoIdentityProviderClient {

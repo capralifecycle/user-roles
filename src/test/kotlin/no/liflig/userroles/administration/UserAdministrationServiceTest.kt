@@ -37,10 +37,10 @@ class UserAdministrationServiceTest {
   /** Utility function with defaults for tests. */
   private fun listUsers(
       limit: Int = DEFAULT_LIMIT,
-      filter: UserFilter = createUserFilter(),
       cursor: UserCursor? = null,
+      filter: UserFilter = createUserFilter(),
   ): UserList {
-    return userAdministrationService.listUsers(limit, filter, cursor)
+    return userAdministrationService.listUsers(limit, cursor, filter)
   }
 
   @Test

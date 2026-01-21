@@ -1,9 +1,9 @@
 package no.liflig.userroles.roles
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import kotlinx.serialization.json.JsonPrimitive
 import no.liflig.userroles.testutils.createJdbiForTests
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -72,7 +72,7 @@ class UserRoleRepositoryTest {
     userRoleRepository.create(userRole)
 
     val exception = shouldThrow<Exception> { userRoleRepository.create(userRole2) }
-    exception.message shouldContain UserRoleRepository.USERNAME_UNIQUE_INDEX_NAME
+    UserRoleRepository.isDuplicateUsernameException(exception).shouldBeTrue()
   }
 
   @Test

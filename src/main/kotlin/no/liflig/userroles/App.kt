@@ -1,9 +1,10 @@
+@file:Suppress("CanBeParameter")
+
 package no.liflig.userroles
 
 import no.liflig.logging.getLogger
-import no.liflig.userroles.administration.CognitoClientWrapper
-import no.liflig.userroles.administration.CognitoClientWrapperImpl
 import no.liflig.userroles.administration.UserAdministrationService
+import no.liflig.userroles.administration.identityprovider.IdentityProvider
 import no.liflig.userroles.api.ApiServer
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.common.database.DatabaseConfigurator
@@ -16,18 +17,12 @@ private val log = getLogger()
 class App(
     private val config: Config,
     val jdbi: Jdbi = createJdbiInstance(config),
-    val cognitoClientWrapper: CognitoClientWrapper =
-        CognitoClientWrapperImpl(
-            userPoolId = config.cognitoUserPoolId,
-        ),
+    val identityProvider: IdentityProvider =
+        IdentityProvider.fromConfig(cognitoUserPoolId = config.cognitoUserPoolId),
 ) {
   val userRoleRepo = UserRoleRepository(jdbi)
 
-  val userAdministrationService =
-      UserAdministrationService(
-          userRoleRepo = userRoleRepo,
-          cognitoClientWrapper = cognitoClientWrapper,
-      )
+  val userAdministrationService = UserAdministrationService(identityProvider, userRoleRepo)
 
   /** Must be initialized after all other dependencies. */
   val apiServer = ApiServer(config, this)
