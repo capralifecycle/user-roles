@@ -4,6 +4,7 @@ import no.liflig.documentstore.repository.useHandle
 import no.liflig.userroles.App
 import no.liflig.userroles.administration.MockCognitoClient
 import no.liflig.userroles.administration.identityprovider.cognito.CognitoIdentityProvider
+import no.liflig.userroles.api.ApiServer
 import no.liflig.userroles.common.config.Config
 import no.liflig.userroles.roles.UserRoleRepository
 import org.http4k.core.HttpHandler
@@ -65,15 +66,8 @@ class TestServices private constructor() : BeforeEachCallback {
           identityProvider = identityProvider,
       )
 
-  /**
-   * We expose the http4k `RoutingHttpHandler` from our `ApiServer` here, so that we can make
-   * requests to our API without going through an actual HTTP request. This speeds up our tests.
-   *
-   * Our `HealthEndpointTest` tests with a real HTTP request, so that we have at least 1 test that
-   * checks that our HTTP server setup works.
-   */
-  val apiClient: HttpHandler
-    get() = app.apiServer
+  /** See [ApiServer.router]. */
+  val apiClient: HttpHandler = app.apiServer.router
 
   fun clear() {
     truncateTable(UserRoleRepository.TABLE_NAME)

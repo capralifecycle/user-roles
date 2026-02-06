@@ -26,14 +26,11 @@ import org.http4k.contract.openapi.v3.OpenApi3
 import org.http4k.contract.ui.swaggerUiLite
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method
-import org.http4k.core.Request
-import org.http4k.core.Response
 import org.http4k.core.Uri
 import org.http4k.core.then
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
-import org.http4k.server.ConnectorBuilder
 import org.http4k.server.Http4kServer
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
@@ -41,17 +38,17 @@ import org.http4k.server.http
 
 private val log = getLogger()
 
-/**
- * Responsible for setting up the http4k server for the service's APIs.
- *
- * Implements [HttpHandler], so you can call the API directly in tests without going through a real
- * HTTP request.
- */
+/** Responsible for setting up the http4k server for the service's APIs. */
 class ApiServer(
     private val config: Config,
     app: App,
-) : HttpHandler {
-  private val router: RoutingHttpHandler
+) {
+  /**
+   * We expose the http4k router, which we can invoke as a [HttpHandler] to call the API directly in
+   * tests, avoiding the cost of a real HTTP request (we still test our HTTP server setup in our
+   * health endpoint test).
+   */
+  val router: RoutingHttpHandler
 
   init {
     /**
@@ -67,14 +64,14 @@ class ApiServer(
     val (coreFilters, errorResponseRenderer) = baseApiSetup(config.api)
 
     val contractApi = contract {
-      renderer = openApiRenderer(config.api, errorResponseRenderer)
-      descriptionPath = "/docs/openapi-schema.json"
-
       for (api in apis) {
         for (endpoint in api.endpoints) {
           routes += endpoint.route()
         }
       }
+
+      renderer = openApiRenderer(config.api, errorResponseRenderer)
+      descriptionPath = "/docs/openapi-schema.json"
 
       // PreFlightExtraction uses our endpoint contract metadata to validate the request, including
       // the body, _before_ hitting our handler. However, we sometimes want to return customized
@@ -97,21 +94,10 @@ class ApiServer(
   }
 
   fun start(): Http4kServer {
-    val server = router.asServer(Jetty(config.api.serverPort, jettyConfig()))
+    val server = router.asServer(configureJettyServer(config.api))
     server.start()
     log.info { "Server started on port ${config.api.serverPort}" }
     return server
-  }
-
-  override fun invoke(request: Request): Response = router(request)
-
-  private fun jettyConfig(): ConnectorBuilder = { server ->
-    http(config.api.serverPort)(server).apply {
-      connectionFactories.filterIsInstance<HttpConnectionFactory>().forEach {
-        /** Avoids leaking Jetty version in http response header "Server". */
-        it.httpConfiguration.sendServerVersion = false
-      }
-    }
   }
 }
 
@@ -149,5 +135,19 @@ private fun openApiRenderer(
               )
               .cached(),
       errorResponseRenderer = errorResponseRenderer,
+  )
+}
+
+private fun configureJettyServer(config: ApiConfig): Jetty {
+  return Jetty(
+      port = config.serverPort,
+      { server ->
+        http(config.serverPort)(server).apply {
+          connectionFactories.filterIsInstance<HttpConnectionFactory>().forEach {
+            /** Avoids leaking Jetty version in http response header "Server". */
+            it.httpConfiguration.sendServerVersion = false
+          }
+        }
+      },
   )
 }
