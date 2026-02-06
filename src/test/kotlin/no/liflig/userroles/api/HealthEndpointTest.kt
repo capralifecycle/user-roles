@@ -14,13 +14,13 @@ class HealthEndpointTest {
 
   /**
    * We set up our own HTTP client here instead of using [TestServices.apiClient], since we want to
-   * test with a real HTTP request here to ensure that our HTTP server setup works as expected.
+   * test our HTTP server setup with a real HTTP request.
    */
   private val httpClient = JavaHttpClient()
 
   @Test
   fun `health should respond 200 OK`() {
     val response = httpClient(Request(Method.GET, "${services.baseUrl}/health"))
-    response.status shouldBe Status.OK
+    response.status.shouldBe(Status.OK)
   }
 }

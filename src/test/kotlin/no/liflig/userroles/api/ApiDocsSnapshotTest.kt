@@ -16,7 +16,7 @@ class ApiDocsSnapshotTest {
   @Test
   fun `exposes expected open-api-schema in JSON format`() {
     val response = services.sendOpenApiSchemaRequest()
-    response.status shouldBe Status.OK
+    response.status.shouldBe(Status.OK)
     verifyJsonSnapshot("openapi-schema.json", response.bodyString())
   }
 }
