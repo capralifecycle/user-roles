@@ -1,7 +1,7 @@
 {
   "extends": [
-    "github>capraconsulting/renovate-config:grouped-patch-friday",
-    "github>capraconsulting/renovate-config:with-credentials"
+    "github>capralifecycle/renovate-config:grouped-patch-friday",
+    "github>capralifecycle/renovate-config:with-credentials"
   ],
   "packageRules": [
     {
