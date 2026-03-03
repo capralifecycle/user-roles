@@ -63,7 +63,7 @@
     <jackson.annotations.version>2.21</jackson.annotations.version>
 
     <!-- Logging -->
-    <logback-classic.version>1.5.27</logback-classic.version>
+    <logback-classic.version>1.5.29</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.17</slf4j.version>
     <opentelemetry.version>1.58.0</opentelemetry.version>
@@ -512,14 +512,12 @@
                 </filter>
               </filters>
               <transformers>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
                     <Main-Class>no.liflig.userroles.MainKt</Main-Class>
                   </manifestEntries>
                 </transformer>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
               </transformers>
             </configuration>
           </execution>
