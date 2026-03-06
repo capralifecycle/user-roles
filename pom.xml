@@ -50,7 +50,7 @@
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
     <flyway.version>12.0.0</flyway.version>
-    <postgresql.version>42.7.9</postgresql.version>
+    <postgresql.version>42.7.10</postgresql.version>
     <jdbi.version>3.51.0</jdbi.version>
 
     <!-- AWS -->
@@ -512,14 +512,12 @@
                 </filter>
               </filters>
               <transformers>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
                     <Main-Class>no.liflig.userroles.MainKt</Main-Class>
                   </manifestEntries>
                 </transformer>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
               </transformers>
             </configuration>
           </execution>
