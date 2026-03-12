@@ -74,7 +74,7 @@
     <!-- Transitive dependencies -->
     <commons-codec.version>1.21.0</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <annotations.version>26.0.2-1</annotations.version>
+    <annotations.version>26.1.0</annotations.version>
     <diffutils.version>4.16</diffutils.version>
 
     <!-- Testing -->
@@ -512,14 +512,12 @@
                 </filter>
               </filters>
               <transformers>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
                     <Main-Class>no.liflig.userroles.MainKt</Main-Class>
                   </manifestEntries>
                 </transformer>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
               </transformers>
             </configuration>
           </execution>
