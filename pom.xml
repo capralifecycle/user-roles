@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20260321.225605</version>
+    <version>3.20260322.021646</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -36,25 +36,25 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>3.20260318.125910</liflig-properties.version>
+    <liflig-properties.version>3.20260326.103925</liflig-properties.version>
     <liflig-http4k-setup.version>6.20260312.100039</liflig-http4k-setup.version>
     <liflig-public-exception.version>2.20260312.094454</liflig-public-exception.version>
-    <liflig-document-store.version>3.20260316.115623</liflig-document-store.version>
+    <liflig-document-store.version>3.20260327.135704</liflig-document-store.version>
     <liflig-logging.version>3.20260312.075908</liflig-logging.version>
     <liflig-snapshot-test.version>1.20260301.100531</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.37.0.0</http4k.version>
+    <http4k.version>6.38.0.0</http4k.version>
     <jetty.version>12.1.7</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>12.1.1</flyway.version>
+    <flyway.version>12.2.0</flyway.version>
     <postgresql.version>42.7.10</postgresql.version>
-    <jdbi.version>3.51.0</jdbi.version>
+    <jdbi.version>3.52.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.42.19</awssdk.version>
+    <awssdk.version>2.42.22</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.10.0</kotlinx-serialization.version>
@@ -69,7 +69,7 @@
     <opentelemetry.version>1.60.1</opentelemetry.version>
 
     <!-- Other -->
-    <arrow.version>2.2.2</arrow.version>
+    <arrow.version>2.2.2.1</arrow.version>
 
     <!-- Transitive dependencies -->
     <commons-codec.version>1.21.0</commons-codec.version>
@@ -78,7 +78,7 @@
     <diffutils.version>4.16</diffutils.version>
 
     <!-- Testing -->
-    <kotest.version>6.1.8</kotest.version>
+    <kotest.version>6.1.9</kotest.version>
     <junit.version>6.0.3</junit.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
