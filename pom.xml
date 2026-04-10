@@ -44,7 +44,7 @@
     <liflig-snapshot-test.version>1.20260401.024606</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.39.0.0</http4k.version>
+    <http4k.version>6.40.1.0</http4k.version>
     <jetty.version>12.1.8</jetty.version>
 
     <!-- Database -->
@@ -54,7 +54,7 @@
     <jdbi.version>3.52.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.42.25</awssdk.version>
+    <awssdk.version>2.42.29</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.10.0</kotlinx-serialization.version>
@@ -78,7 +78,7 @@
     <diffutils.version>4.16</diffutils.version>
 
     <!-- Testing -->
-    <kotest.version>6.1.10</kotest.version>
+    <kotest.version>6.1.11</kotest.version>
     <junit.version>6.0.3</junit.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
