@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20260401.023949</version>
+    <version>3.20260417.040049</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -36,29 +36,29 @@
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>3.20260401.024451</liflig-properties.version>
+    <liflig-properties.version>3.20260409.132826</liflig-properties.version>
     <liflig-http4k-setup.version>6.20260401.023855</liflig-http4k-setup.version>
     <liflig-public-exception.version>2.20260312.094454</liflig-public-exception.version>
-    <liflig-document-store.version>3.20260401.024000</liflig-document-store.version>
+    <liflig-document-store.version>3.20260410.133959</liflig-document-store.version>
     <liflig-logging.version>3.20260401.024449</liflig-logging.version>
     <liflig-snapshot-test.version>1.20260401.024606</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.40.1.0</http4k.version>
+    <http4k.version>6.43.0.0</http4k.version>
     <jetty.version>12.1.8</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>12.3.0</flyway.version>
+    <flyway.version>12.4.0</flyway.version>
     <postgresql.version>42.7.10</postgresql.version>
-    <jdbi.version>3.52.0</jdbi.version>
+    <jdbi.version>3.52.1</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.42.29</awssdk.version>
+    <awssdk.version>2.42.37</awssdk.version>
 
     <!-- Serialization -->
-    <kotlinx-serialization.version>1.10.0</kotlinx-serialization.version>
-    <jackson3.version>3.1.1</jackson3.version>
+    <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
+    <jackson3.version>3.1.2</jackson3.version>
     <jackson2.version>2.21.2</jackson2.version>
     <jackson.annotations.version>2.21</jackson.annotations.version>
 
@@ -66,7 +66,7 @@
     <logback-classic.version>1.5.32</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.17</slf4j.version>
-    <opentelemetry.version>1.60.1</opentelemetry.version>
+    <opentelemetry.version>1.61.0</opentelemetry.version>
 
     <!-- Other -->
     <arrow.version>2.2.2.1</arrow.version>
@@ -82,10 +82,10 @@
     <junit.version>6.0.3</junit.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
-    <testcontainers.version>2.0.4</testcontainers.version>
+    <testcontainers.version>2.0.5</testcontainers.version>
 
     <!-- Sonarcloud -->
-    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
     <sonar.projectName>user-roles</sonar.projectName>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>capralifecycle</sonar.organization>
