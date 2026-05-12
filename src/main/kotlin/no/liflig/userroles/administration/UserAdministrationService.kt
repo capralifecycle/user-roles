@@ -9,6 +9,7 @@ import no.liflig.userroles.administration.identityprovider.IdentityProvider
 import no.liflig.userroles.administration.identityprovider.UserDataWithoutRoles
 import no.liflig.userroles.roles.UserRole
 import no.liflig.userroles.roles.UserRoleRepository
+import software.amazon.awssdk.services.cognitoidentityprovider.model.CognitoIdentityProviderException
 
 private val log = getLogger()
 
@@ -81,6 +82,14 @@ class UserAdministrationService(
                 cursor = cursorFromIdentityProvider,
                 searchString = filter.searchString,
                 searchField = filter.searchField,
+            )
+            /** We want to preserve Cognito's response status in the case of a failed request. */
+          } catch (e: CognitoIdentityProviderException) {
+            throw PublicException(
+                ErrorCode.fromHttpStatusCode(e.statusCode()) ?: ErrorCode.INTERNAL_SERVER_ERROR,
+                publicMessage =
+                    "Failed to fetch users from our identity provider (${identityProvider.name})",
+                cause = e,
             )
           } catch (e: Exception) {
             throw PublicException(
