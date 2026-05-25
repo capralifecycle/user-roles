@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20260425.153213</version>
+    <version>3.20260519.091816</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -44,17 +44,17 @@
     <liflig-snapshot-test.version>1.20260401.024606</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.46.0.0</http4k.version>
+    <http4k.version>6.47.2.0</http4k.version>
     <jetty.version>12.1.9</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>12.5.0</flyway.version>
+    <flyway.version>12.6.2</flyway.version>
     <postgresql.version>42.7.11</postgresql.version>
     <jdbi.version>3.53.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.44.4</awssdk.version>
+    <awssdk.version>2.44.11</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
@@ -65,8 +65,8 @@
     <!-- Logging -->
     <logback-classic.version>1.5.32</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
-    <slf4j.version>2.0.17</slf4j.version>
-    <opentelemetry.version>1.61.0</opentelemetry.version>
+    <slf4j.version>2.0.18</slf4j.version>
+    <opentelemetry.version>1.62.0</opentelemetry.version>
 
     <!-- Other -->
     <arrow.version>2.2.2.1</arrow.version>
@@ -75,11 +75,11 @@
     <commons-codec.version>1.22.0</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
     <annotations.version>26.1.0</annotations.version>
-    <diffutils.version>4.16</diffutils.version>
+    <diffutils.version>4.17</diffutils.version>
 
     <!-- Testing -->
     <kotest.version>6.1.11</kotest.version>
-    <junit.version>6.0.3</junit.version>
+    <junit.version>6.1.0</junit.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
     <testcontainers.version>2.0.5</testcontainers.version>
@@ -419,7 +419,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.2</version>
+        <version>3.6.3</version>
         <executions>
           <execution>
             <id>enforce</id>
