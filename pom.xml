@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20260519.091816</version>
+    <version>3.20260529.031600</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -44,26 +44,26 @@
     <liflig-snapshot-test.version>1.20260401.024606</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.47.2.0</http4k.version>
+    <http4k.version>6.48.0.0</http4k.version>
     <jetty.version>12.1.9</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>12.6.2</flyway.version>
+    <flyway.version>12.7.0</flyway.version>
     <postgresql.version>42.7.11</postgresql.version>
     <jdbi.version>3.53.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.44.11</awssdk.version>
+    <awssdk.version>2.45.0</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
     <jackson3.version>3.1.3</jackson3.version>
-    <jackson2.version>2.21.3</jackson2.version>
+    <jackson2.version>2.21.4</jackson2.version>
     <jackson.annotations.version>2.21</jackson.annotations.version>
 
     <!-- Logging -->
-    <logback-classic.version>1.5.32</logback-classic.version>
+    <logback-classic.version>1.5.33</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.18</slf4j.version>
     <opentelemetry.version>1.62.0</opentelemetry.version>
@@ -81,11 +81,11 @@
     <kotest.version>6.1.11</kotest.version>
     <junit.version>6.1.0</junit.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <testcontainers.version>2.0.5</testcontainers.version>
 
     <!-- Sonarcloud -->
-    <sonar-maven-plugin.version>5.6.0.6792</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
     <sonar.projectName>user-roles</sonar.projectName>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>capralifecycle</sonar.organization>
