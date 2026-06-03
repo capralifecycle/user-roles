@@ -46,7 +46,7 @@ jobs:
       - name: build and test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SHARED_SONAR_TOKEN_PUBLIC }}
           GIT_COMMIT_ID: ${{ env.GITHUB_SHA }}
           BRANCH_NAME: ${{ env.GITHUB_REF_NAME }}
         run: |
