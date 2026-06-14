@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20260529.031600</version>
+    <version>3.20260609.122901</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -29,47 +29,47 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <kotlin.version>2.3.21</kotlin.version>
+    <kotlin.version>2.4.0</kotlin.version>
     <java.version>21</java.version>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
     <kotlin.compiler.languageVersion>2.2</kotlin.compiler.languageVersion>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
     <!-- Liflig -->
-    <liflig-properties.version>3.20260421.091920</liflig-properties.version>
-    <liflig-http4k-setup.version>6.20260401.023855</liflig-http4k-setup.version>
-    <liflig-public-exception.version>2.20260502.165340</liflig-public-exception.version>
-    <liflig-document-store.version>3.20260410.133959</liflig-document-store.version>
-    <liflig-logging.version>3.20260401.024449</liflig-logging.version>
-    <liflig-snapshot-test.version>1.20260401.024606</liflig-snapshot-test.version>
+    <liflig-properties.version>3.20260601.052330</liflig-properties.version>
+    <liflig-http4k-setup.version>6.20260611.133133</liflig-http4k-setup.version>
+    <liflig-public-exception.version>2.20260603.091849</liflig-public-exception.version>
+    <liflig-document-store.version>3.20260601.095507</liflig-document-store.version>
+    <liflig-logging.version>3.20260603.090535</liflig-logging.version>
+    <liflig-snapshot-test.version>1.20260609.215428</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.48.0.0</http4k.version>
-    <jetty.version>12.1.9</jetty.version>
+    <http4k.version>6.53.0.0</http4k.version>
+    <jetty.version>12.1.10</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.0.2</hikariCP.version>
-    <flyway.version>12.7.0</flyway.version>
+    <flyway.version>12.8.1</flyway.version>
     <postgresql.version>42.7.11</postgresql.version>
     <jdbi.version>3.53.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.45.0</awssdk.version>
+    <awssdk.version>2.46.9</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
-    <jackson3.version>3.1.3</jackson3.version>
-    <jackson2.version>2.21.4</jackson2.version>
-    <jackson.annotations.version>2.21</jackson.annotations.version>
+    <jackson3.version>3.2.0</jackson3.version>
+    <jackson2.version>2.22.0</jackson2.version>
+    <jackson.annotations.version>2.22</jackson.annotations.version>
 
     <!-- Logging -->
-    <logback-classic.version>1.5.33</logback-classic.version>
+    <logback-classic.version>1.5.34</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.18</slf4j.version>
-    <opentelemetry.version>1.62.0</opentelemetry.version>
+    <opentelemetry.version>1.63.0</opentelemetry.version>
 
     <!-- Other -->
-    <arrow.version>2.2.2.1</arrow.version>
+    <arrow.version>2.2.3</arrow.version>
 
     <!-- Transitive dependencies -->
     <commons-codec.version>1.22.0</commons-codec.version>
@@ -80,7 +80,7 @@
     <!-- Testing -->
     <kotest.version>6.1.11</kotest.version>
     <junit.version>6.1.0</junit.version>
-    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <testcontainers.version>2.0.5</testcontainers.version>
 
