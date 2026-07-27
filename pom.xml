@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20260711.041329</version>
+    <version>3.20260724.033836</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -44,7 +44,7 @@
     <liflig-snapshot-test.version>1.20260701.025943</liflig-snapshot-test.version>
 
     <!-- API -->
-    <http4k.version>6.55.0.0</http4k.version>
+    <http4k.version>6.56.0.0</http4k.version>
     <jetty.version>12.1.11</jetty.version>
 
     <!-- Database -->
@@ -54,7 +54,7 @@
     <jdbi.version>3.54.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.48.2</awssdk.version>
+    <awssdk.version>2.49.2</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
@@ -63,7 +63,7 @@
     <jackson.annotations.version>2.22</jackson.annotations.version>
 
     <!-- Logging -->
-    <logback-classic.version>1.5.38</logback-classic.version>
+    <logback-classic.version>1.6.0</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.18</slf4j.version>
     <opentelemetry.version>1.64.0</opentelemetry.version>
@@ -79,7 +79,7 @@
     <diffutils.version>4.17</diffutils.version>
 
     <!-- Testing -->
-    <kotest.version>6.2.2</kotest.version>
+    <kotest.version>6.2.3</kotest.version>
     <junit.version>6.1.2</junit.version>
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
