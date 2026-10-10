@@ -41,11 +41,11 @@
     <liflig-public-exception.version>2.20260916.090950</liflig-public-exception.version>
     <liflig-document-store.version>3.20260916.090903</liflig-document-store.version>
     <liflig-logging.version>3.20260916.090939</liflig-logging.version>
-    <liflig-snapshot-test.version>1.20261001.231143</liflig-snapshot-test.version>
+    <liflig-snapshot-test.version>1.20261005.103954</liflig-snapshot-test.version>
 
     <!-- API -->
     <http4k.version>6.61.0.0</http4k.version>
-    <jetty.version>12.1.13</jetty.version>
+    <jetty.version>12.1.14</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.1.0</hikariCP.version>
@@ -54,7 +54,7 @@
     <jdbi.version>3.55.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.55.10</awssdk.version>
+    <awssdk.version>2.55.12</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
