@@ -29,7 +29,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <kotlin.version>2.4.20</kotlin.version>
+    <kotlin.version>2.4.21</kotlin.version>
     <java.version>21</java.version>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
     <kotlin.compiler.languageVersion>2.2</kotlin.compiler.languageVersion>
@@ -41,20 +41,20 @@
     <liflig-public-exception.version>2.20260916.090950</liflig-public-exception.version>
     <liflig-document-store.version>3.20260916.090903</liflig-document-store.version>
     <liflig-logging.version>3.20260916.090939</liflig-logging.version>
-    <liflig-snapshot-test.version>1.20261001.231143</liflig-snapshot-test.version>
+    <liflig-snapshot-test.version>1.20261005.103954</liflig-snapshot-test.version>
 
     <!-- API -->
     <http4k.version>6.61.0.0</http4k.version>
-    <jetty.version>12.1.13</jetty.version>
+    <jetty.version>12.1.14</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.1.0</hikariCP.version>
-    <flyway.version>13.9.0</flyway.version>
-    <postgresql.version>42.7.13</postgresql.version>
+    <flyway.version>13.10.0</flyway.version>
+    <postgresql.version>42.7.14</postgresql.version>
     <jdbi.version>3.55.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.55.10</awssdk.version>
+    <awssdk.version>2.55.13</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
@@ -73,7 +73,7 @@
     <apache-httpcore5.version>5.4.4</apache-httpcore5.version>
 
     <!-- Transitive dependencies -->
-    <commons-codec.version>1.22.1</commons-codec.version>
+    <commons-codec.version>1.23.0</commons-codec.version>
     <httpcore.version>4.4.16</httpcore.version>
     <annotations.version>26.1.0</annotations.version>
     <diffutils.version>4.17</diffutils.version>
