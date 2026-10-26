@@ -31,6 +31,20 @@ jobs:
           java-version: "21.0.6"
           java-package: jdk
 
+      # Hotfix for https://emudhra.we-have-a-problem.com/
+      # This shouldn't be necessary once the base image stops shipping the vulnerable root certs
+      - name: remove untrusted certs
+        run: |
+          keytool -delete -cacerts -storepass changeit -alias "emsigneccrootcag3 [jdk]" || true
+          keytool -delete -cacerts -storepass changeit -alias "comodoaaaca [jdk]" || true
+          certs=$(keytool -list -v -cacerts -storepass changeit)
+          if grep -qE 'CN=(emSign ECC Root CA - G3|AAA Certificate Services),' <<<"$certs"; then
+            echo "Compromised root CA still present in cacerts"
+            exit 1
+          else
+            echo "OK"
+          fi
+
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.m2/repository
