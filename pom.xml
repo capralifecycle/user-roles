@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20261027.120430</version>
+    <version>3.20261110.232433</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -45,7 +45,7 @@
 
     <!-- API -->
     <http4k.version>6.61.0.0</http4k.version>
-    <jetty.version>12.1.14</jetty.version>
+    <jetty.version>12.1.15</jetty.version>
 
     <!-- Database -->
     <hikariCP.version>7.1.0</hikariCP.version>
@@ -54,19 +54,19 @@
     <jdbi.version>3.55.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.57.10</awssdk.version>
+    <awssdk.version>2.57.13</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.13.0</kotlinx-serialization.version>
-    <jackson3.version>3.2.4</jackson3.version>
-    <jackson2.version>2.22.4</jackson2.version>
-    <jackson.annotations.version>2.22</jackson.annotations.version>
+    <jackson3.version>3.3.0</jackson3.version>
+    <jackson2.version>2.23.0</jackson2.version>
+    <jackson.annotations.version>2.23</jackson.annotations.version>
 
     <!-- Logging -->
     <logback-classic.version>1.6.6</logback-classic.version>
     <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
     <slf4j.version>2.0.20</slf4j.version>
-    <opentelemetry.version>1.67.0</opentelemetry.version>
+    <opentelemetry.version>1.68.0</opentelemetry.version>
 
     <!-- Other -->
     <arrow.version>2.3.0</arrow.version>
