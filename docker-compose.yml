@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   userrolesdb:
-    image: postgres:18.7@sha256:2ea8630df176ad090ec92136dee850397c5af8781e4bcf2e4162593691c61bbc
+    image: postgres:18.7@sha256:c699303802144847d238196173655dbbecf7a96aeca1565f2b02eb671a1f0b6b
     container_name: userrolesdb
     ports:
       - "127.0.0.1:10101:5432"
