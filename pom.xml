@@ -7,7 +7,7 @@
   <parent>
     <groupId>no.liflig</groupId>
     <artifactId>kotlin-parent</artifactId>
-    <version>3.20261113.222436</version>
+    <version>3.20261124.090630</version>
   </parent>
 
   <!--suppress MavenRedundantGroupId -->
@@ -37,10 +37,10 @@
 
     <!-- Liflig -->
     <liflig-properties.version>3.20261103.140724</liflig-properties.version>
-    <liflig-http4k-setup.version>6.20260929.210315</liflig-http4k-setup.version>
-    <liflig-public-exception.version>2.20260916.090950</liflig-public-exception.version>
+    <liflig-http4k-setup.version>6.20261123.103654</liflig-http4k-setup.version>
+    <liflig-public-exception.version>2.20261123.104009</liflig-public-exception.version>
     <liflig-document-store.version>3.20261101.143811</liflig-document-store.version>
-    <liflig-logging.version>3.20260916.090939</liflig-logging.version>
+    <liflig-logging.version>3.20261123.103840</liflig-logging.version>
     <liflig-snapshot-test.version>1.20261101.144029</liflig-snapshot-test.version>
 
     <!-- API -->
@@ -50,11 +50,11 @@
     <!-- Database -->
     <hikariCP.version>7.1.0</hikariCP.version>
     <flyway.version>13.13.0</flyway.version>
-    <postgresql.version>42.7.14</postgresql.version>
+    <postgresql.version>42.7.15</postgresql.version>
     <jdbi.version>3.55.0</jdbi.version>
 
     <!-- AWS -->
-    <awssdk.version>2.59.5</awssdk.version>
+    <awssdk.version>2.59.9</awssdk.version>
 
     <!-- Serialization -->
     <kotlinx-serialization.version>1.13.0</kotlinx-serialization.version>
@@ -69,7 +69,7 @@
     <opentelemetry.version>1.68.0</opentelemetry.version>
 
     <!-- Other -->
-    <arrow.version>2.3.0</arrow.version>
+    <arrow.version>2.3.0.1</arrow.version>
     <apache-httpcore5.version>5.5</apache-httpcore5.version>
 
     <!-- Transitive dependencies -->
